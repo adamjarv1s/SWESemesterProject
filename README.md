@@ -1,3 +1,13 @@
+# Uter-US - Full Stack Period Tracker App
+## Tech Stack
+### Frontend
+- React
+- Express
+
+### Backend
+- C++
+- MariaDB
+
 Many of the period tracker apps, 
 and especially the most popular period tracker apps on the app store right now 
 are intrusive in terms of notifications, 
