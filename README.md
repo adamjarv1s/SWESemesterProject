@@ -1,13 +1,4 @@
 # Uter-US - Full Stack Period Tracker App
-## Tech Stack
-### Frontend
-- React
-- Express
-
-### Backend
-- C++
-- MariaDB
-
 Many of the period tracker apps, 
 and especially the most popular period tracker apps on the app store right now 
 are intrusive in terms of notifications, 
@@ -18,3 +9,12 @@ This is undesirable.
 We will create a completely locally run on your device period tracker app 
 that is nonintrusive, customizable, and fun to use 
 so that it encourages users to report their symptoms.
+
+## Tech Stack
+### Frontend
+- React
+- Express
+
+### Backend
+- C++
+- MariaDB
