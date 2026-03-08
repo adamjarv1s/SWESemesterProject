@@ -89,3 +89,25 @@ bool inFertilityWindow(int day, int year, int lastStart, double averageCycle) {
         return false;
     }
 }
+
+//gives a boolean of whether or not it's been very long since the last period, indicating either the user forgot or the user missed their period
+bool checkSkip(int day, int year, int lastStart, double averageCycle) {
+    int roundedCycle = round(averageCycle);
+    if (day < lastStart) {
+        year--;
+        if (isLeapYear(year)) {
+            int result = 366 - lastStart + day;
+        } else {
+            int result = 365 - lastStart + day;
+        }
+        if (result >= roundedCycle + 21) {
+            return true;
+        }
+        return false;
+    } else {
+        if (day - lastStart >= roundedCycle + 21) {
+            return true;
+        }
+        return false;
+    }
+}
