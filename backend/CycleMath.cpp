@@ -113,7 +113,7 @@ bool checkMissed(int day, int year, int lastStart, double averageCycle) {
     }
 }
 
-bool checkIrregular(int day, int year, int lastStart, double averageCycle, vector<pair<int, int>> periods) {
+bool checkIrregular(int day, int year, int lastStart, double averageCycle, vector<pair<int>> periods) {
     if (periods.size() < 5) {
         return false;
     }
@@ -135,43 +135,4 @@ bool checkIrregular(int day, int year, int lastStart, double averageCycle, vecto
         }
         return false;
     }
-}
-
-//Since we only check for irregularites once 5 periods are logged, this creates up to 5 periods in case a user already knows their cycle length and wants the irregularity checks immediately
-vector<pair<int, int>> makeFivePeriods(int givenCycle, vector<pair<int, int>> periods) {
-    if (periods.size() >= 5) {
-        return periods;
-    }
-    int current size = periods.size();
-    stack<pair<int, int>> stack;
-    stack.push(periods[0]);
-    while (size < 5) {
-        if (stack.top().first - givenCycle < 1) {
-            int year = stack.top().second - 1;
-            if (isLeapYear(stack.top().second)) {
-                int date = 366 - (givenCycle - stack.top().first);
-                pair<int, int> period(date, year);
-                stack.push(period);
-            } else {
-                int date = 366 - (givenCycle - stack.top().first);
-                pair<int, int> period(date, year);
-                stack.push(period);
-            }
-        } else {
-            int year = stack.top().second;
-            int date = stack.top().first - givenCycle;
-            pair<int, int> period(date, year);
-            stack.push(period);
-        }
-        size++;
-    }
-    vector<pair<int, int>> newPeriods;
-    while (!stack.empty()) {
-        newPeriods.push_back(stack.top());
-        stack.pop();
-    }
-    for (auto period : periods) {
-        newPeriods.push_back(period);
-    }
-    return newPeriods;
 }
