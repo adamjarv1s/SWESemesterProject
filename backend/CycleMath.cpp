@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
+#include <stack>
 using namespace std;
 
 
@@ -14,7 +15,7 @@ bool isLeapYear(int year) {
 }
 
 // returns the average cycle length given a pair of ints where the first is the day (1-366), and the second is the year
-double averageCycleLength(vector<pair<int>> periods) {
+double averageCycleLength(vector<pair<int, int>> periods) {
     vector<int> cycleLengths;
 
     for (int i = 0; i < periods.size() - 1; i++) {
