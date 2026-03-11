@@ -1,9 +1,7 @@
 # ninja log v6
-6	1557	7949140950513186	CMakeFiles/SWESemesterProject.dir/backend/main.cpp.obj	47f6a819aa3bd962
-18	1841	7949140950643204	CMakeFiles/SWESemesterProject.dir/backend/database.cpp.obj	a142b4e69eebd3ed
-1842	2256	7949140968877642	SWESemesterProject.exe	bad226cba7234e55
-16	333	7949143568290904	build.ninja	e9c1ed5cb1999c18
-4	1085	7949145212340726	CMakeFiles/SWESemesterProject.dir/backend/main.cpp.obj	47f6a819aa3bd962
-17	1375	7949145212470762	CMakeFiles/SWESemesterProject.dir/backend/database.cpp.obj	a142b4e69eebd3ed
-1375	1728	7949145226049510	SWESemesterProject.exe	bad226cba7234e55
-4	1994	7949159219728374	CMakeFiles/SWESemesterProject.dir/backend/main.cpp.obj	47f6a819aa3bd962
+5	1514	7949583221196300	CMakeFiles/SWESemesterProject.dir/backend/main.cpp.obj	47f6a819aa3bd962
+22	1773	7949583221370031	CMakeFiles/SWESemesterProject.dir/backend/database.cpp.obj	a142b4e69eebd3ed
+1773	2162	7949583238883189	SWESemesterProject.exe	bad226cba7234e55
+16	333	7949585120097725	build.ninja	e9c1ed5cb1999c18
+8	1797	7949586062853204	CMakeFiles/SWESemesterProject.dir/backend/database.cpp.obj	a142b4e69eebd3ed
+1799	2200	7949586080693194	SWESemesterProject.exe	bad226cba7234e55
