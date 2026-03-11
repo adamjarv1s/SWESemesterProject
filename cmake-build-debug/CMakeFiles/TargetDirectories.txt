@@ -1,0 +1,3 @@
+C:/Users/theja/CLionProjects/SWESemesterProject/cmake-build-debug/CMakeFiles/SWESemesterProject.dir
+C:/Users/theja/CLionProjects/SWESemesterProject/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/theja/CLionProjects/SWESemesterProject/cmake-build-debug/CMakeFiles/rebuild_cache.dir
