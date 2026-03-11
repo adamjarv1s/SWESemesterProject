@@ -18,3 +18,21 @@ so that it encourages users to report their symptoms.
 ### Backend
 - C++
 - MariaDB
+
+## Setting up Frontend
+To set up frontend, do the following commands in your terminal:
+### Navigate to uter-us Folder
+```bash
+cd frontend
+```
+```bash
+cd uter-us
+```
+### Install Dependencies
+```bash
+npm install
+```
+### Run React Application
+```bash
+npm run dev
+```
