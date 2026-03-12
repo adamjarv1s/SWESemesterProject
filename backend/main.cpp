@@ -1,5 +1,6 @@
 #include <iostream>
+#include "database.h"
 using namespace std;
 int main(){
-    cout << "Hello World" << endl;
+    databaseInit(0,nullptr);
 }
