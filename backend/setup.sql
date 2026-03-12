@@ -1,3 +1,4 @@
+drop schema uterusdata;
 CREATE DATABASE IF NOT EXISTS uterusdata;
 USE uterusdata;
 create table IF NOT EXISTS UserInfo(
