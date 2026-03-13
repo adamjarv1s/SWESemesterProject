@@ -1,5 +1,6 @@
 #include <iostream>
 #include <mariadb/conncpp.hpp>
+#include "database.h"
 #include <memory>
 
 //This was directly taken from this lovely tutorial on mariadb
@@ -9,7 +10,7 @@ int databaseInit(int argc, char *argv[]){
  try{
    sql::Driver* driver = sql::mariadb::get_driver_instance();
 
-   sql::SQLString url("jdbc:mariadb://localhost:3306/UserInfo");
+   sql::SQLString url("jdbc:mariadb://localhost:3306/uterusdata");
    sql::Properties properties({
        //WE NEED TO CHANGE THIS DESPERATELY ANYONE WITH ACCESS TO THIS
        //CODE CAN SEE THIS
@@ -29,7 +30,7 @@ int databaseInit(int argc, char *argv[]){
     std::cout << "I worked!" << std::endl;
    return 0;
 }
-
+/*
 std::string logPeriod(int user, std::string currentDate, std::string startDate, int heaviness, bool lastDay) {
 
-}
+}*/
