@@ -414,6 +414,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   <ItemGroup>
     <ClCompile Include="C:\Users\theja\OneDrive\Desktop\SWESemesterProject\backend\main.cpp" />
     <ClCompile Include="C:\Users\theja\OneDrive\Desktop\SWESemesterProject\backend\database.cpp" />
+    <ClCompile Include="C:\Users\theja\OneDrive\Desktop\SWESemesterProject\backend\utilities.cpp" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(MARIADB_DIR "C:/Program Files/MariaDB/MariaDB C++ Connector 64-bit")
 
-add_executable(SWESemesterProject backend/main.cpp backend/database.cpp)
+add_executable(SWESemesterProject backend/main.cpp backend/database.cpp backend/utilities.cpp)
 
 target_include_directories(SWESemesterProject PRIVATE "${MARIADB_DIR}/include")
 

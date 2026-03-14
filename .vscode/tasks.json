@@ -9,6 +9,14 @@
             "detail": "CMake template configure task"
         },
         {
+            "type": "cmake",
+            "label": "CMake Build",
+            "command": "build",
+            "targets": ["SWESemesterProject"],
+            "problemMatcher": [],
+            "detail": "CMake build task"
+        },
+        {
             "type": "cppbuild",
             "label": "C/C++: cl.exe build active file",
             "command": "cl.exe",
@@ -22,9 +30,7 @@
             "options": {
                 "cwd": "${fileDirname}"
             },
-            "problemMatcher": [
-                "$msCompile"
-            ],
+            "problemMatcher": ["$msCompile"],
             "group": "build",
             "detail": "compiler: cl.exe"
         }
