@@ -1,17 +1,25 @@
 {
+    "version": "2.0.0",
     "configurations": [
+        {
+            "type": "cmake",
+            "request": "launch",
+            "name": "CMake: Configure project",
+            "cmakeDebugType": "configure",
+            "clean": false,
+            "configureAll": false
+        },
         {
             "name": "C/C++: cl.exe build and debug active file",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+            "program": "${command:cmake.launchTargetPath}",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${command:cmake.launchTargetDirectory}",
             "environment": [],
             "console": "integratedTerminal",
-            "preLaunchTask": "C/C++: cl.exe build active file"
+            "preLaunchTask": "CMake Build"
         }
-    ],
-    "version": "2.0.0"
+    ]
 }
