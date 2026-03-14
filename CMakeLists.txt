@@ -1,15 +1,15 @@
 # If you want to change anything in this file, consult Abby first.
 
 cmake_minimum_required(VERSION 3.20)
-project(Uter-Us)
+project(SWESemesterProject)
 
 set(CMAKE_CXX_STANDARD 17)
 
 set(MARIADB_DIR "C:/Program Files/MariaDB/MariaDB C++ Connector 64-bit")
 
-add_executable(Uter-Us backend/main.cpp backend/database.cpp)
+add_executable(SWESemesterProject backend/main.cpp backend/database.cpp)
 
-target_include_directories(Uter-Us PRIVATE "${MARIADB_DIR}/include")
+target_include_directories(SWESemesterProject PRIVATE "${MARIADB_DIR}/include")
 
 add_library(mariadbcpp SHARED IMPORTED)
 set_target_properties(mariadbcpp PROPERTIES
@@ -17,4 +17,9 @@ set_target_properties(mariadbcpp PROPERTIES
         IMPORTED_IMPLIB   "${MARIADB_DIR}/mariadbcpp.lib"
 )
 
-target_link_libraries(Uter-Us PRIVATE mariadbcpp)
+target_link_libraries(SWESemesterProject PRIVATE mariadbcpp)
+
+add_custom_command(TARGET SWESemesterProject POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${MARIADB_DIR}/mariadbcpp.dll"
+        $<TARGET_FILE_DIR:SWESemesterProject>)

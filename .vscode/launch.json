@@ -1,16 +1,18 @@
+//change SWESEMESTERPROJECT TO WHAT YOU NEED
 {
     "configurations": [
+
         {
             "name": "C/C++: cl.exe build and debug active file",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+            "program": "${workspaceFolder}/build/Debug/SWESemesterProject.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}/build/Debug",
             "environment": [],
             "console": "integratedTerminal",
-            "preLaunchTask": "C/C++: cl.exe build active file"
+            "preLaunchTask": "CMake Build"
         }
     ],
     "version": "2.0.0"

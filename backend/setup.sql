@@ -1,4 +1,3 @@
-drop schema uterusdata;
 CREATE DATABASE IF NOT EXISTS uterusdata;
 USE uterusdata;
 create table IF NOT EXISTS UserInfo(
@@ -15,15 +14,11 @@ create table IF NOT EXISTS periodData(
                                          CurrentLength int NOT NULL,
                                          Heaviness int not null,
                                          LastDay bool
+                                         FOREIGN KEY (userId) REFERENCES UserInfo(id)
 );
 create table if not exists purchaseData(
                                            id INT AUTO_INCREMENT PRIMARY KEY,
                                            currentDiamonds int not null,
                                            purchasedItem float
+                                           FOREIGN KEY (userId) REFERENCES UserInfo(id)
 );
-create table if not exists userLoginData
-(
-    id       INT AUTO_INCREMENT PRIMARY KEY,
-    username varchar(100) not null,
-    password varchar(100) not null
-)
