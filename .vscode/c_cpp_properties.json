@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "C:/Program Files/MariaDB/MariaDB C++ Connector 64-bit/include"
             ],
             "defines": [
                 "_DEBUG",
