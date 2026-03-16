@@ -1,36 +1,66 @@
 #include <iostream>
+#include <vector>
+#include <string>
 #include <mariadb/conncpp.hpp>
 #include "database.h"
+#include "utilities.h"
 #include <memory>
 
-//This was directly taken from this lovely tutorial on mariadb
+//A lot of the SQL stuff was taken from this lovely tutorial on mariadb
 // https://mariadb.com/resources/blog/how-to-connect-c-programs-to-mariadb/
 
-int databaseInit(int argc, char *argv[]){
- try{
-   sql::Driver* driver = sql::mariadb::get_driver_instance();
+/* Database here is a something called a singleton class
+That means only one instance of it can exist at a time.
+*/
 
-   sql::SQLString url("jdbc:mariadb://localhost:3306/uterusdata");
-   sql::Properties properties({
-       //WE NEED TO CHANGE THIS DESPERATELY ANYONE WITH ACCESS TO THIS
-       //CODE CAN SEE THIS
-       {"user", "root"},
-       {"password", "aqualung"}
-       });
+  Database& Database::getInstance(){
+    static Database instance;
+    return instance;
+  }
 
-    std::unique_ptr<sql::Connection> conn(driver->connect(url, properties));
 
-    conn->close();
-   }
+  Database::Database(){
+    try{
+      string password;
+      std::cout << "Enter password" << std::endl;
+      std::cin >> password;
+      std::cout << std::endl;
 
-   catch (sql::SQLException &e){
-     std::cerr << "If you see this, talk to Abby! " << e.what() << std::endl;
-     return 1;
-   }
-    std::cout << "I worked!" << std::endl;
-   return 0;
-}
-/*
-std::string logPeriod(int user, std::string currentDate, std::string startDate, int heaviness, bool lastDay) {
+      sql::Driver* driver = sql::mariadb::get_driver_instance();
+      sql::SQLString url("jdbc:mariadb://127.0.0.1:3306/uterusdata");
+      sql::Properties properties({
+        //WE NEED TO CHANGE THIS DESPERATELY ANYONE WITH ACCESS TO THIS
+        //CODE CAN SEE THIS
+        {"user", "root"},
+        {"password", password}
+        });
+        
+        conn.reset (driver->connect(url, properties));
+        std::cout << "I worked!" << std::endl;
+        } catch (sql::SQLException &e){
+          std::cerr << "If you see this, talk to Abby! " << e.what() << std::endl;
+    }
+  }
+    
+  Database::~Database(){
+    if (conn) conn->close();
+  }
 
-}*/
+  //create account! this is a good template for what other functions will look like.
+  //if at any point the SQL gets too complicated ask Abby for help <3
+  void Database::createAccount(string name, string pet, int accountType){
+    try {
+      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, `Type`, streak, lastDay) values (?, ?, ?, ?, ?)"));
+
+      stmnt->setString(1, name);
+      stmnt->setString(2, pet);
+      stmnt->setInt(3, accountType);
+      stmnt->setInt(4, 0);
+      stmnt->setDateTime(5, getCurrentDate());
+
+      stmnt->executeUpdate();
+        } catch (sql::SQLException &e) {
+        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+    }
+  }

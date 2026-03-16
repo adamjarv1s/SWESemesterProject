@@ -1,0 +1,22 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MariaDB",
+            "username": "root",
+            "database": "uterusdata",
+            "name": "uterusdata",
+            "askForPassword": true
+        }
+    ],
+    "files.associations": {
+        "*.sql": "MariaDB"
+    }
+}
