@@ -23,10 +23,7 @@ so that it encourages users to report their symptoms.
 To set up frontend, do the following commands in your terminal:
 ### Navigate to uter-us Folder
 ```bash
-cd frontend
-```
-```bash
-cd uter-us
+cd uter-us-frontend
 ```
 ### Install Dependencies
 ```bash
@@ -34,5 +31,5 @@ npm install
 ```
 ### Run React Application
 ```bash
-npm run dev
+npx expo start
 ```
