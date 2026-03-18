@@ -9,20 +9,30 @@ import { Link } from 'expo-router';
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
+    /*<ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
         <Image
           source={require('@/assets/images/partial-react-logo.png')}
           style={styles.reactLogo}
         />
-      }>
-      <ThemedView style={styles.stepContainer}>
-        <HelloWave />
-        <ThemedText>uterus!</ThemedText>
-        <ThemedText><Link href="https://github.com/adamjarv1s/SWESemesterProject" target="_blank" rel="noopener noreferrer">Link to Github</Link></ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      }>*/
+    <ThemedView /*style={styles.titleContainer}*/>
+      <ThemedText style={styles.titleContainer}
+        type="title">
+        UterUs
+      </ThemedText>
+      <HelloWave />
+      <ThemedText style={styles.stepContainer} type="subtitle">Welcome!</ThemedText>
+      <ThemedText style={styles.stepContainer} type="defaultSemiBold">Create a Profile to Get Started!</ThemedText>
+      <ThemedText type="link">
+        <Link href="https://github.com/adamjarv1s/SWESemesterProject" target="_blank" rel="noopener noreferrer">Link to Github </Link>
+      </ThemedText>
+      <ThemedText type="link">
+        <button>{"+ Create a Profile"}</button>
+      </ThemedText>
+    </ThemedView>
+    // </ParallaxScrollView>
   );
 }
 
