@@ -2,10 +2,11 @@
 #include "database.h"
 #include "CycleMath.h"
 #include "utilities.h"
+#include "httplib.h"
 
 using namespace std;
 
-int main(){
+/*int main(){
     Database& db = Database::getInstance();
     db.removeOldestPeriod(1);
     db.removeOldestPeriod(1);
@@ -17,4 +18,27 @@ int main(){
     double val = averageCycleLength(db.getPeriodsAsVector(1));
     cout << val;
     return 0;
+}*/
+int main() {
+    Database& db = Database::getInstance();
+    
+    httplib::Server svr;
+
+    svr.set_pre_routing_handler([](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "http://localhost:5173");
+        res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        res.set_header("Access-Control-Allow-Headers", "Content-Type");
+        if (req.method == "OPTIONS") {
+            res.status = 204;
+            return httplib::Server::HandlerResponse::Handled;
+        }
+        return httplib::Server::HandlerResponse::Unhandled;
+    });
+
+    // Example endpoint
+    svr.Get("/api/cycle-data", [](const httplib::Request& req, httplib::Response& res) {
+        res.set_content("{\"status\": \"ok\"}", "application/json");
+    });
+
+    svr.listen("0.0.0.0", 8080); // C++ runs on port 8080
 }
