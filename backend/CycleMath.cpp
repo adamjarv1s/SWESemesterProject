@@ -71,10 +71,11 @@ bool shouldBleedingStartingtoday(int day, int year, int lastStart, double averag
     int result;
     if (day < lastStart) {
         year--;
+        int result;
         if (isLeapYear(year)) {
-            int result = 366 - lastStart + day;
+            result = 366 - lastStart + day;
         } else {
-            int result = 365 - lastStart + day;
+            result = 365 - lastStart + day;
         }
     } else {
         result = day - lastStart;
@@ -91,10 +92,11 @@ bool inFertilityWindow(int day, int year, int lastStart, double averageCycle) {
 
     if (day < lastStart) {
         year--;
+        int result;
         if (isLeapYear(year)) {
-            int result = 366 - lastStart + day;
+            result = 366 - lastStart + day;
         } else {
-            int result = 365 - lastStart + day;
+            result = 365 - lastStart + day;
         }
     } else {
         result = day - lastStart;
@@ -108,10 +110,11 @@ bool checkMissed(int day, int year, int lastStart, double averageCycle) {
     int result;
     if (day < lastStart) {
         year--;
+        int result;
         if (isLeapYear(year)) {
-            int result = 366 - lastStart + day;
+            result = 366 - lastStart + day;
         } else {
-            int result = 365 - lastStart + day;
+            result = 365 - lastStart + day;
         }
     } else {
         result = day - lastStart;
@@ -127,10 +130,11 @@ bool checkIrregular(int day, int year, int lastStart, double averageCycle, vecto
     int result = 0;
     if (day < lastStart) {
         year--;
+        int result;
         if (isLeapYear(year)) {
-            int result = 366 - lastStart + day;
+            result = 366 - lastStart + day;
         } else {
-            int result = 365 - lastStart + day;
+            result = 365 - lastStart + day;
         }
     } else {
         return day - lastStart;
