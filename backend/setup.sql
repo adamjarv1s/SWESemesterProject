@@ -10,7 +10,9 @@ create table IF NOT EXISTS UserInfo(
                                        lastDay DATE NOT NULL
 );
 create table IF NOT EXISTS periodData(
-                                         id INT AUTO_INCREMENT PRIMARY KEY,
+                                         id INT NOT NULL,
+                                         PeriodID INT AUTO_INCREMENT,
+                                         PRIMARY KEY (PeriodID),
                                          CurrentDate DATE NOT NULL,
                                          StartDate DATE NOT NULL,
                                          CurrentLength int NOT NULL,

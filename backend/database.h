@@ -2,6 +2,7 @@
 #define DATABASE_H
 #include <string>
 #include <vector>
+#include <utility>
 #include <mariadb/conncpp.hpp>
 #include <memory>
 #include <vector>
@@ -16,9 +17,11 @@ class Database{
     Database& operator=(const Database&) = delete;
 
     // todo:
-    string logPeriod(int user, string currentDate, int heaviness, bool lastDay);
-    string logMissedPeriod(int user, string currentDate, string expectedStartDate, bool expectedLastDay);
-    string logIrregularPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay);
+    void logPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay);
+    void logMissedPeriod(int user, string currentDate, string expectedStartDate, bool expectedLastDay);
+    void logIrregularPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay);
+    void removeOldestPeriod(int user);
+    
     int getAverageCycleLength(int user);
     string getAccountType(int user);
     //string getCurrentDate();
@@ -43,6 +46,7 @@ class Database{
     //vector<???> getPetPurchases(int user);
     int getCurrentStreak(int user);
     void incrementCurrentStreak(int user);
+    vector<pair<int, int>> getPeriodsAsVector(int user);
 
 private:
     Database();
