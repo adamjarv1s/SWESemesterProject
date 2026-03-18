@@ -14,13 +14,13 @@ int convertSQLDateToInt(string date){
     int month = stoi(date.substr(5,2));
     int day = stoi(date.substr(8,2));
 
-    std::tm timeinfo = {};
+    tm timeinfo = {};
     timeinfo.tm_year = year - 1900;
     timeinfo.tm_mon = month - 1;
     timeinfo.tm_mday = day;
     timeinfo.tm_isdst = -1;
 
-    std::mktime(&timeinfo);
+    mktime(&timeinfo);
 
     return timeinfo.tm_yday + 1;
 }
@@ -69,9 +69,11 @@ double averageCycleLength(vector<pair<int, int>> periods) {
 bool shouldBleedingStartingtoday(int day, int year, int lastStart, double averageCycle) {
     int roundedCycle = round(averageCycle);
     int result;
+
     if (day < lastStart) {
         year--;
         int result;
+
         if (isLeapYear(year)) {
             result = 366 - lastStart + day;
         } else {
@@ -80,6 +82,7 @@ bool shouldBleedingStartingtoday(int day, int year, int lastStart, double averag
     } else {
         result = day - lastStart;
     }
+
     return result == roundedCycle;
 }
 
@@ -101,6 +104,7 @@ bool inFertilityWindow(int day, int year, int lastStart, double averageCycle) {
     } else {
         result = day - lastStart;
     }
+
     return result >= lowerBound && result <= upperBound;
 }
 
@@ -108,6 +112,7 @@ bool inFertilityWindow(int day, int year, int lastStart, double averageCycle) {
 bool checkMissed(int day, int year, int lastStart, double averageCycle) {
     int roundedCycle = round(averageCycle);
     int result;
+
     if (day < lastStart) {
         year--;
         int result;
@@ -119,6 +124,7 @@ bool checkMissed(int day, int year, int lastStart, double averageCycle) {
     } else {
         result = day - lastStart;
     }
+
     return result >= 42;
 }
 
@@ -126,11 +132,14 @@ bool checkIrregular(int day, int year, int lastStart, double averageCycle, vecto
     if (periods.size() < 5) {
         return false;
     }
+
     int roundedCycle = round(averageCycle);
     int result = 0;
+
     if (day < lastStart) {
         year--;
         int result;
+
         if (isLeapYear(year)) {
             result = 366 - lastStart + day;
         } else {
@@ -139,5 +148,6 @@ bool checkIrregular(int day, int year, int lastStart, double averageCycle, vecto
     } else {
         return day - lastStart;
     }
+    
     return result >= roundedCycle + 7;
 }
