@@ -1,9 +1,9 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "target": "ES6",                // or later
-    "module": "ESNext",             // or "CommonJS" depending on your setup
-    "jsx": "react-jsx",             // for React 17+ (or "react" for older versions)
+    "target": "ES6",
+    "module": "ESNext",
+    "jsx": "react-jsx",
     "strict": true,
     "paths": {
       "@/*": [
