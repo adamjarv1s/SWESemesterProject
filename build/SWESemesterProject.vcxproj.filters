@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\theja\OneDrive\Desktop\SWESemesterProject\backend\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\theja\OneDrive\Desktop\SWESemesterProject\backend\database.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\theja\OneDrive\Desktop\SWESemesterProject\backend\utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\theja\OneDrive\Desktop\SWESemesterProject\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{040E3E04-67E4-3F32-BA87-72E40A8302C6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
