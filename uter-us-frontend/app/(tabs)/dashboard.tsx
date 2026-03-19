@@ -18,17 +18,26 @@ export default function HomeScreen() {
   return (
     <ThemedView>
 
-        {/* Top Header Bar -> Hamburger Menu, Hello User, and Log Out */}
+        {/* Top Header Bar -> Hamburger Menu, Hello [User], and Log Out 
+            NOTES:
+                - Need to change the icons into buttons
+                    - faBars needs to open the sidebar menu
+                    - faSignOutAlt needs to log out the user and return to profiles/index screen
+
+                - Once database is set up, need to replace "name" with the active user's name */}
+
         <View style={[styles.inlineContainer, styles.topHeader]}>
             <FontAwesomeIcon icon={faBars} size={20}/>
 
             <ThemedText style={[styles.topHeader, { fontFamily: "BreeSerif_400Regular" }]}>
-                Hello, name!
+                Hello, name!!
             </ThemedText>
 
             <FontAwesomeIcon icon={faSignOutAlt} size={20}/>
         </View>
           
+        
+        {/* Buddy System -> Gems, Streak, Buddy Image, Shop/Buddy Settings */}
           
 
     </ThemedView>
