@@ -2,9 +2,14 @@
 #include "database.h"
 #include "CycleMath.h"
 #include "utilities.h"
+#include <regex>
+#include <string>
+
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
 #include "httplib.h"
 
-using namespace std;
+//CAN'T USE NAMESPACE STD!!!!
 
 /*int main(){
     Database& db = Database::getInstance();
@@ -25,7 +30,7 @@ int main() {
     httplib::Server svr;
 
     svr.set_pre_routing_handler([](const httplib::Request& req, httplib::Response& res) {
-        res.set_header("Access-Control-Allow-Origin", "http://localhost:5173");
+        res.set_header("Access-Control-Allow-Origin", "http://localhost:8081");
         res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         res.set_header("Access-Control-Allow-Headers", "Content-Type");
         if (req.method == "OPTIONS") {
@@ -35,10 +40,16 @@ int main() {
         return httplib::Server::HandlerResponse::Unhandled;
     });
 
-    // Example endpoint
-    svr.Get("/api/cycle-data", [](const httplib::Request& req, httplib::Response& res) {
+    svr.Post("/create-user", [&db](const httplib::Request& req, httplib::Response& res) {
+        std::string body = req.body;
+        
+        std::regex json("\"name\":\"([^\"]+)\".*\"pet\":\"([^\"]+)\",\"accountType\":(\\d+)");
+        std::smatch match;
+        if (std::regex_search(body, match, json)) {
+            db.createAccount(match[1], match[2], std::stoi(match[3]));
+        }
         res.set_content("{\"status\": \"ok\"}", "application/json");
     });
 
-    svr.listen("0.0.0.0", 8080); // C++ runs on port 8080
+    svr.listen("0.0.0.0", 8080);
 }
