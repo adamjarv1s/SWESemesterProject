@@ -1,11 +1,29 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, Alert } from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
+
+async function handleCreateProfile() {
+  try {
+    const response = await fetch('http://localhost:8080/create-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1 }) 
+    });
+
+    if (response.ok) {
+      Alert.alert('Success', 'Profile created!');
+    } else {
+      Alert.alert('Error', 'Failed to create profile');
+    }
+  } catch (error) {
+    Alert.alert('Error', 'Could not connect to server');
+  }
+}
 
 export default function HomeScreen() {
   return (
@@ -29,7 +47,7 @@ export default function HomeScreen() {
         <Link href="https://github.com/adamjarv1s/SWESemesterProject" target="_blank" rel="noopener noreferrer">Link to Github </Link>
       </ThemedText>
       <ThemedText type="link">
-        <button>{"+ Create a Profile"}</button>
+        <button onClick={handleCreateProfile}>{"+ Create a Profile"}</button>
       </ThemedText>
     </ThemedView>
     // </ParallaxScrollView>
