@@ -7,7 +7,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
 
-async function handleCreateProfile() {
+async function HandleCreateProfile() {
   try {
     const response = await fetch('http://localhost:8080/create-user', {
       method: 'POST',
@@ -47,7 +47,7 @@ export default function HomeScreen() {
         <Link href="https://github.com/adamjarv1s/SWESemesterProject" target="_blank" rel="noopener noreferrer">Link to Github </Link>
       </ThemedText>
       <ThemedText type="link">
-        <button onClick={handleCreateProfile}>{"+ Create a Profile"}</button>
+        <button onClick={HandleCreateProfile}>{"+ Create a Profile"}</button>
       </ThemedText>
     </ThemedView>
     // </ParallaxScrollView>
