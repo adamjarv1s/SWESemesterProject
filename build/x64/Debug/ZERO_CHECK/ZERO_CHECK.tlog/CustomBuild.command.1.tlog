@@ -1,6 +1,6 @@
-^C:\USERS\THEJA\ONEDRIVE\DESKTOP\SWESEMESTERPROJECT\BUILD\CMAKEFILES\1D5CBA04B2F085C5B82B42D574779398\GENERATE.STAMP.RULE
+^C:\USERS\GRACE\UTERUSBRANCH\SWESEMESTERPROJECT\BUILD\CMAKEFILES\980016692EEB5F6D01A9E9E8D5352D6F\GENERATE.STAMP.RULE
 setlocal
-"C:\Program Files\Microsoft Visual Studio\18\Insiders\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/theja/OneDrive/Desktop/SWESemesterProject -BC:/Users/theja/OneDrive/Desktop/SWESemesterProject/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/theja/OneDrive/Desktop/SWESemesterProject/build/SWESemesterProject.slnx
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/grace/UterUsBranch/SWESemesterProject -BC:/Users/grace/UterUsBranch/SWESemesterProject/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/grace/UterUsBranch/SWESemesterProject/build/SWESemesterProject.sln
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

@@ -6,6 +6,9 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
+import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
+import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
@@ -30,6 +33,14 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="dashboard"
+        options={{
+          title: 'Dashboard',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+        }}
+      />
+      
     </Tabs>
   );
 }
