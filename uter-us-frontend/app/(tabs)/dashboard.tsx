@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Dimensions, Platform, StyleSheet, Pressable } from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
 import { ThemedText } from '@/components/themed-text';
@@ -10,10 +10,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons/faShoppingCart';
+import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
+import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+
+
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
+// constants
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
+
 export default function HomeScreen() {
+
+  let [fontsLoaded] = useFonts({
+    BreeSerif_400Regular
+  });
 
   return (
     <ThemedView>
@@ -29,8 +43,8 @@ export default function HomeScreen() {
         <View style={[styles.inlineContainer, styles.topHeader]}>
             <FontAwesomeIcon icon={faBars} size={20}/>
 
-            <ThemedText style={[styles.topHeader, { fontFamily: "BreeSerif_400Regular" }]}>
-                Hello, name!!
+            <ThemedText style={[styles.welcomeUserMessage, { fontFamily: "BreeSerif_400Regular" }]}>
+                Hello, [user]!
             </ThemedText>
 
             <FontAwesomeIcon icon={faSignOutAlt} size={20}/>
@@ -38,7 +52,52 @@ export default function HomeScreen() {
           
         
         {/* Buddy System -> Gems, Streak, Buddy Image, Shop/Buddy Settings */}
-          
+        <View style={[styles.buddyContainer]}>
+            <ThemedText style={[]}>
+                buddy system
+            </ThemedText>
+        </View>
+
+        {/* Calendar System -> Day Information Box, Calendar, and + Log Period Button 
+            NOTES:
+                - Calendar documentation: https://wix.github.io/react-native-calendars/docs/Intro
+                ---> Need to figure out how to customize the calendar to fit our needs (believe this is Abby's task?)
+                ---> Connecting calendar to Day information box? to display the day + flow info + recorded symptoms
+
+                - Log Period Button will open a form to log information for the day the user has selected
+                ---> Heavy/Medium/Light Flow
+                ---> Symptoms
+
+                - Day Information Box will display information for the selected day
+                ---> Default selection will be the current day
+                ---> Will display the DAY SELECTED, FLOW LEVEL, and SYMPTOMS RECORDED if it's a period day with information logged
+                ---> Display !!! and NUMBER OF DAYS BEFORE NEXT PERIOD (+ possibly expected symptoms) if it's not a period day.
+        
+        */}
+
+        <View>
+            <View style={[styles.dayInfoBoxContainer]}>
+                <ThemedText style={[]}>
+                    day information box
+                </ThemedText>
+            </View>
+
+            <Calendar style={[styles.calendarContainer]}
+                onDayPress={day => {
+                    console.log('selected day', day);
+                }}
+            />
+
+            <Pressable
+                style={({ pressed }) => [
+                styles.buttonContainer,
+                pressed && styles.buttonPressedContainer
+                ]}
+                onPress={() => alert('log period button pressed')}
+            >
+                <ThemedText style={[styles.buttonText]}>+ Log Period</ThemedText>
+            </Pressable>
+        </View>
 
     </ThemedView>
   );
@@ -62,15 +121,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
 
+  // Grace's Added Styles
+
   topHeader: {
-    paddingLeft: 30,
-    paddingRight: 30,
-    marginTop: 30,
-    marginBottom: 30,
-    fontSize: 20,
-    textAlign: 'left',
-    fontFamily: "BreeSerif_400Regular",
-    backgroundColor: '#A1CEDC',
+    paddingLeft: windowWidth * 0.05,
+    paddingRight: windowWidth * 0.05,
+    marginTop: windowHeight * 0.05,
+    marginBottom: windowHeight * 0.02,
+    //backgroundColor: '#A1CEDC',
   },
 
   inlineContainer: {
@@ -78,7 +136,57 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlignVertical: 'center',
     justifyContent: 'space-between',
-  }
+  },
 
-  
+  welcomeUserMessage: {
+    fontSize: 20,
+    fontFamily: "BreeSerif_400Regular",
+  },
+
+  buddyContainer: {
+    backgroundColor: '#e5ffbf',
+    height: windowHeight * 0.23,
+    paddingLeft: windowWidth * 0.03,
+    paddingRight: windowWidth * 0.03,
+    paddingTop: windowHeight * 0.007,
+    marginLeft: windowWidth * 0.05,
+    marginRight: windowWidth * 0.05,
+    marginBottom: windowHeight * 0.02,
+  },
+
+  dayInfoBoxContainer: {
+    borderBlockColor: '#000000',
+    borderWidth: 1,
+    height: windowHeight * 0.12,
+    marginLeft: windowWidth * 0.05,
+    marginRight: windowWidth * 0.05,
+  },
+
+  calendarContainer: {
+    marginLeft: windowWidth * 0.05,
+    marginRight: windowWidth * 0.05,
+  },
+
+  buttonContainer: {
+    padding: 10,
+    borderRadius: 5,
+    marginTop: windowHeight * 0.01,
+    marginLeft: windowWidth * 0.05,
+    marginRight: windowWidth * 0.05,
+    color: '#ffffff',
+    backgroundColor: '#2C2C2C',
+    alignItems: 'center',
+  },
+
+  buttonText: {
+    color: '#F5F5F5',
+  },
+
+  buttonPressedContainer: {
+    marginLeft: windowWidth * 0.05,
+    marginRight: windowWidth * 0.05,
+    color: '#ffffff',
+    backgroundColor: '#1E1E1E',
+  },
+
 });
