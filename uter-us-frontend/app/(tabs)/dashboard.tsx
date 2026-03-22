@@ -72,7 +72,26 @@ export default function HomeScreen() {
                 ---> Default selection will be the current day
                 ---> Will display the DAY SELECTED, FLOW LEVEL, and SYMPTOMS RECORDED if it's a period day with information logged
                 ---> Display !!! and NUMBER OF DAYS BEFORE NEXT PERIOD (+ possibly expected symptoms) if it's not a period day.
-        
+
+                ==========================
+
+                As a note: I was reading the Text component documentation on the React Native docs (https://reactnative.dev/docs/text)
+                and came across this example text I think we could probably use to render out the user recorded symptoms?
+
+                """ (from the documentation)
+                Assuming that MyAppText is a component that only renders out its children into a Text component with styling, then MyAppHeaderText can be defined as follows:
+                tsx
+
+                const MyAppHeaderText = ({children}) => {
+                  return (
+                    <MyAppText>
+                      <Text style={{fontSize: 20}}>{children}</Text>
+                    </MyAppText>
+                  );
+                };
+                """
+
+                I'm thinking each "child" here is a symptom the user has recorded.
         */}
 
         <View>
@@ -86,7 +105,10 @@ export default function HomeScreen() {
                         </ThemedText>
                       </View>
 
-                      <ThemedText style={[styles.dayInfoBoxGeneral]}>
+                      <ThemedText 
+                        numberOfLines={4}
+                        style={[styles.dayInfoBoxGeneral]}
+                        >
                         Your period is expected to start today. Past logs have indicated you experience cramps, pain, and bloating.
                       </ThemedText>
             </View>
@@ -166,7 +188,6 @@ const styles = StyleSheet.create({
   dayInfoBoxContainer: {
     borderBlockColor: '#000000',
     borderWidth: 1,
-    height: windowHeight * 0.12,
     marginLeft: windowWidth * 0.05,
     marginRight: windowWidth * 0.05,
     justifyContent: 'space-evenly',
