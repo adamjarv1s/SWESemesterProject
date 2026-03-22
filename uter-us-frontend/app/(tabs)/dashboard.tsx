@@ -43,8 +43,8 @@ export default function HomeScreen() {
         <View style={[styles.inlineContainer, styles.topHeader]}>
             <FontAwesomeIcon icon={faBars} size={20}/>
 
-            <ThemedText style={[styles.welcomeUserMessage, { fontFamily: "BreeSerif_400Regular" }]}>
-                Hello, [user]!
+            <ThemedText style={[styles.welcomeUserMessage]}>
+                Hello, user!
             </ThemedText>
 
             <FontAwesomeIcon icon={faSignOutAlt} size={20}/>
@@ -72,14 +72,45 @@ export default function HomeScreen() {
                 ---> Default selection will be the current day
                 ---> Will display the DAY SELECTED, FLOW LEVEL, and SYMPTOMS RECORDED if it's a period day with information logged
                 ---> Display !!! and NUMBER OF DAYS BEFORE NEXT PERIOD (+ possibly expected symptoms) if it's not a period day.
-        
+
+                ==========================
+
+                As a note: I was reading the Text component documentation on the React Native docs (https://reactnative.dev/docs/text)
+                and came across this example text I think we could probably use to render out the user recorded symptoms?
+
+                """ (from the documentation)
+                Assuming that MyAppText is a component that only renders out its children into a Text component with styling, then MyAppHeaderText can be defined as follows:
+                tsx
+
+                const MyAppHeaderText = ({children}) => {
+                  return (
+                    <MyAppText>
+                      <Text style={{fontSize: 20}}>{children}</Text>
+                    </MyAppText>
+                  );
+                };
+                """
+
+                I'm thinking each "child" here is a symptom the user has recorded.
         */}
 
         <View>
-            <View style={[styles.dayInfoBoxContainer]}>
-                <ThemedText style={[]}>
-                    day information box
-                </ThemedText>
+            <View style={[styles.dayInfoBoxContainer, styles.inlineContainer]}>
+                      <View style={[styles.stepContainer]}>
+                        <ThemedText style={[styles.dayInfoBoxDate]}>
+                          11th
+                        </ThemedText>
+                        <ThemedText style={[styles.dayInfoBoxFlow]}>
+                          Medium Flow
+                        </ThemedText>
+                      </View>
+
+                      <ThemedText 
+                        numberOfLines={4}
+                        style={[styles.dayInfoBoxGeneral]}
+                        >
+                        Your period is expected to start today. Past logs have indicated you experience cramps, pain, and bloating.
+                      </ThemedText>
             </View>
 
             <Calendar style={[styles.calendarContainer]}
@@ -128,6 +159,7 @@ const styles = StyleSheet.create({
     paddingRight: windowWidth * 0.05,
     marginTop: windowHeight * 0.05,
     marginBottom: windowHeight * 0.02,
+    justifyContent: 'space-between',
     //backgroundColor: '#A1CEDC',
   },
 
@@ -135,7 +167,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     textAlignVertical: 'center',
-    justifyContent: 'space-between',
   },
 
   welcomeUserMessage: {
@@ -157,9 +188,30 @@ const styles = StyleSheet.create({
   dayInfoBoxContainer: {
     borderBlockColor: '#000000',
     borderWidth: 1,
-    height: windowHeight * 0.12,
     marginLeft: windowWidth * 0.05,
     marginRight: windowWidth * 0.05,
+    justifyContent: 'space-evenly',
+    paddingTop: windowHeight * 0.02,
+  },
+
+  dayInfoBoxDate: {
+    fontSize: 40,
+    fontFamily: "BreeSerif_400Regular",
+    textAlign: 'right',
+    height: windowHeight * 0.035,
+  },
+
+  dayInfoBoxFlow:{
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+
+  dayInfoBoxGeneral: {
+    fontSize: 12,
+    paddingBottom: windowHeight * 0.02,
+    width: windowWidth * 0.56,
+    lineHeight: 18,
+    //backgroundColor: '#f5f5f5',
   },
 
   calendarContainer: {
