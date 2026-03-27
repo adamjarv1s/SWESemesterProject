@@ -152,16 +152,6 @@ export default function HomeScreen() {
             >
                 <ThemedText style={[styles.buttonText]}>+ Log Period</ThemedText>
             </Pressable>
-
-            <Pressable
-                style={({ pressed }) => [
-                styles.buttonContainer,
-                pressed && styles.buttonPressedContainer
-                ]}
-                onPress={() => alert('settings page will be opened in the future!')}
-            >
-                <ThemedText style={[styles.buttonText]}>Settings</ThemedText>
-            </Pressable>
         </View>
 
     </ThemedView>
