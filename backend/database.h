@@ -47,11 +47,13 @@ class Database{
     int getCurrentStreak(int user);
     void incrementCurrentStreak(int user);
     vector<pair<int, int>> getPeriodsAsVector(int user);
+    string getActiveUserName();
 
 private:
     Database();
     ~Database();
     std::unique_ptr<sql::Connection> conn;
+    int activeUser;
 };
 
 #endif

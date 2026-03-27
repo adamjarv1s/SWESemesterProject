@@ -55,5 +55,10 @@ int main() {
         res.set_content("{\"status\": \"ok\"}", "application/json");
     });
 
+    svr.Get("/get-user", [&db](const httplib::Request &, httplib::Response &res) {
+        string name = db.getActiveUserName();
+        res.set_content(name, "text/plain");
+    });
+
     svr.listen("0.0.0.0", 8080);
 }

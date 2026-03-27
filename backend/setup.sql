@@ -7,7 +7,8 @@ create table IF NOT EXISTS UserInfo(
                                        Pet VARCHAR(100) NOT NULL,
                                        Type INT NOT NULL,
                                        Streak INT NOT NULL,
-                                       lastDay DATE NOT NULL
+                                       lastActiveDay date NOT NULL,
+                                       activeUser bool not null
 );
 create table IF NOT EXISTS periodData(
                                          id INT NOT NULL,

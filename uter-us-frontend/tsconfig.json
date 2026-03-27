@@ -5,7 +5,6 @@
     "module": "ESNext",
     "jsx": "react-jsx",
     "strict": true,
-    "moduleResolution": "bundler",
     "paths": {
       "@/*": [
         "./*"
