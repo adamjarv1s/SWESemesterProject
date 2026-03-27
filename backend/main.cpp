@@ -1,6 +1,7 @@
 #include <iostream>
 #include "database.h"
 #include "CycleMath.h"
+#include "Users.h"
 #include "utilities.h"
 #include <regex>
 #include <string>
@@ -26,6 +27,7 @@
 }*/
 int main() {
     Database& db = Database::getInstance();
+    std::vector<Users> usersList;
     
     httplib::Server svr;
 
@@ -48,6 +50,7 @@ int main() {
         if (std::regex_search(body, match, json)) {
             db.createAccount(match[1], match[2], std::stoi(match[3]));
             std::cout << "If you see this, I already worked!" << std::endl;
+            // usersList.emplace_back();
         }
         res.set_content("{\"status\": \"ok\"}", "application/json");
     });
