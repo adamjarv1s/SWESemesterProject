@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Alert, View, Pressable } from 'react-native';
+import { IPAddress } from '@/config';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { HelloWave } from '@/components/hello-wave';
@@ -12,9 +13,10 @@ import { Link } from 'expo-router';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+
 async function HandleCreateProfile() {
   try {
-    const response = await fetch('http://localhost:8080/create-user', {
+    const response = await fetch(`${IPAddress}/create-user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1 }) 
@@ -54,16 +56,14 @@ export default function HomeScreen() {
         <ThemedText style={styles.inlineContainer} type="default">Create a Profile to Get Started!</ThemedText>
       </View>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
-        <ThemedText style={styles.inlineContainer}>
           <Pressable 
           style={({ pressed }) => [
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={() => HandleCreateProfile}>
-            + Create a Profile
-          </Pressable>
-        </ThemedText>
+          onPress={() => HandleCreateProfile()}>
+            <ThemedText>+ Create a Profile</ThemedText>
+            </Pressable>
       </View>
         <ThemedText style={styles.inlineContainer} type="link">
           <Link href="https://github.com/adamjarv1s/SWESemesterProject" target="_blank" rel="noopener noreferrer">
