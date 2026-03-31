@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Pressable } from 'react-native';
+import { IPAddress } from '@/config';
 
 import { HelloWave } from '@/components/hello-wave';
 import { ThemedText } from '@/components/themed-text';
@@ -24,14 +25,12 @@ const windowHeight = Dimensions.get('window').height;
 
 async function getUserName() {
   try {
-    const response = await fetch('http://localhost:8080/get-user');
-
+    const response = await fetch(`${IPAddress}/get-user`);
     const text = await response.text();
-
     return text;
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('ErrorGetUsername:', error);
     return 'Error';
   }
 }
