@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Dimensions, Platform, StyleSheet, Alert, View, Pressable } from 'react-native';
+import { Dimensions, Platform, StyleSheet, Alert, View, Pressable, Text, TextInput } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { HelloWave } from '@/components/hello-wave';
@@ -12,8 +12,26 @@ import { Link, router } from 'expo-router';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const newProfile = async () => {
-    router.replace('/acc_purpose');
+const accDetails = async () => {
+    router.replace('/acc_details');
+}
+
+async function HandleCreateProfile() {
+  try {
+    const response = await fetch('http://localhost:8080/create-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1 }) 
+    });
+
+    if (response.ok) {
+      Alert.alert('Success', 'Profile created!');
+    } else {
+      Alert.alert('Error', 'Failed to create profile');
+    }
+  } catch (error) {
+    Alert.alert('Error', 'Could not connect to server');
+  }
 }
 
 export default function HomeScreen() {
@@ -29,16 +47,16 @@ export default function HomeScreen() {
       }>*/
     <ThemedView>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="title">
-          UterUs
+        <ThemedText style={[styles.inlineContainer]} type="header">
+          Account Details
         </ThemedText>
       </View>
-      <View style={[styles.inlineContainer, styles.bodySpacing]}>
-        <ThemedText style={styles.inlineContainer} type="subtitle">Welcome!</ThemedText>
-      </View>
-      <View style={[styles.inlineContainer]}>
-        <ThemedText style={styles.inlineContainer} type="default">Create a Profile to Get Started!</ThemedText>
-      </View>
+      <Text className="p-1 text-center">Name (Max 12 Characters)</Text>
+            <TextInput
+                // value = {username} onChangeText={setUserName}
+                autoCapitalize="none"
+                placeholder="Name" placeholderTextColor="#94a3b8"   
+            />
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <ThemedText style={styles.inlineContainer}>
           <Pressable 
@@ -46,16 +64,14 @@ export default function HomeScreen() {
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={() => newProfile}>
-            + Create a Profile
+          onPress={() => accDetails}>
+            Parent
+            <ThemedText style={styles.inlineContainer} type = {"faint"}>
+                Track a Loved One's Cycle
+            </ThemedText>
           </Pressable>
         </ThemedText>
       </View>
-        <ThemedText style={styles.inlineContainer} type="link">
-          <Link href="https://github.com/adamjarv1s/SWESemesterProject" target="_blank" rel="noopener noreferrer">
-            Link to Github 
-          </Link>
-        </ThemedText>
     </ThemedView>
     // </ParallaxScrollView>
   );

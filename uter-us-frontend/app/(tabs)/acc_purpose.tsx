@@ -12,8 +12,8 @@ import { Link, router } from 'expo-router';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const newProfile = async () => {
-    router.replace('/acc_purpose');
+const accDetails = async () => {
+    router.replace('/acc_details');
 }
 
 export default function HomeScreen() {
@@ -29,15 +29,9 @@ export default function HomeScreen() {
       }>*/
     <ThemedView>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="title">
-          UterUs
+        <ThemedText style={[styles.inlineContainer]} type="header">
+          Account Purpose
         </ThemedText>
-      </View>
-      <View style={[styles.inlineContainer, styles.bodySpacing]}>
-        <ThemedText style={styles.inlineContainer} type="subtitle">Welcome!</ThemedText>
-      </View>
-      <View style={[styles.inlineContainer]}>
-        <ThemedText style={styles.inlineContainer} type="default">Create a Profile to Get Started!</ThemedText>
       </View>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <ThemedText style={styles.inlineContainer}>
@@ -46,16 +40,29 @@ export default function HomeScreen() {
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={() => newProfile}>
-            + Create a Profile
+          onPress={() => accDetails}>
+            Individual
+            <ThemedText style={styles.inlineContainer} type = {"faint"}>
+                Track Your Own Cycle
+            </ThemedText>
           </Pressable>
         </ThemedText>
       </View>
-        <ThemedText style={styles.inlineContainer} type="link">
-          <Link href="https://github.com/adamjarv1s/SWESemesterProject" target="_blank" rel="noopener noreferrer">
-            Link to Github 
-          </Link>
+      <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
+        <ThemedText style={styles.inlineContainer}>
+          <Pressable 
+          style={({ pressed }) => [
+          styles.createButtonContainer,
+          pressed && styles.createButtonPressContainer
+          ]}
+          onPress={() => accDetails}>
+            Parent
+            <ThemedText style={styles.inlineContainer} type = {"faint"}>
+                Track a Loved One's Cycle
+            </ThemedText>
+          </Pressable>
         </ThemedText>
+      </View>
     </ThemedView>
     // </ParallaxScrollView>
   );
