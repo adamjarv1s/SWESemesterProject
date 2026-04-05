@@ -1,6 +1,6 @@
-^C:\USERS\GRACE\UTERUSBRANCH\SWESEMESTERPROJECT\CMAKELISTS.TXT
+^C:\USERS\THEJA\ONEDRIVE\DESKTOP\SWESEMESTERPROJECT\CMAKELISTS.TXT
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/grace/UterUsBranch/SWESemesterProject -BC:/Users/grace/UterUsBranch/SWESemesterProject/build --check-stamp-file C:/Users/grace/UterUsBranch/SWESemesterProject/build/CMakeFiles/generate.stamp
+"C:\Program Files\Microsoft Visual Studio\18\Insiders\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/theja/OneDrive/Desktop/SWESemesterProject -BC:/Users/theja/OneDrive/Desktop/SWESemesterProject/build --check-stamp-file C:/Users/theja/OneDrive/Desktop/SWESemesterProject/build/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

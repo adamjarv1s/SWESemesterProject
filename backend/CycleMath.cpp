@@ -151,3 +151,153 @@ bool checkIrregular(int day, int year, int lastStart, double averageCycle, vecto
     
     return result >= roundedCycle + 7;
 }
+
+bool checkLastCycleUnder21(int day, int year, int lastStart, double averageCycle, bool notConcernedFlag) {
+    if (notConcernedFlag) {
+        return false;
+    }
+
+    int roundedCycle = round(averageCycle);
+    int result;
+
+    if (day < lastStart) {
+        year--;
+        int result;
+        if (isLeapYear(year)) {
+            result = 366 - lastStart + day;
+        } else {
+            result = 365 - lastStart + day;
+        }
+    } else {
+        result = day - lastStart;
+    }
+
+    return result < 21;
+}
+
+bool checkLastThreeUnder21(vector<pair<int, int>> periods, bool notConcernedFlag) {
+    if (periods.size() < 4 || notConcernedFlag) {
+        return false;
+    }
+
+    for (int i = periods.size() - 1; i > periods.size() - 4; i--) {
+        int day = periods[i].first;
+        int year = periods[i].second;
+        int lastStart = periods[i - 1].first;
+        double averageCycle = averageCycleLength(periods);
+
+        if (!checkLastCycleUnder21(day, year, lastStart, averageCycle, false)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool checkLastCycleOver35(int day, int year, int lastStart, double averageCycle, bool notConcernedFlag) {
+    if (notConcernedFlag) {
+        return false;
+    }
+
+    int roundedCycle = round(averageCycle);
+    int result;
+
+    if (day < lastStart) {
+        year--;
+        int result;
+        if (isLeapYear(year)) {
+            result = 366 - lastStart + day;
+        } else {
+            result = 365 - lastStart + day;
+        }
+    } else {
+        result = day - lastStart;
+    }
+
+    return result > 35;
+}
+
+bool checkLastThreeOver35(vector<pair<int, int>> periods, bool notConcernedFlag) {
+    if (periods.size() < 4 || notConcernedFlag) {
+        return false;
+    }
+
+    for (int i = periods.size() - 1; i > periods.size() - 4; i--) {
+        int day = periods[i].first;
+        int year = periods[i].second;
+        int lastStart = periods[i - 1].first;
+        double averageCycle = averageCycleLength(periods);
+
+        if (!checkLastCycleOver35(day, year, lastStart, averageCycle, false)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool checkNoPeriodIn90Days(int day, int year, int lastStart, bool notConcernedFlag) {
+    if (notConcernedFlag) {
+        return false;
+    }
+
+    int result;
+
+    if (day < lastStart) {
+        year--;
+        int result;
+        if (isLeapYear(year)) {
+            result = 366 - lastStart + day;
+        } else {
+            result = 365 - lastStart + day;
+        }
+    } else {
+        result = day - lastStart;
+    }
+
+    return result >= 90;
+}
+
+bool checkBleedingFor7Days(int day, int year, int startDay, bool notConcernedFlag) {
+    if (notConcernedFlag) {
+        return false;
+    }
+
+    int result;
+
+    if (day < startDay) {
+        year--;
+        int result;
+        if (isLeapYear(year)) {
+            result = 366 - startDay + day;
+        } else {
+            result = 365 - startDay + day;
+        }
+    } else {
+        result = day - startDay;
+    }
+
+    return result >= 7;
+}
+
+bool checkBleedingAfterStopped(int day, int year, int bleedingEndDay, bool notConcernedFlag) {
+    if (notConcernedFlag) {
+        return false;
+    }
+
+    int result;
+
+    if (day < bleedingEndDay) {
+        year--;
+        int result;
+        if (isLeapYear(year)) {
+            result = 366 - bleedingEndDay + day;
+        } else {
+            result = 365 - bleedingEndDay + day;
+        }
+    } else {
+        result = day - bleedingEndDay;
+    }
+
+    return result >= 1 && result <= 10;
+}
