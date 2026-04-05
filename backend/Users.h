@@ -11,10 +11,10 @@ private:
     std::string petType;
     int accType; // Account type... 0 is individual, 1 is parent-controlled
     int streak;
-    std::string lastLoginDate;
+    int lastLoginDate;
 
 public:
-    Users(int i, std::string n, std::string p, int a, int s, std::string l);
+    Users(int i, std::string n, std::string p, int a, int l);
 
     // Getter Functions
     int getIdNum();
@@ -22,14 +22,16 @@ public:
     std::string getPetType();
     int getAccType();
     int getStreak();
-    std::string getLastLoginDate();
+    int getLastLoginDate();
 
     // Setter Functions
     void setName(std::string);
     void setPetType(std::string);
     void setAccType(int);
     void setStreak(int);
-    void setLastLoginDate(std::string);
+    void setLastLoginDate(int);
+
+    void updateStreak(bool loggedInToday, int day, int year);
 };
 
 #endif
