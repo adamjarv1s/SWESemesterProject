@@ -7,6 +7,7 @@
 #include "CycleMath.h"
 #include "utilities.h"
 #include <memory>
+#include <conio.h>
 
 //A lot of the SQL stuff was taken from this lovely tutorial on mariadb
 // https://mariadb.com/resources/blog/how-to-connect-c-programs-to-mariadb/
@@ -24,21 +25,30 @@ That means only one instance of it can exist at a time.
   Database::Database(){
     try{
       string password;
+      char ch;
       std::cout << "Enter password" << std::endl;
-      std::cin >> password;
-      std::cout << std::endl;
+        while ((ch = _getch()) != '\r') {
+            if (ch == '\b') {
+                if (!password.empty()) {
+                    password.pop_back();
+                    std::cout << "\b \b";
+                }
+             } else {
+                password += ch;
+               std::cout << '*';
+        }
+    }
+    std::cout << std::endl;
 
       sql::Driver* driver = sql::mariadb::get_driver_instance();
       sql::SQLString url("jdbc:mariadb://127.0.0.1:3306/uterusdata");
       sql::Properties properties({
-        //WE NEED TO CHANGE THIS DESPERATELY ANYONE WITH ACCESS TO THIS
-        //CODE CAN SEE THIS
         {"user", "root"},
         {"password", password}
         });
         
         conn.reset (driver->connect(url, properties));
-        std::cout << "I worked!" << std::endl;
+        std::cout << "I'm working!" << std::endl;
         } catch (sql::SQLException &e){
           std::cerr << "If you see this, talk to Abby! " << e.what() << std::endl;
     }
