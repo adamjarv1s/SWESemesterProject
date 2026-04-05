@@ -3,6 +3,7 @@
 #include "CycleMath.h"
 #include "Users.h"
 #include "utilities.h"
+#include "Users.h"
 #include <regex>
 #include <string>
 
@@ -32,7 +33,7 @@ int main() {
     httplib::Server svr;
 
     svr.set_pre_routing_handler([](const httplib::Request& req, httplib::Response& res) {
-        res.set_header("Access-Control-Allow-Origin", "http://localhost:8081");
+        res.set_header("Access-Control-Allow-Origin", "*" /*https://localhost:8081"*/);
         res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         res.set_header("Access-Control-Allow-Headers", "Content-Type");
         if (req.method == "OPTIONS") {
@@ -53,6 +54,11 @@ int main() {
             // usersList.emplace_back();
         }
         res.set_content("{\"status\": \"ok\"}", "application/json");
+    });
+
+    svr.Get("/get-user", [&db](const httplib::Request &, httplib::Response &res) {
+        string name = db.getActiveUserName();
+        res.set_content(name, "text/plain");
     });
 
     svr.listen("0.0.0.0", 8080);

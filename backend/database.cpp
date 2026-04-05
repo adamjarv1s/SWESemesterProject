@@ -52,13 +52,14 @@ That means only one instance of it can exist at a time.
   //if at any point the SQL gets too complicated ask Abby for help <3
   void Database::createAccount(string name, string pet, int accountType){
     try {
-      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, `Type`, streak, lastDay) values (?, ?, ?, ?, ?)"));
+      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, `Type`, streak, lastActiveDay, activeUser) values (?, ?, ?, ?, ?, ?)"));
 
       stmnt->setString(1, name);
       stmnt->setString(2, pet);
       stmnt->setInt(3, accountType);
       stmnt->setInt(4, 0);
       stmnt->setDateTime(5, getCurrentDate());
+      stmnt->setBoolean(6, 1);
 
       stmnt->executeUpdate();
         } catch (sql::SQLException &e) {
@@ -153,5 +154,27 @@ vector<pair<int, int>> Database::getPeriodsAsVector(int user) {
         cerr << "SQL Error: " << e.what() << endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
         return {};
+    }
+}
+
+string Database::getActiveUserName() {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT name FROM userinfo WHERE activeUser = 1 LIMIT 1"
+            )
+        );
+
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+
+        if (res->next()) {
+            return res->getString("name");
+        }
+
+        return "No active user";
+
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return "Error";
     }
 }

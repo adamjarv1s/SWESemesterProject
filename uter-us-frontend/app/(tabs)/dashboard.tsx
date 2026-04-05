@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Pressable } from 'react-native';
+import { IPAddress } from '@/config';
 
 import { HelloWave } from '@/components/hello-wave';
 import { ThemedText } from '@/components/themed-text';
@@ -16,18 +17,40 @@ import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 
 // constants
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+async function getUserName() {
+  try {
+    const response = await fetch(`${IPAddress}/get-user`);
+    const text = await response.text();
+    return text;
+
+  } catch (error) {
+    console.error('ErrorGetUsername:', error);
+    return 'Error';
+  }
+}
 
 export default function HomeScreen() {
+
+  const [userName, setUserName] = useState('Loading...');
 
   let [fontsLoaded] = useFonts({
     BreeSerif_400Regular
   });
+
+  useEffect(() => {
+    getUserName().then(name => setUserName(name));
+  }, []);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
 
   return (
     <ThemedView>
@@ -44,7 +67,7 @@ export default function HomeScreen() {
             <FontAwesomeIcon icon={faBars} size={20}/>
 
             <ThemedText style={[styles.welcomeUserMessage]}>
-                Hello, user!
+                Hello, {userName}!
             </ThemedText>
 
             <FontAwesomeIcon icon={faSignOutAlt} size={20}/>
