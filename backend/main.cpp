@@ -1,11 +1,19 @@
 #include <iostream>
 #include "database.h"
 #include "CycleMath.h"
+#include "Users.h"
 #include "utilities.h"
+#include "Users.h"
+#include <regex>
+#include <string>
 
-using namespace std;
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include "httplib.h"
 
-int main(){
+//CAN'T USE NAMESPACE STD!!!!
+
+/*int main(){
     Database& db = Database::getInstance();
     db.removeOldestPeriod(1);
     db.removeOldestPeriod(1);
@@ -17,4 +25,41 @@ int main(){
     double val = averageCycleLength(db.getPeriodsAsVector(1));
     cout << val;
     return 0;
+}*/
+int main() {
+    Database& db = Database::getInstance();
+    std::vector<Users> usersList;
+    
+    httplib::Server svr;
+
+    svr.set_pre_routing_handler([](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*" /*https://localhost:8081"*/);
+        res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        res.set_header("Access-Control-Allow-Headers", "Content-Type");
+        if (req.method == "OPTIONS") {
+            res.status = 204;
+            return httplib::Server::HandlerResponse::Handled;
+        }
+        return httplib::Server::HandlerResponse::Unhandled;
+    });
+
+    svr.Post("/create-user", [&db](const httplib::Request& req, httplib::Response& res) {
+        std::string body = req.body;
+        
+        std::regex json("\"name\":\"([^\"]+)\".*\"pet\":\"([^\"]+)\",\"accountType\":(\\d+)");
+        std::smatch match;
+        if (std::regex_search(body, match, json)) {
+            db.createAccount(match[1], match[2], std::stoi(match[3]));
+            std::cout << "If you see this, I already worked!" << std::endl;
+            // usersList.emplace_back();
+        }
+        res.set_content("{\"status\": \"ok\"}", "application/json");
+    });
+
+    svr.Get("/get-user", [&db](const httplib::Request &, httplib::Response &res) {
+        string name = db.getActiveUserName();
+        res.set_content(name, "text/plain");
+    });
+
+    svr.listen("0.0.0.0", 8080);
 }
