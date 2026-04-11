@@ -5,7 +5,6 @@ import { IPAddress } from '@/config';
 import { HelloWave } from '@/components/hello-wave';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
@@ -15,9 +14,15 @@ import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
 import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
-
 import { useEffect, useState } from 'react';
 import { View, Alert } from 'react-native';
+
+// React Navigation
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types';
+
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'Dashboard'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
@@ -35,7 +40,7 @@ async function getUserName() {
   }
 }
 
-export default function HomeScreen() {
+export default function DashboardScreen() {
 
   const [userName, setUserName] = useState('Loading...');
 

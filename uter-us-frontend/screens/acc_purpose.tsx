@@ -1,62 +1,37 @@
+import React from 'react';
 import { Image } from 'expo-image';
-import { Dimensions, Platform, StyleSheet, Alert, View, Pressable, Text, TextInput } from 'react-native';
+import { Dimensions, Platform, StyleSheet, Alert, View, Pressable } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link, router } from 'expo-router';
+
+// React Navigation
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types';
+
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccPurpose'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const accDetails = async () => {
-    router.replace('/acc_details');
-}
+export default function AccPurposeScreen() {
+  const navigation = useNavigation<NavProp>();
 
-async function HandleCreateProfile() {
-  try {
-    const response = await fetch('http://localhost:8080/create-user', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1 }) 
-    });
-
-    if (response.ok) {
-      Alert.alert('Success', 'Profile created!');
-    } else {
-      Alert.alert('Error', 'Failed to create profile');
-    }
-  } catch (error) {
-    Alert.alert('Error', 'Could not connect to server');
-  }
-}
-
-export default function HomeScreen() {
-
+  const accDetails = () => {
+    navigation.navigate("AccDetails");
+  };
   return (
-    /*<ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>*/
     <ThemedView>
       <View style={[styles.inlineContainer, styles.topHeader]}>
         <ThemedText style={[styles.inlineContainer]} type="header">
-          Account Details
+          Account Purpose
         </ThemedText>
       </View>
-      <Text className="p-1 text-center">Name (Max 12 Characters)</Text>
-            <TextInput
-                // value = {username} onChangeText={setUserName}
-                autoCapitalize="none"
-                placeholder="Name" placeholderTextColor="#94a3b8"   
-            />
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <ThemedText style={styles.inlineContainer}>
           <Pressable 
@@ -64,7 +39,22 @@ export default function HomeScreen() {
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={() => accDetails}>
+          onPress={accDetails}>
+            Individual
+            <ThemedText style={styles.inlineContainer} type = {"faint"}>
+                Track Your Own Cycle
+            </ThemedText>
+          </Pressable>
+        </ThemedText>
+      </View>
+      <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
+        <ThemedText style={styles.inlineContainer}>
+          <Pressable 
+          style={({ pressed }) => [
+          styles.createButtonContainer,
+          pressed && styles.createButtonPressContainer
+          ]}
+          onPress={accDetails}>
             Parent
             <ThemedText style={styles.inlineContainer} type = {"faint"}>
                 Track a Loved One's Cycle
