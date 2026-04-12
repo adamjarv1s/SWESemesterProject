@@ -1,44 +1,64 @@
+import React from 'react';
 import { Image } from 'expo-image';
-import { Dimensions, Platform, StyleSheet, Alert, View, Pressable } from 'react-native';
+import { Dimensions, Platform, StyleSheet, Alert, View, Pressable, Text, TextInput } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link, router } from 'expo-router';
+
+// React Navigation
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types';
+
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'CompName'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const newProfile = async () => {
-    router.replace('/acc_purpose');
+async function HandleCreateProfile() {
+  try {
+    const response = await fetch('http://localhost:8080/create-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1 }) 
+    });
+
+    if (response.ok) {
+      Alert.alert('Success', 'Profile created!');
+    } else {
+      Alert.alert('Error', 'Failed to create profile');
+    }
+  } catch (error) {
+    Alert.alert('Error', 'Could not connect to server');
+  }
 }
 
-export default function HomeScreen() {
+export default function CompNameScreen() {
+  const navigation = useNavigation<NavProp>();
 
+  const profiles = () => {
+    navigation.navigate("Profiles");
+  };
   return (
-    /*<ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>*/
     <ThemedView>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="title">
-          UterUs
+        <ThemedText style={[styles.inlineContainer]} type="header">
+          Companion Selection
         </ThemedText>
       </View>
-      <View style={[styles.inlineContainer, styles.bodySpacing]}>
-        <ThemedText style={styles.inlineContainer} type="subtitle">Welcome!</ThemedText>
-      </View>
-      <View style={[styles.inlineContainer]}>
-        <ThemedText style={styles.inlineContainer} type="default">Create a Profile to Get Started!</ThemedText>
-      </View>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing]}>Companion Name</ThemedText>
+      <TextInput
+        // value = {username} onChangeText={setUserName}
+        style={[styles.textInput]}
+        autoCapitalize="none"
+        placeholder="Name" 
+        placeholderTextColor="#94a3b8"
+        maxLength={12}
+      />
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <ThemedText style={styles.inlineContainer}>
           <Pressable 
@@ -46,16 +66,11 @@ export default function HomeScreen() {
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={() => newProfile}>
-            + Create a Profile
+          onPress={profiles}>
+            Create Profile
           </Pressable>
         </ThemedText>
       </View>
-        <ThemedText style={styles.inlineContainer} type="link">
-          <Link href="https://github.com/adamjarv1s/SWESemesterProject" target="_blank" rel="noopener noreferrer">
-            Link to Github 
-          </Link>
-        </ThemedText>
     </ThemedView>
     // </ParallaxScrollView>
   );
@@ -108,5 +123,16 @@ const styles = StyleSheet.create({
     marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
+  },
+  textInput:{
+    marginLeft: windowWidth * 0.05,
+    height: 45,
+    width: "30%",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
+    fontFamily: "BreeSerif_400Regular",
   },
 });

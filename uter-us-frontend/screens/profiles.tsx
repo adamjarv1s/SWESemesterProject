@@ -1,37 +1,39 @@
+import React from 'react';
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Alert, View, Pressable } from 'react-native';
-
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link, router } from 'expo-router';
+
+// React Navigation
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types';
+
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'Profiles'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const accDetails = async () => {
-    router.replace('/acc_details');
-}
+export default function ProfilesScreen() {
+  const navigation = useNavigation<NavProp>();
 
-export default function HomeScreen() {
+  const newProfile = () => {
+    navigation.navigate("AccPurpose");
+  };
 
   return (
-    /*<ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>*/
     <ThemedView>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="header">
-          Account Purpose
+        <ThemedText style={[styles.inlineContainer]} type="title">
+          UterUs
         </ThemedText>
+      </View>
+      <View style={[styles.inlineContainer, styles.bodySpacing]}>
+        <ThemedText style={styles.inlineContainer} type="subtitle">Welcome!</ThemedText>
+      </View>
+      <View style={[styles.inlineContainer]}>
+        <ThemedText style={styles.inlineContainer} type="default">Create a Profile to Get Started!</ThemedText>
       </View>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <ThemedText style={styles.inlineContainer}>
@@ -40,31 +42,12 @@ export default function HomeScreen() {
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={() => accDetails}>
-            Individual
-            <ThemedText style={styles.inlineContainer} type = {"faint"}>
-                Track Your Own Cycle
-            </ThemedText>
-          </Pressable>
-        </ThemedText>
-      </View>
-      <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
-        <ThemedText style={styles.inlineContainer}>
-          <Pressable 
-          style={({ pressed }) => [
-          styles.createButtonContainer,
-          pressed && styles.createButtonPressContainer
-          ]}
-          onPress={() => accDetails}>
-            Parent
-            <ThemedText style={styles.inlineContainer} type = {"faint"}>
-                Track a Loved One's Cycle
-            </ThemedText>
+          onPress={newProfile}>
+            + Create a Profile
           </Pressable>
         </ThemedText>
       </View>
     </ThemedView>
-    // </ParallaxScrollView>
   );
 }
 
