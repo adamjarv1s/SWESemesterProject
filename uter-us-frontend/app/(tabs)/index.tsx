@@ -13,7 +13,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const newProfile = async () => {
-    router.replace('/acc_purpose');
+    //router.replace('/acc_purpose');
 }
 
 export default function HomeScreen() {

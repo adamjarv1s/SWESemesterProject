@@ -13,7 +13,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const accDetails = async () => {
-    router.replace('/acc_details');
+    //router.replace('/acc_details');
 }
 
 export default function HomeScreen() {
@@ -58,7 +58,7 @@ export default function HomeScreen() {
           onPress={() => accDetails}>
             Parent
             <ThemedText style={styles.inlineContainer} type = {"faint"}>
-                Track a Loved One's Cycle
+                Track a Loved Ones Cycle
             </ThemedText>
           </Pressable>
         </ThemedText>
