@@ -6,7 +6,10 @@
 #include "database.h"
 #include "CycleMath.h"
 #include "utilities.h"
+#include <fstream>
+#include <sstream>
 #include <memory>
+#include <conio.h>
 
 //A lot of the SQL stuff was taken from this lovely tutorial on mariadb
 // https://mariadb.com/resources/blog/how-to-connect-c-programs-to-mariadb/
@@ -24,24 +27,34 @@ That means only one instance of it can exist at a time.
   Database::Database(){
     try{
       string password;
+      char ch;
       std::cout << "Enter password" << std::endl;
-      std::cin >> password;
-      std::cout << std::endl;
+        while ((ch = _getch()) != '\r') {
+            if (ch == '\b') {
+                if (!password.empty()) {
+                    password.pop_back();
+                    std::cout << "\b \b";
+                }
+             } else {
+                password += ch;
+               std::cout << '*';
+        }
+    }
+    std::cout << std::endl;
 
       sql::Driver* driver = sql::mariadb::get_driver_instance();
       sql::SQLString url("jdbc:mariadb://127.0.0.1:3306/uterusdata");
       sql::Properties properties({
-        //WE NEED TO CHANGE THIS DESPERATELY ANYONE WITH ACCESS TO THIS
-        //CODE CAN SEE THIS
         {"user", "root"},
         {"password", password}
         });
         
         conn.reset (driver->connect(url, properties));
-        std::cout << "I worked!" << std::endl;
+        std::cout << "I'm working!" << std::endl;
         } catch (sql::SQLException &e){
           std::cerr << "If you see this, talk to Abby! " << e.what() << std::endl;
     }
+    
   }
     
   Database::~Database(){
@@ -50,9 +63,9 @@ That means only one instance of it can exist at a time.
 
   //create account! this is a good template for what other functions will look like.
   //if at any point the SQL gets too complicated ask Abby for help <3
-  void Database::createAccount(string name, string pet, int accountType){
+  void Database::createAccount(string name, string pet, int accountType,int averageCycleLength){
     try {
-      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, `Type`, streak, lastActiveDay, activeUser) values (?, ?, ?, ?, ?, ?)"));
+      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, `Type`, streak, lastActiveDay, activeUser, averageCycleLength) values (?, ?, ?, ?, ?, ?, ?)"));
 
       stmnt->setString(1, name);
       stmnt->setString(2, pet);
@@ -60,6 +73,7 @@ That means only one instance of it can exist at a time.
       stmnt->setInt(4, 0);
       stmnt->setDateTime(5, getCurrentDate());
       stmnt->setBoolean(6, 1);
+      stmnt->setInt(7, averageCycleLength);
 
       stmnt->executeUpdate();
         } catch (sql::SQLException &e) {
@@ -81,13 +95,16 @@ void Database::deleteAccount(int user){
     }
 }
 
-void Database::logPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay) {
+void Database::logPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay, string description) {
     try {
         int currentLength = convertSQLDateToInt(currentDate) - convertSQLDateToInt(startDate);
 
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-            "INSERT INTO perioddata (id, currentDate, startDate, currentLength, heaviness, lastDay) "
-            "VALUES (?, ?, ?, ?, ?, ?)"
+            "INSERT INTO perioddata (id, currentDate, startDate, currentLength, heaviness, lastDay, description) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)"
+            "ON DUPLICATE KEY UPDATE "
+            "heaviness = VALUES(heaviness), "
+            "lastDay = VALUES(lastDay)"
         ));
 
         stmnt->setInt(1, user);
@@ -96,6 +113,7 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
         stmnt->setInt(4, currentLength);
         stmnt->setInt(5, heaviness);
         stmnt->setBoolean(6, lastDay);
+        stmnt->setString(7, description);
 
         stmnt->executeUpdate();
 
@@ -104,6 +122,24 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
         cerr << "SQL State: " << e.getSQLState() << endl;
     }
 }
+
+/*
+void Database::removePeriod(int user, string startDate) {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
+            "DELETE FROM perioddata WHERE id = ? AND startDate = ?"
+        ));
+
+        stmnt->setInt(1, user);
+        stmnt->setString(2, startDate);
+
+        stmnt->executeUpdate();
+
+    } catch (sql::SQLException &e) {
+        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+    }
+}*/
 
 void Database::removeOldestPeriod(int user) {
     try {
@@ -168,13 +204,112 @@ string Database::getActiveUserName() {
         std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
 
         if (res->next()) {
-            return res->getString("name");
+            return string(res->getString("name"));
         }
 
         return "No active user";
 
     } catch (sql::SQLException &e) {
         std::cerr << "SQL Error: " << e.what() << std::endl;
-        return "Error";
+        return "Chiikawa";
     }
+}
+
+string Database::getPeriodsAsString(int user){
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
+            "SELECT * FROM perioddata WHERE id = ? ORDER BY StartDate"
+        ));
+
+        stmnt->setInt(1, user);
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+
+        string periods = "{";
+        bool first = true;
+
+        while (res->next()) {
+            if (!first) periods += ",";
+            first = false;
+
+            string date = res->getString("currentDate");
+            string start = res->getString("startDate");
+            int heaviness = res->getInt("heaviness");
+            bool lastDay = res->getBoolean("lastDay");
+            string description = res->getString("description");
+
+            string bgColor;
+            if (heaviness == 3) bgColor = "#FF6161";
+            else if (heaviness == 2) bgColor = "#FFA4A4";
+            else bgColor = "#FFE0E0";
+
+            periods += "\"" + date + "\": {";
+            periods += "\"heaviness\": " + std::to_string(heaviness) + ",";
+            periods += "\"description\": \"" + description + "\",";
+            periods += "\"customStyles\": {";
+            periods += "\"container\": {";
+            periods += "\"backgroundColor\": \"" + bgColor + "\",";
+            periods += "\"borderRadius\": 6";
+            if (date == start) periods += ", \"startingDay\": true";
+            if (lastDay) periods += ", \"endingDay\": true";
+            periods += "},";
+            periods += "\"text\": { \"color\": \"#000\" }";
+            periods += "}";
+            periods += "}";
+        }
+
+        periods += "}";
+        return periods;
+
+    } catch (sql::SQLException &e) {
+        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+        return "{}";
+    }
+}
+
+int Database::getUserId() {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT id FROM userinfo WHERE activeUser = 1 LIMIT 1"
+            )
+        );
+
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+
+        if (res->next()) {
+            return res->getInt("id");
+        }
+
+        return 0;
+
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return -1;
+    }
+}
+
+void Database::runSQLFile(const std::string& filename) {
+    std::ifstream file(filename);
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string sql = buffer.str();
+
+    std::unique_ptr<sql::Statement> stmt(conn->createStatement());
+
+    std::stringstream ss(sql);
+    std::string query;
+
+    while (std::getline(ss, query, ';')) {
+        if (query.find_first_not_of(" \n\t") == std::string::npos) continue;
+
+        try {
+            stmt->execute(query);
+        } catch (sql::SQLException &e) {
+            std::cerr << "Uh oh! Line: \n" << query << "\n";
+            std::cerr << e.what() << std::endl;
+        }
+    }
+
+    std::cout << "SQL File ran!\n";
 }
