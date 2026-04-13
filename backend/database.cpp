@@ -63,17 +63,18 @@ That means only one instance of it can exist at a time.
 
   //create account! this is a good template for what other functions will look like.
   //if at any point the SQL gets too complicated ask Abby for help <3
-  void Database::createAccount(string name, string pet, int accountType,int averageCycleLength){
+  void Database::createAccount(string name, string pet, int pet_id, int accountType,int averageCycleLength){
     try {
-      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, `Type`, streak, lastActiveDay, activeUser, averageCycleLength) values (?, ?, ?, ?, ?, ?, ?)"));
+      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, pet_id, `Type`, streak, lastActiveDay, activeUser, averageCycleLength) values (?, ?, ?, ?, ?, ?, ?)"));
 
       stmnt->setString(1, name);
       stmnt->setString(2, pet);
-      stmnt->setInt(3, accountType);
-      stmnt->setInt(4, 0);
-      stmnt->setDateTime(5, getCurrentDate());
-      stmnt->setBoolean(6, 1);
-      stmnt->setInt(7, averageCycleLength);
+      stmnt->setInt(3, pet_id);
+      stmnt->setInt(4, accountType);
+      stmnt->setInt(5, 0);
+      stmnt->setDateTime(6, getCurrentDate());
+      stmnt->setBoolean(7, 1);
+      stmnt->setInt(8, averageCycleLength);
 
       stmnt->executeUpdate();
         } catch (sql::SQLException &e) {
@@ -312,4 +313,69 @@ void Database::runSQLFile(const std::string& filename) {
     }
 
     std::cout << "SQL File ran!\n";
+}
+
+void Database::deleteAllData(){
+    std::vector<std::string> tables;
+    try {
+      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("show tables"));
+      std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+      
+      while (res->next()){
+        tables.push_back(string(res->getString(1)));
+      }
+
+    for (auto table : tables){
+    std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("delete from " + table));
+    }
+
+        } catch (sql::SQLException &e) {
+        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+    }
+}
+
+string Database::getProfilesAsJson() {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
+            "SELECT name, pet, `Type` FROM userinfo"
+        ));
+
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+
+        vector<tuple<string, string, int>> profiles;
+
+        while (res->next()) {
+            string name = res->getString("name");
+            string pet = res->getString("pet");
+            int accountType = res->getInt("`Type`");
+
+            profiles.push_back(make_tuple(name, pet, accountType));
+        }
+
+            std::string json = "[";
+
+        for (size_t i = 0; i < profiles.size(); ++i) {
+            const auto& [name, pet, pet_id] = profiles[i];
+
+            json += "{";
+            json += "\"name\":\"" + name + "\",";
+            json += "\"pet\":\"" + pet + "\",";
+            json += "\"pet_id\":" + std::to_string(pet_id);
+            json += "}";
+
+            if (i != profiles.size() - 1) {
+                json += ",";
+            }
+        }
+
+        json += "]";
+
+        return json;
+
+    } catch (sql::SQLException &e) {
+        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+        return {};
+    }
 }

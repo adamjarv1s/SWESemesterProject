@@ -12,6 +12,7 @@ import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons/faShoppingCart';
 import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
 import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
+
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { Modal, TextInput } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -24,7 +25,7 @@ import { buildUnavailableHoursBlocks } from 'react-native-calendars/src/timeline
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../types';
+import type { RootStackParamList } from '../../types';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'Dashboard'>;
 
