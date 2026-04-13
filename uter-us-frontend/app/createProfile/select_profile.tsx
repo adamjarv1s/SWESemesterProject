@@ -1,7 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import { Image } from 'expo-image';
-import { Dimensions, Platform, StyleSheet, Alert, View, Pressable } from 'react-native';
-import { IPAddress } from '@/config';
+import { Dimensions, Platform, StyleSheet, Alert, View, Pressable, Text, TextInput } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { HelloWave } from '@/components/hello-wave';
@@ -10,24 +9,23 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
 // React Navigation
-import { Link, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../types';
-import { useRouter } from 'expo-router';
+import type { RootStackParamList } from '../../types';
+import { useRouter, Link } from 'expo-router';
 
-type NavProp = NativeStackNavigationProp<RootStackParamList, 'Profiles'>;
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'CompName'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
 
 async function HandleCreateProfile() {
   try {
     const response = await fetch('http://localhost:8080/create-user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1, averagePeriodLength: 5 }), 
+      body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1 }) 
     });
 
     if (response.ok) {
@@ -39,82 +37,63 @@ async function HandleCreateProfile() {
     Alert.alert('Error', 'Could not connect to server');
   }
 }
-export default function Index() {
+
+export default function CompNameScreen() {
   const navigation = useNavigation<NavProp>();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    async function checkProfile() {
-      try {
-        const response = await fetch('http://localhost:8080/get-profiles');
-        const data = await response.json();
-
-        if (!isMounted) return;
-
-        if (data && data.length > 0) {
-          requestAnimationFrame(() => {
-            router.replace('/createProfile/select_profile');
-          });
-        } else {
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error(err);
-        setLoading(false);
-      }
-    }
-
-    checkProfile();
-
-    return () => { isMounted = false; };
-  }, []);
-
-  const newProfile = () => {
-    router.push("/createProfile/acc_purpose");
+  const profiles = () => {
+    router.push("/");
   };
-
-  if (loading) {
-    return (
-      <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ThemedText>Loading...</ThemedText>
-      </ThemedView>
-    );
-  }
-
   return (
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="title">
-          UterUs
+        <ThemedText style={[styles.inlineContainer]} type="header">
+          Companion Selection
         </ThemedText>
       </View>
-      <View style={[styles.inlineContainer, styles.bodySpacing]}>
-        <ThemedText style={styles.inlineContainer} type="subtitle">Welcome!</ThemedText>
-      </View>
-      <View style={[styles.inlineContainer]}>
-        <ThemedText style={styles.inlineContainer} type="default">Create a Profile to Get Started!</ThemedText>
-      </View>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing]}>Companion Name</ThemedText>
+      <TextInput
+        // value = {username} onChangeText={setUserName}
+        style={[styles.textInput]}
+        autoCapitalize="none"
+        placeholder="Name" 
+        placeholderTextColor="#94a3b8"
+        maxLength={12}
+      />
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
+        <ThemedText style={styles.inlineContainer}>
           <Pressable 
           style={({ pressed }) => [
-            styles.createButtonContainer,
-            pressed && styles.createButtonPressContainer
+          styles.createButtonContainer,
+          pressed && styles.createButtonPressContainer
           ]}
-          onPress={newProfile}>
-          <ThemedText style={styles.createButtonText}>+ Create Profile</ThemedText>
-        </Pressable>
+          onPress={profiles}>
+            <ThemedText style={styles.createButtonText}>Create Profile</ThemedText>
+          </Pressable>
+        </ThemedText>
       </View>
+
+
+      {/* TEMPORARY LINK TO DASHBOARD FOR TESTING!!!
+
+          when we can get to dashboard from index (profiles page) REMOVE THIS!!!
+      
+      */}
+      
+      <Link href="../(tabs)/dashboard" 
+      style={{textAlign: 'center', color: '#007AFF', backgroundColor: '#848484', width:'50%', alignSelf: 'center', padding: 10, borderRadius: 5, marginTop: windowHeight * 0.02}}>
+        to dashboard
+      </Link>
     </ThemedView>
+    // </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
-    paddingTop: windowHeight * 0.15,
+    paddingTop: windowHeight * 0.05,
   },
   stepContainer: {
     gap: 8,
@@ -149,19 +128,26 @@ const styles = StyleSheet.create({
   },
   createButtonContainer:{
     padding: 10,
-    paddingLeft: 40,
-    paddingRight: 40,
     borderRadius: 5,
+    width: "60%",
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
     alignItems: 'center',
-    textAlign: 'center',
   },
   createButtonPressContainer:{
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
+  },
+  textInput:{
+    marginLeft: windowWidth * 0.05,
+    height: 45,
+    width: "30%",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
+    fontFamily: "BreeSerif_400Regular",
   },
 
   createButtonText:{

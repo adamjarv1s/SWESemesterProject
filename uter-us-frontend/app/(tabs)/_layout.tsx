@@ -13,13 +13,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faGear, faHouse, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 // React Navigation
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import type {RootStackParamList} from '../../types';
-
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
-
-// React Navigation
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import type {RootStackParamList} from '../../types';

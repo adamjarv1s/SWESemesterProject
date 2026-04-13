@@ -68,7 +68,7 @@ That means only one instance of it can exist at a time.
   //if at any point the SQL gets too complicated ask Abby for help <3
   void Database::createAccount(string name, string pet, int pet_id, int accountType,int averageCycleLength){
     try {
-      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, pet_id, `Type`, streak, lastActiveDay, activeUser, averageCycleLength) values (?, ?, ?, ?, ?, ?, ?)"));
+      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, pet_id, accountType, streak, lastActiveDay, activeUser, averageCycleLength) values (?, ?, ?, ?, ?, ?, ?)"));
 
       stmnt->setString(1, name);
       stmnt->setString(2, pet);
@@ -109,11 +109,6 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
             "ON DUPLICATE KEY UPDATE "
             "heaviness = VALUES(heaviness), "
             "lastDay = VALUES(lastDay)"
-            "INSERT INTO perioddata (id, currentDate, startDate, currentLength, heaviness, lastDay, description) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?)"
-            "ON DUPLICATE KEY UPDATE "
-            "heaviness = VALUES(heaviness), "
-            "lastDay = VALUES(lastDay)"
         ));
 
         stmnt->setInt(1, user);
@@ -122,7 +117,6 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
         stmnt->setInt(4, currentLength);
         stmnt->setInt(5, heaviness);
         stmnt->setBoolean(6, lastDay);
-        stmnt->setString(7, description);
         stmnt->setString(7, description);
 
         stmnt->executeUpdate();
@@ -366,7 +360,7 @@ void Database::deleteAllData(){
 string Database::getProfilesAsJson() {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-            "SELECT name, pet, `Type` FROM userinfo"
+            "SELECT name, pet, accountType FROM userinfo"
         ));
 
         std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
@@ -376,7 +370,7 @@ string Database::getProfilesAsJson() {
         while (res->next()) {
             string name = res->getString("name");
             string pet = res->getString("pet");
-            int accountType = res->getInt("`Type`");
+            int accountType = res->getInt("accountType");
 
             profiles.push_back(make_tuple(name, pet, accountType));
         }
@@ -384,12 +378,12 @@ string Database::getProfilesAsJson() {
             std::string json = "[";
 
         for (size_t i = 0; i < profiles.size(); ++i) {
-            const auto& [name, pet, pet_id] = profiles[i];
+            const auto& [name, pet, accountType] = profiles[i];
 
             json += "{";
             json += "\"name\":\"" + name + "\",";
             json += "\"pet\":\"" + pet + "\",";
-            json += "\"pet_id\":" + std::to_string(pet_id);
+            json += "\"accountType\":" + std::to_string(accountType);
             json += "}";
 
             if (i != profiles.size() - 1) {
@@ -398,12 +392,11 @@ string Database::getProfilesAsJson() {
         }
 
         json += "]";
-
         return json;
 
     } catch (sql::SQLException &e) {
         cerr << "SQL Error: " << e.what() << endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
-        return {};
+        return "[]";
     }
 }

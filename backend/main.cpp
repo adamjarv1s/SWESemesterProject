@@ -57,11 +57,13 @@ int main() {
     svr.Get("/get-user", [&db](const httplib::Request &, httplib::Response &res) {
         string name = db.getActiveUserName();
         res.set_content(name, "text/plain");
+        std::cout << "name: " << name << std::endl;
     });
 
     svr.Get("/get-period-data", [&db](const httplib::Request &, httplib::Response &res) {
-        string name = db.getPeriodsAsString(db.getUserId());
-        res.set_content(name, "application/json");
+        string periods = db.getPeriodsAsString(db.getUserId());
+        res.set_content(periods, "application/json");
+        std::cout << "periods " << periods << std::endl;
     });
 
     svr.Post("/log-period", [&db](const httplib::Request& req, httplib::Response& res) {
@@ -79,6 +81,7 @@ int main() {
     svr.Get("/get-profiles", [&db](const httplib::Request &, httplib::Response &res) {
         string profiles = db.getProfilesAsJson();
         res.set_content(profiles, "application/json");
+        std::cout << "profiles: " << profiles << std::endl;
     });
 
     svr.listen("0.0.0.0", 8080);
