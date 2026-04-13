@@ -42,7 +42,10 @@ export default function AccPurposeScreen() {
           pressed && styles.createButtonPressContainer
           ]}
           onPress={accDetails}>
-            <ThemedText style={[styles.inlineContainer, styles.createButtonText]} type = {"faint"}>
+            <ThemedText style={[styles.createButtonText]}>
+                Individual
+            </ThemedText>
+            <ThemedText style={[styles.createButtonText]}>
                 Track Your Own Cycle
             </ThemedText>
           </Pressable>
@@ -56,8 +59,10 @@ export default function AccPurposeScreen() {
           pressed && styles.createButtonPressContainer
           ]}
           onPress={accDetails}>
-            Parent
-            <ThemedText style={[styles.inlineContainer, styles.createButtonText]} type = {"faint"}>
+            <ThemedText style={[styles.createButtonText]}>
+                Parent
+            </ThemedText>
+            <ThemedText style={[styles.createButtonText]}>
                 Track a Loved Ones Cycle
             </ThemedText>
           </Pressable>
@@ -106,6 +111,8 @@ const styles = StyleSheet.create({
   },
   createButtonContainer:{
     padding: 10,
+    paddingLeft: 40,
+    paddingRight: 40,
     borderRadius: 5,
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
@@ -113,8 +120,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   createButtonPressContainer:{
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
     alignItems: 'center',
