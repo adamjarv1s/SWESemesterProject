@@ -21,7 +21,6 @@ type NavProp = NativeStackNavigationProp<RootStackParamList, 'Profiles'>;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-
 async function HandleCreateProfile() {
   try {
     const response = await fetch('http://localhost:8080/create-user', {

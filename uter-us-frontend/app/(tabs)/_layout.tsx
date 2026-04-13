@@ -22,7 +22,6 @@ import AccDetailsScreen from '../createProfile/acc_details';
 import CompDetailsScreen from '../createProfile/comp_name';
 import DashboardScreen from './dashboard';
 
-
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function TabLayout() {

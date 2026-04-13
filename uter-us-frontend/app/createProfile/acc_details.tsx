@@ -42,7 +42,7 @@ export default function AccDetailsScreen() {
   return (
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="header">
+        <ThemedText style={[styles.inlineContainer]} type="title">
           Account Details
         </ThemedText>
       </View>

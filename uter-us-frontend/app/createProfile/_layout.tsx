@@ -13,7 +13,7 @@ export default function Layout() {
         },
       }}>
       {/* Optionally configure static options outside the route.*/}
-      <Stack.Screen name="dashboard" options={{}} />
+      <Stack.Screen name="../(tabs)/dashboard" options={{}} />
       <Stack.Screen name="index" options={{}} />
     </Stack>
   );

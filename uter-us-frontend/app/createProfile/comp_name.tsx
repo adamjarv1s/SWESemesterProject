@@ -48,7 +48,7 @@ export default function CompNameScreen() {
   return (
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="header">
+        <ThemedText style={[styles.inlineContainer]} type="title">
           Companion Selection
         </ThemedText>
       </View>
