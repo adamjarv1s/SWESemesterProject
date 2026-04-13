@@ -1,18 +1,30 @@
+import React from 'react';
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Alert, View, Pressable } from 'react-native';
+<<<<<<< HEAD:uter-us-frontend/app/(tabs)/index.tsx
 import { IPAddress } from '@/config';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
+=======
+>>>>>>> 1ff3fea1d09e38b4d2d7589eac1b8312b35a2ecf:uter-us-frontend/app/index.tsx
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link, router } from 'expo-router';
+
+// React Navigation
+import { Link, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types';
+import { useRouter } from 'expo-router';
+
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'Profiles'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+<<<<<<< HEAD:uter-us-frontend/app/(tabs)/index.tsx
 
 async function HandleCreateProfile() {
   try {
@@ -31,19 +43,18 @@ async function HandleCreateProfile() {
     Alert.alert('Error', 'Could not connect to server');
   }
 }
+=======
+export default function Index() {
+  const navigation = useNavigation<NavProp>();
+  const router = useRouter();
+>>>>>>> 1ff3fea1d09e38b4d2d7589eac1b8312b35a2ecf:uter-us-frontend/app/index.tsx
 
-export default function HomeScreen() {
+  const newProfile = () => {
+    router.push("/createProfile/acc_purpose");
+  };
 
   return (
-    /*<ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>*/
-    <ThemedView>
+    <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
         <ThemedText style={[styles.inlineContainer]} type="title">
           UterUs
@@ -56,26 +67,34 @@ export default function HomeScreen() {
         <ThemedText style={styles.inlineContainer} type="default">Create a Profile to Get Started!</ThemedText>
       </View>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
+<<<<<<< HEAD:uter-us-frontend/app/(tabs)/index.tsx
           <Pressable 
+=======
+        <Pressable 
+>>>>>>> 1ff3fea1d09e38b4d2d7589eac1b8312b35a2ecf:uter-us-frontend/app/index.tsx
           style={({ pressed }) => [
-          styles.createButtonContainer,
-          pressed && styles.createButtonPressContainer
+            styles.createButtonContainer,
+            pressed && styles.createButtonPressContainer
           ]}
+<<<<<<< HEAD:uter-us-frontend/app/(tabs)/index.tsx
           onPress={HandleCreateProfile}>
             + Create a Profile
           </Pressable>
+=======
+          onPress={newProfile}>
+          <ThemedText style={styles.createButtonText}>+ Create Profile</ThemedText>
+        </Pressable>
+>>>>>>> 1ff3fea1d09e38b4d2d7589eac1b8312b35a2ecf:uter-us-frontend/app/index.tsx
       </View>
-        <ThemedText style={styles.inlineContainer} type="link">
-          <Link href="https://github.com/adamjarv1s/SWESemesterProject" target="_blank" rel="noopener noreferrer">
-            Link to Github 
-          </Link>
-        </ThemedText>
     </ThemedView>
-    // </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  wholeScreen: {
+    flex: 1,
+    paddingTop: windowHeight * 0.15,
+  },
   stepContainer: {
     gap: 8,
     marginBottom: 8,
@@ -109,18 +128,22 @@ const styles = StyleSheet.create({
   },
   createButtonContainer:{
     padding: 10,
+    paddingLeft: 40,
+    paddingRight: 40,
     borderRadius: 5,
-    marginTop: windowHeight * 0.01,
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
     alignItems: 'center',
+    textAlign: 'center',
   },
   createButtonPressContainer:{
     marginLeft: windowWidth * 0.05,
     marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
+  },
+
+  createButtonText:{
+    color: '#ffffff',
   },
 });

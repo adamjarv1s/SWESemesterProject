@@ -123,6 +123,7 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
     }
 }
 
+/*
 void Database::removePeriod(int user, string startDate) {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
@@ -138,7 +139,7 @@ void Database::removePeriod(int user, string startDate) {
         cerr << "SQL Error: " << e.what() << endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
     }
-}
+}*/
 
 void Database::removeOldestPeriod(int user) {
     try {

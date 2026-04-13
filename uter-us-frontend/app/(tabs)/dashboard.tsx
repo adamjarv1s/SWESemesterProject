@@ -5,7 +5,6 @@ import { IPAddress } from '@/config';
 import { HelloWave } from '@/components/hello-wave';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
@@ -21,6 +20,13 @@ import { TouchableWithoutFeedback } from 'react-native';
 import { useEffect, useState } from 'react';
 import { View, Alert } from 'react-native';
 import { buildUnavailableHoursBlocks } from 'react-native-calendars/src/timeline/Packer';
+
+// React Navigation
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types';
+
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'Dashboard'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
@@ -66,7 +72,7 @@ async function getPeriodData() {
   }
 }
 
-export default function HomeScreen() {
+export default function DashboardScreen() {
 
   const [userName, setUserName] = useState('Loading...');
   const [periodData, setPeriodData] = useState<Record<string, any>>({});
