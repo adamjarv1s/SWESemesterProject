@@ -16,20 +16,6 @@ import { faGear, faHouse, faPaperPlane } from '@fortawesome/free-solid-svg-icons
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import type {RootStackParamList} from '../../types';
 
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
-
-// React Navigation
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import type {RootStackParamList} from '../../types';
-import ProfilesScreen from '../index';
-import AccPurposeScreen from '../createProfile/acc_purpose';
-import AccDetailsScreen from '../createProfile/acc_details';
-import CompDetailsScreen from '../createProfile/comp_name';
-import DashboardScreen from './dashboard';
-
-
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function TabLayout() {
