@@ -8,7 +8,10 @@
 #include "utilities.h"
 #include <fstream>
 #include <sstream>
+#include <fstream>
+#include <sstream>
 #include <memory>
+#include <conio.h>
 #include <conio.h>
 
 //A lot of the SQL stuff was taken from this lovely tutorial on mariadb
@@ -106,6 +109,11 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
             "ON DUPLICATE KEY UPDATE "
             "heaviness = VALUES(heaviness), "
             "lastDay = VALUES(lastDay)"
+            "INSERT INTO perioddata (id, currentDate, startDate, currentLength, heaviness, lastDay, description) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)"
+            "ON DUPLICATE KEY UPDATE "
+            "heaviness = VALUES(heaviness), "
+            "lastDay = VALUES(lastDay)"
         ));
 
         stmnt->setInt(1, user);
@@ -115,6 +123,7 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
         stmnt->setInt(5, heaviness);
         stmnt->setBoolean(6, lastDay);
         stmnt->setString(7, description);
+        stmnt->setString(7, description);
 
         stmnt->executeUpdate();
 
@@ -123,6 +132,24 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
         cerr << "SQL State: " << e.getSQLState() << endl;
     }
 }
+
+/*
+void Database::removePeriod(int user, string startDate) {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
+            "DELETE FROM perioddata WHERE id = ? AND startDate = ?"
+        ));
+
+        stmnt->setInt(1, user);
+        stmnt->setString(2, startDate);
+
+        stmnt->executeUpdate();
+
+    } catch (sql::SQLException &e) {
+        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+    }
+}*/
 
 /*
 void Database::removePeriod(int user, string startDate) {
@@ -205,6 +232,7 @@ string Database::getActiveUserName() {
         std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
 
         if (res->next()) {
+            return string(res->getString("name"));
             return string(res->getString("name"));
         }
 
