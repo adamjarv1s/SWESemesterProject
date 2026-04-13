@@ -1,6 +1,11 @@
 import React from 'react';
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Alert, View, Pressable } from 'react-native';
+import { IPAddress } from '@/config';
+
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { HelloWave } from '@/components/hello-wave';
+import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
@@ -16,6 +21,24 @@ type NavProp = NativeStackNavigationProp<RootStackParamList, 'Profiles'>;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+
+async function HandleCreateProfile() {
+  try {
+    const response = await fetch('http://localhost:8080/create-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1, averagePeriodLength: 5 }), 
+    });
+
+    if (response.ok) {
+      Alert.alert('Success', 'Profile created!');
+    } else {
+      Alert.alert('Error', 'Failed to create profile');
+    }
+  } catch (error) {
+    Alert.alert('Error', 'Could not connect to server');
+  }
+}
 export default function Index() {
   const navigation = useNavigation<NavProp>();
   const router = useRouter();
@@ -38,7 +61,7 @@ export default function Index() {
         <ThemedText style={styles.inlineContainer} type="default">Create a Profile to Get Started!</ThemedText>
       </View>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
-        <Pressable 
+          <Pressable 
           style={({ pressed }) => [
             styles.createButtonContainer,
             pressed && styles.createButtonPressContainer

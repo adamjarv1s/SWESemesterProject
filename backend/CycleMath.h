@@ -1,9 +1,15 @@
 #ifndef CYCLEMATH_H
 #define CYCLEMATH_H
 
+#include <iostream>
+#include <ctime>
+#include <cmath>
 #include <vector>
-#include <string>
 #include <utility>
+#include <stack>
+#include <string>
+
+using namespace std;
 
 int convertSQLDateToInt(std::string date);
 bool isLeapYear(int year);
