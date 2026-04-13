@@ -5,9 +5,10 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
 // React Navigation
-import { useNavigation } from '@react-navigation/native';
+import { Link, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types';
+import { useRouter } from 'expo-router';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'Profiles'>;
 
@@ -15,15 +16,16 @@ type NavProp = NativeStackNavigationProp<RootStackParamList, 'Profiles'>;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default function ProfilesScreen() {
+export default function Index() {
   const navigation = useNavigation<NavProp>();
+  const router = useRouter();
 
   const newProfile = () => {
-    navigation.navigate("AccPurpose");
+    router.push("/createProfile/acc_purpose");
   };
 
   return (
-    <ThemedView>
+    <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
         <ThemedText style={[styles.inlineContainer]} type="title">
           UterUs
@@ -36,22 +38,24 @@ export default function ProfilesScreen() {
         <ThemedText style={styles.inlineContainer} type="default">Create a Profile to Get Started!</ThemedText>
       </View>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
-        <ThemedText style={styles.inlineContainer}>
-          <Pressable 
+        <Pressable 
           style={({ pressed }) => [
-          styles.createButtonContainer,
-          pressed && styles.createButtonPressContainer
+            styles.createButtonContainer,
+            pressed && styles.createButtonPressContainer
           ]}
           onPress={newProfile}>
-            + Create a Profile
-          </Pressable>
-        </ThemedText>
+          <ThemedText style={styles.createButtonText}>+ Create Profile</ThemedText>
+        </Pressable>
       </View>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
+  wholeScreen: {
+    flex: 1,
+    paddingTop: windowHeight * 0.15,
+  },
   stepContainer: {
     gap: 8,
     marginBottom: 8,
@@ -85,18 +89,22 @@ const styles = StyleSheet.create({
   },
   createButtonContainer:{
     padding: 10,
+    paddingLeft: 40,
+    paddingRight: 40,
     borderRadius: 5,
-    marginTop: windowHeight * 0.01,
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
     alignItems: 'center',
+    textAlign: 'center',
   },
   createButtonPressContainer:{
     marginLeft: windowWidth * 0.05,
     marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
+  },
+
+  createButtonText:{
+    color: '#ffffff',
   },
 });

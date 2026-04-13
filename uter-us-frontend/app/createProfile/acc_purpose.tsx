@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image } from 'expo-image';
-import { Dimensions, Platform, StyleSheet, Alert, View, Pressable, Text, TextInput } from 'react-native';
+import { Dimensions, Platform, StyleSheet, Alert, View, Pressable } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { HelloWave } from '@/components/hello-wave';
@@ -11,54 +11,29 @@ import { ThemedView } from '@/components/themed-view';
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../types';
+import type { RootStackParamList } from '../../types';
+import { useRouter } from 'expo-router';
 
-type NavProp = NativeStackNavigationProp<RootStackParamList, 'CompName'>;
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccPurpose'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-async function HandleCreateProfile() {
-  try {
-    const response = await fetch('http://localhost:8080/create-user', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1 }) 
-    });
-
-    if (response.ok) {
-      Alert.alert('Success', 'Profile created!');
-    } else {
-      Alert.alert('Error', 'Failed to create profile');
-    }
-  } catch (error) {
-    Alert.alert('Error', 'Could not connect to server');
-  }
-}
-
-export default function CompNameScreen() {
+export default function AccPurposeScreen() {
   const navigation = useNavigation<NavProp>();
+  const router = useRouter();
 
-  const profiles = () => {
-    navigation.navigate("Profiles");
+  const accDetails = () => {
+    router.push("/createProfile/acc_details");
   };
   return (
-    <ThemedView>
+    <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
         <ThemedText style={[styles.inlineContainer]} type="header">
-          Companion Selection
+          Account Purpose
         </ThemedText>
       </View>
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing]}>Companion Name</ThemedText>
-      <TextInput
-        // value = {username} onChangeText={setUserName}
-        style={[styles.textInput]}
-        autoCapitalize="none"
-        placeholder="Name" 
-        placeholderTextColor="#94a3b8"
-        maxLength={12}
-      />
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <ThemedText style={styles.inlineContainer}>
           <Pressable 
@@ -66,8 +41,30 @@ export default function CompNameScreen() {
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={profiles}>
-            Create Profile
+          onPress={accDetails}>
+            <ThemedText style={[styles.createButtonText]}>
+                Individual
+            </ThemedText>
+            <ThemedText style={[styles.createButtonText]}>
+                Track Your Own Cycle
+            </ThemedText>
+          </Pressable>
+        </ThemedText>
+      </View>
+      <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
+        <ThemedText style={styles.inlineContainer}>
+          <Pressable 
+          style={({ pressed }) => [
+          styles.createButtonContainer,
+          pressed && styles.createButtonPressContainer
+          ]}
+          onPress={accDetails}>
+            <ThemedText style={[styles.createButtonText]}>
+                Parent
+            </ThemedText>
+            <ThemedText style={[styles.createButtonText]}>
+                Track a Loved Ones Cycle
+            </ThemedText>
           </Pressable>
         </ThemedText>
       </View>
@@ -77,6 +74,10 @@ export default function CompNameScreen() {
 }
 
 const styles = StyleSheet.create({
+  wholeScreen: {
+    flex: 1,
+    paddingTop: windowHeight * 0.10,
+  },
   stepContainer: {
     gap: 8,
     marginBottom: 8,
@@ -110,29 +111,22 @@ const styles = StyleSheet.create({
   },
   createButtonContainer:{
     padding: 10,
+    paddingLeft: 40,
+    paddingRight: 40,
     borderRadius: 5,
-    marginTop: windowHeight * 0.01,
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
     alignItems: 'center',
+    textAlign: 'center',
   },
   createButtonPressContainer:{
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
+    alignItems: 'center',
+    textAlign: 'center',
   },
-  textInput:{
-    marginLeft: windowWidth * 0.05,
-    height: 45,
-    width: "30%",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    backgroundColor: "#fff",
-    fontFamily: "BreeSerif_400Regular",
+
+  createButtonText:{
+    color: '#ffffff',
   },
 });

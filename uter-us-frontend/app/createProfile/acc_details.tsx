@@ -10,7 +10,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../types';
+import type { RootStackParamList } from '../../types';
+import { useRouter } from 'expo-router';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccDetails'>;
 
@@ -20,6 +21,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function AccDetailsScreen() {
   const navigation = useNavigation<NavProp>();
+  const router = useRouter();
 
   // Name States
   const [username, setUserName] = React.useState('');
@@ -35,10 +37,10 @@ export default function AccDetailsScreen() {
   const [cycleLength, setCycleLength] = React.useState(28);
 
   const compName = () => {
-    navigation.navigate("CompName");
+    router.push("/createProfile/comp_name");
   }
   return (
-    <ThemedView>
+    <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
         <ThemedText style={[styles.inlineContainer]} type="header">
           Account Details
@@ -63,7 +65,7 @@ export default function AccDetailsScreen() {
           pressed && styles.createButtonPressContainer
           ]}
           onPress={() => setShowPicker(true)}>
-          <ThemedText style={styles.inlineContainer}>
+          <ThemedText style={[styles.inlineContainer, styles.createButtonText]}>
             {date.toDateString()}
           </ThemedText>
         </Pressable>
@@ -144,7 +146,7 @@ export default function AccDetailsScreen() {
             pressed && styles.createButtonPressContainer
             ]}
             onPress={compName}>
-              Continue
+              <ThemedText style={styles.createButtonText}>Continue</ThemedText>
           </Pressable>
         </ThemedText>
       </View>
@@ -153,6 +155,9 @@ export default function AccDetailsScreen() {
 }
 
 const styles = StyleSheet.create({
+  wholeScreen: {
+    flex: 1,
+  },
   stepContainer: {
     gap: 8,
     marginBottom: 8,
@@ -187,16 +192,13 @@ const styles = StyleSheet.create({
   createButtonContainer:{
     padding: 10,
     borderRadius: 5,
-    marginTop: windowHeight * 0.01,
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
+    width: "60%",
+    height: "auto",
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
     alignItems: 'center',
   },
   createButtonPressContainer:{
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
   },
@@ -216,5 +218,9 @@ const styles = StyleSheet.create({
     width: "12%",
     fontFamily: "BreeSerif_400Regular",
     marginBottom: windowHeight * 0.005,
+  },
+
+  createButtonText:{
+    color: '#ffffff',
   },
 });
