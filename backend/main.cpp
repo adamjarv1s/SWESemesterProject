@@ -1,9 +1,7 @@
 #include <iostream>
 #include "database.h"
 #include "CycleMath.h"
-#include "Users.h"
 #include "utilities.h"
-#include "Users.h"
 #include <regex>
 #include <string>
 
@@ -28,8 +26,7 @@
 }*/
 int main() {
     Database& db = Database::getInstance();
-    std::vector<Users> usersList;
-    std::cout << getIPAddress();
+    db.runSQLFile("setup.sql");
     
     httplib::Server svr;
 
@@ -50,9 +47,8 @@ int main() {
         std::regex json("\"name\":\"([^\"]+)\".*\"pet\":\"([^\"]+)\",\"accountType\":(\\d+)");
         std::smatch match;
         if (std::regex_search(body, match, json)) {
-            db.createAccount(match[1], match[2], std::stoi(match[3]));
+            db.createAccount(match[1], match[2], std::stoi(match[3]), 5);
             std::cout << "Added user to database" << std::endl;
-            // usersList.emplace_back();
         }
         res.set_content("{\"status\": \"ok\"}", "application/json");
     });
@@ -60,6 +56,23 @@ int main() {
     svr.Get("/get-user", [&db](const httplib::Request &, httplib::Response &res) {
         string name = db.getActiveUserName();
         res.set_content(name, "text/plain");
+    });
+
+    svr.Get("/get-period-data", [&db](const httplib::Request &, httplib::Response &res) {
+        string name = db.getPeriodsAsString(db.getUserId());
+        res.set_content(name, "application/json");
+    });
+
+    svr.Post("/log-period", [&db](const httplib::Request& req, httplib::Response& res) {
+        std::string body = req.body;
+        
+        std::regex json("\"currentDate\":\"([^\"]+)\".*\"startDate\":\"([^\"]+)\",\"heaviness\":(\\d+),\"lastDay\":(true|false),\"description\":\"([^\"]*)\"");
+        std::smatch match;
+        if (std::regex_search(body, match, json)) {
+            db.logPeriod(db.getUserId(), match[1], match[2], std::stoi(match[3]), match[4] == "true", match[5]);
+            std::cout << "Logged period in database" << std::endl;
+        }
+        res.set_content("{\"status\": \"ok\"}", "application/json");
     });
 
     svr.listen("0.0.0.0", 8080);

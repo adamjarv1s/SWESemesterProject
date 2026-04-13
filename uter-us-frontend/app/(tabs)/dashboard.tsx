@@ -14,14 +14,33 @@ import { faShoppingCart } from '@fortawesome/free-solid-svg-icons/faShoppingCart
 import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
 import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-
+import { Modal, TextInput } from 'react-native';
+import { Dropdown } from 'react-native-element-dropdown';
+import { TouchableWithoutFeedback } from 'react-native';
 
 import { useEffect, useState } from 'react';
 import { View, Alert } from 'react-native';
+import { buildUnavailableHoursBlocks } from 'react-native-calendars/src/timeline/Packer';
 
 // constants
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
+
+const now: Date = new Date();
+let dayOfMonth: number = now.getDate();
+let dateValue: "";
+
+const lastDigit: number = dayOfMonth % 10;
+if (lastDigit == 1 && dayOfMonth != 11){
+   dateValue = dayOfMonth + "st"
+} else if (lastDigit == 2 && dayOfMonth != 12){
+  dateValue = dayOfMonth + "nd"
+} else if (lastDigit == 3 && dayOfMonth != 13){
+  dateValue = dayOfMonth + "rd"
+} else {
+  dateValue = dayOfMonth + "th"
+}
 
 async function getUserName() {
   try {
@@ -31,13 +50,59 @@ async function getUserName() {
 
   } catch (error) {
     console.error('ErrorGetUsername:', error);
-    return 'Error';
+    return 'Unpeakawa';
+  }
+}
+
+async function getPeriodData() {
+  try {
+    const response = await fetch(`${IPAddress}/get-period-data`);
+    const json = await response.json();
+    return json;
+
+  } catch (error) {
+    console.error('ErrorGetPeriodData:', error);
+    return {};
   }
 }
 
 export default function HomeScreen() {
 
   const [userName, setUserName] = useState('Loading...');
+  const [periodData, setPeriodData] = useState<Record<string, any>>({});
+
+  const [showLogModal, setShowLogModal] = useState(false);
+  const [flow, setFlow] = useState(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [symptoms, setSymptoms] = useState('');
+  const selectedDayData = selectedDate ? periodData[selectedDate] : null;
+
+  const flowOptions = [
+    { label: 'None', value: 0 },
+    { label: 'Light', value: 1 },
+    { label: 'Medium', value: 2 },
+    { label: 'Heavy', value: 3 },
+  ];
+
+  const getFlowLabel = (value?: number) => {
+  if (value === 3) return 'Heavy Flow';
+  if (value === 2) return 'Medium Flow';
+  if (value === 1) return 'Light Flow';
+  return 'No Flow Recorded';
+};
+
+  const markedDates = {
+  ...periodData,
+
+  ...(selectedDate && {
+    [selectedDate]: {
+      ...(periodData[selectedDate] || {}),
+
+      selected: true,
+      selectedColor: '#ff69b4',
+    },
+  }),
+};
 
   let [fontsLoaded] = useFonts({
     BreeSerif_400Regular
@@ -45,7 +110,9 @@ export default function HomeScreen() {
 
   useEffect(() => {
     getUserName().then(name => setUserName(name));
+    getPeriodData().then(data => setPeriodData(data));
   }, []);
+  
 
   if (!fontsLoaded) {
     return null;
@@ -116,40 +183,141 @@ export default function HomeScreen() {
 
                 I'm thinking each "child" here is a symptom the user has recorded.
         */}
-
         <View>
             <View style={[styles.dayInfoBoxContainer, styles.inlineContainer]}>
                       <View style={[styles.stepContainer]}>
                         <ThemedText style={[styles.dayInfoBoxDate]}>
-                          11th
+                          {dateValue}
                         </ThemedText>
-                        <ThemedText style={[styles.dayInfoBoxFlow]}>
-                          Medium Flow
+                        <ThemedText style={styles.dayInfoBoxFlow}>
+                          {selectedDayData?.heaviness
+                            ? getFlowLabel(selectedDayData.heaviness)
+                            : 'No Flow Recorded'}
                         </ThemedText>
                       </View>
 
-                      <ThemedText 
-                        numberOfLines={4}
-                        style={[styles.dayInfoBoxGeneral]}
-                        >
-                        Your period is expected to start today. Past logs have indicated you experience cramps, pain, and bloating.
-                      </ThemedText>
+              <ThemedText
+                numberOfLines={4}
+                style={styles.dayInfoBoxGeneral}
+              >
+                {selectedDayData?.description
+                  ? selectedDayData.description
+                  : "This would be an alert. Select a day to see period details."}
+              </ThemedText>
             </View>
 
-            <Calendar style={[styles.calendarContainer]}
-                onDayPress={day => {
-                    console.log('selected day', day);
-                }}
+            <Calendar
+              style={[styles.calendarContainer]}
+              markedDates={markedDates}
+              markingType={'custom'}
+              onDayPress={day => {
+                setSelectedDate(day.dateString);
+              }}
             />
+
+            <Pressable
+              disabled={!selectedDate}
+              style={({ pressed }) => [
+                styles.buttonContainer,
+                pressed && styles.buttonPressedContainer,
+                !selectedDate && { opacity: 0.4 }
+              ]}
+              onPress={() => setShowLogModal(true)}
+            >
+              <ThemedText style={styles.buttonText}>+ Log Period</ThemedText>
+            </Pressable>
+
+            <Modal
+              visible={showLogModal}
+              transparent={true}
+              animationType="fade"
+              >
+                <View style={styles.modalOverlay}>
+                  <View style={styles.modalContent}>
+                    <ThemedText style={styles.modalTitle}>Log Information</ThemedText>
+                    <ThemedText style={styles.label}>Flow</ThemedText>
+                    <Dropdown
+                      style={styles.dropdown}
+                      data={flowOptions}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select flow level"
+                      value={flow}
+                      onChange={item => {
+                        setFlow(item.value);
+                      }
+                    }
+                    />
+
+                    <ThemedText style={styles.label}>Symptoms</ThemedText>
+                      <TextInput
+                        value={symptoms}
+                        onChangeText={setSymptoms}
+                        style={{
+                          borderWidth: 1,
+                          borderColor: '#ccc',
+                          borderRadius: 5,
+                          padding: 10,
+                          marginTop: 10
+                        }}
+                        placeholder="Cramps..."
+                      />
+
+                      <Pressable
+                        style={styles.saveButton}
+                        onPress={async () => {
+                          if (!selectedDate) {
+                            Alert.alert('Error', 'Please select a date');
+                            return;
+                          }
+
+                          if (!flow) {
+                            Alert.alert('Error', 'Please select flow level');
+                            return;
+                          }
+
+                          try {
+                            await fetch(`${IPAddress}/log-period`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                currentDate: selectedDate,
+                                startDate: selectedDate,
+                                heaviness: flow,
+                                lastDay: false,
+                                description: symptoms || '',
+                            }),
+                            });
+
+                            const updatedPeriodData = await getPeriodData();
+                            setPeriodData(updatedPeriodData);
+
+                            setShowLogModal(false);
+                            setSymptoms('');
+
+                          } catch (error) {
+                            console.error(error);
+                            Alert.alert('Error', 'Could not connect to server');
+                          }
+                        }}
+                      >
+                        <ThemedText style={{ color: '#fff', textAlign: 'center' }}>
+                          Save
+                        </ThemedText>
+                      </Pressable>
+
+                    </View>
+                </View>
+            </Modal>
 
             <Pressable
                 style={({ pressed }) => [
                 styles.buttonContainer,
                 pressed && styles.buttonPressedContainer
                 ]}
-                onPress={() => alert('log period button pressed')}
+                onPress={() => alert('settings page will be opened in the future!')}
             >
-                <ThemedText style={[styles.buttonText]}>+ Log Period</ThemedText>
+                <ThemedText style={[styles.buttonText]}>Settings</ThemedText>
             </Pressable>
         </View>
 
@@ -264,4 +432,52 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E1E1E',
   },
 
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(206, 206, 206, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  modalContent: {
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 20,
+  },
+
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#000000',
+  },
+
+  dropdown: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+  },
+  label:{
+    fontSize: 14,
+    color: '#000000',
+    marginTop: 10,
+  },
+  textArea: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  saveButton: {
+  backgroundColor: '#2C2C2C',
+  padding: 14,
+  borderRadius: 10,
+  alignItems: 'center',
+  marginTop: 15,
+  textAlign: 'center',
+},
 });

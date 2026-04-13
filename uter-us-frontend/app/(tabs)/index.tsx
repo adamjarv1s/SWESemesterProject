@@ -7,7 +7,7 @@ import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 
 // constants
 const windowWidth = Dimensions.get('window').width;
@@ -16,10 +16,10 @@ const windowHeight = Dimensions.get('window').height;
 
 async function HandleCreateProfile() {
   try {
-    const response = await fetch(`${IPAddress}/create-user`, {
+    const response = await fetch('http://localhost:8080/create-user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1 }) 
+      body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1, averagePeriodLength: 5 }), 
     });
 
     if (response.ok) {
@@ -61,9 +61,9 @@ export default function HomeScreen() {
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={() => HandleCreateProfile()}>
-            <ThemedText>+ Create a Profile</ThemedText>
-            </Pressable>
+          onPress={HandleCreateProfile}>
+            + Create a Profile
+          </Pressable>
       </View>
         <ThemedText style={styles.inlineContainer} type="link">
           <Link href="https://github.com/adamjarv1s/SWESemesterProject" target="_blank" rel="noopener noreferrer">
