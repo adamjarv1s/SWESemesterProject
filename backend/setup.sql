@@ -4,6 +4,7 @@ create table IF NOT EXISTS UserInfo(
                                        id INT AUTO_INCREMENT PRIMARY KEY,
                                        Name VARCHAR(100) NOT NULL,
                                        Pet VARCHAR(100) NOT NULL,
+                                       Pet_id int not null,
                                        Type INT NOT NULL,
                                        Streak INT NOT NULL,
                                        lastActiveDay date NOT NULL,

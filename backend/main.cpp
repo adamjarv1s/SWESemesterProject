@@ -4,6 +4,7 @@
 #include "utilities.h"
 #include <regex>
 #include <string>
+#include <vector>
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -44,10 +45,10 @@ int main() {
     svr.Post("/create-user", [&db](const httplib::Request& req, httplib::Response& res) {
         std::string body = req.body;
         
-        std::regex json("\"name\":\"([^\"]+)\".*\"pet\":\"([^\"]+)\",\"accountType\":(\\d+)");
+        std::regex json("\"name\":\"([^\"]+)\".*?\"pet\":\"([^\"]+)\".*?\"pet_id\":(\\d+).*?\"accountType\":(\\d+).*?\"averageCycleLength\":(\\d+)");
         std::smatch match;
         if (std::regex_search(body, match, json)) {
-            db.createAccount(match[1], match[2], std::stoi(match[3]), 5);
+            db.createAccount(match[1], match[2], std::stoi(match[3]), std::stoi(match[4]), std::stoi(match[5]));
             std::cout << "Added user to database" << std::endl;
         }
         res.set_content("{\"status\": \"ok\"}", "application/json");
@@ -73,6 +74,11 @@ int main() {
             std::cout << "Logged period in database" << std::endl;
         }
         res.set_content("{\"status\": \"ok\"}", "application/json");
+    });
+
+    svr.Get("/get-profiles", [&db](const httplib::Request &, httplib::Response &res) {
+        string profiles = db.getProfilesAsJson();
+        res.set_content(profiles, "application/json");
     });
 
     svr.listen("0.0.0.0", 8080);

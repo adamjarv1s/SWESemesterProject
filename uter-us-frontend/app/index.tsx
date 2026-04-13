@@ -1,14 +1,11 @@
 import React from 'react';
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Alert, View, Pressable } from 'react-native';
-<<<<<<< HEAD:uter-us-frontend/app/(tabs)/index.tsx
 import { IPAddress } from '@/config';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
-=======
->>>>>>> 1ff3fea1d09e38b4d2d7589eac1b8312b35a2ecf:uter-us-frontend/app/index.tsx
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
@@ -24,7 +21,6 @@ type NavProp = NativeStackNavigationProp<RootStackParamList, 'Profiles'>;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-<<<<<<< HEAD:uter-us-frontend/app/(tabs)/index.tsx
 
 async function HandleCreateProfile() {
   try {
@@ -43,11 +39,9 @@ async function HandleCreateProfile() {
     Alert.alert('Error', 'Could not connect to server');
   }
 }
-=======
 export default function Index() {
   const navigation = useNavigation<NavProp>();
   const router = useRouter();
->>>>>>> 1ff3fea1d09e38b4d2d7589eac1b8312b35a2ecf:uter-us-frontend/app/index.tsx
 
   const newProfile = () => {
     router.push("/createProfile/acc_purpose");
@@ -67,24 +61,14 @@ export default function Index() {
         <ThemedText style={styles.inlineContainer} type="default">Create a Profile to Get Started!</ThemedText>
       </View>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
-<<<<<<< HEAD:uter-us-frontend/app/(tabs)/index.tsx
           <Pressable 
-=======
-        <Pressable 
->>>>>>> 1ff3fea1d09e38b4d2d7589eac1b8312b35a2ecf:uter-us-frontend/app/index.tsx
           style={({ pressed }) => [
             styles.createButtonContainer,
             pressed && styles.createButtonPressContainer
           ]}
-<<<<<<< HEAD:uter-us-frontend/app/(tabs)/index.tsx
-          onPress={HandleCreateProfile}>
-            + Create a Profile
-          </Pressable>
-=======
           onPress={newProfile}>
           <ThemedText style={styles.createButtonText}>+ Create Profile</ThemedText>
         </Pressable>
->>>>>>> 1ff3fea1d09e38b4d2d7589eac1b8312b35a2ecf:uter-us-frontend/app/index.tsx
       </View>
     </ThemedView>
   );

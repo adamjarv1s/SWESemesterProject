@@ -28,7 +28,7 @@ class Database{
     //let Adam do this once logic for pulling dates is written
     int stringDateToInt(string date);
     int getHeaviness(int user, string startDate);
-    void createAccount(string name, string pet, int type, int averageCycleLength);
+    void createAccount(string name, string pet, int pet_id, int type, int averageCycleLength);
     void deleteAccount(int user);
     //See CycleMath.cpp to see why this is vector<pair<int, int>>
     vector<pair<int, int>> getPeriods(int user);
@@ -50,6 +50,8 @@ class Database{
     string getPeriodsAsString(int user);
     int getUserId();
     void runSQLFile(const std::string& filename);
+    string getProfilesAsJson();
+    void deleteAllData();
 
 private:
     Database();
