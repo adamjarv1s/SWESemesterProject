@@ -1,3 +1,4 @@
+import React from 'react';
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Alert, View, Pressable, Text, TextInput } from 'react-native';
 
@@ -6,15 +7,18 @@ import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link, router } from 'expo-router';
+
+// React Navigation
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../../types';
+import { useRouter, Link } from 'expo-router';
+
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'CompName'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
-const accDetails = async () => {
-    router.replace('/acc_details');
-}
 
 async function HandleCreateProfile() {
   try {
@@ -34,29 +38,29 @@ async function HandleCreateProfile() {
   }
 }
 
-export default function HomeScreen() {
+export default function CompNameScreen() {
+  const navigation = useNavigation<NavProp>();
+  const router = useRouter();
 
+  const profiles = () => {
+    router.push("/");
+  };
   return (
-    /*<ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>*/
-    <ThemedView>
+    <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
         <ThemedText style={[styles.inlineContainer]} type="header">
-          Account Details
+          Companion Selection
         </ThemedText>
       </View>
-      <Text className="p-1 text-center">Name (Max 12 Characters)</Text>
-            <TextInput
-                // value = {username} onChangeText={setUserName}
-                autoCapitalize="none"
-                placeholder="Name" placeholderTextColor="#94a3b8"   
-            />
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing]}>Companion Name</ThemedText>
+      <TextInput
+        // value = {username} onChangeText={setUserName}
+        style={[styles.textInput]}
+        autoCapitalize="none"
+        placeholder="Name" 
+        placeholderTextColor="#94a3b8"
+        maxLength={12}
+      />
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <ThemedText style={styles.inlineContainer}>
           <Pressable 
@@ -64,20 +68,33 @@ export default function HomeScreen() {
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={() => accDetails}>
-            Parent
-            <ThemedText style={styles.inlineContainer} type = {"faint"}>
-                Track a Loved One's Cycle
-            </ThemedText>
+          onPress={profiles}>
+            <ThemedText style={styles.createButtonText}>Create Profile</ThemedText>
           </Pressable>
         </ThemedText>
       </View>
+
+
+      {/* TEMPORARY LINK TO DASHBOARD FOR TESTING!!!
+
+          when we can get to dashboard from index (profiles page) REMOVE THIS!!!
+      
+      */}
+      
+      <Link href="../(tabs)/dashboard" 
+      style={{textAlign: 'center', color: '#007AFF', backgroundColor: '#848484', width:'50%', alignSelf: 'center', padding: 10, borderRadius: 5, marginTop: windowHeight * 0.02}}>
+        to dashboard
+      </Link>
     </ThemedView>
     // </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  wholeScreen: {
+    flex: 1,
+    paddingTop: windowHeight * 0.05,
+  },
   stepContainer: {
     gap: 8,
     marginBottom: 8,
@@ -112,17 +129,28 @@ const styles = StyleSheet.create({
   createButtonContainer:{
     padding: 10,
     borderRadius: 5,
-    marginTop: windowHeight * 0.01,
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
+    width: "60%",
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
     alignItems: 'center',
   },
   createButtonPressContainer:{
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
+  },
+  textInput:{
+    marginLeft: windowWidth * 0.05,
+    height: 45,
+    width: "30%",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
+    fontFamily: "BreeSerif_400Regular",
+  },
+
+  createButtonText:{
+    color: '#ffffff',
   },
 });
