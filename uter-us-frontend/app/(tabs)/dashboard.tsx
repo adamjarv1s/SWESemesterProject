@@ -24,10 +24,13 @@ import { buildUnavailableHoursBlocks } from 'react-native-calendars/src/timeline
 
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { DrawerNavigationProp } from '@react-navigation/drawer';
 import type { RootStackParamList } from '../../types';
 
-type NavProp = NativeStackNavigationProp<RootStackParamList, 'Dashboard'>;
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
+type NavProp = DrawerNavigationProp<RootStackParamList, 'Dashboard'>;
+
 
 // constants
 const windowWidth = Dimensions.get('window').width;
@@ -74,6 +77,8 @@ async function getPeriodData() {
 }
 
 export default function DashboardScreen() {
+  const navigation = useNavigation<NavProp>();
+
 
   const [userName, setUserName] = useState('Loading...');
   const [periodData, setPeriodData] = useState<Record<string, any>>({});
@@ -138,7 +143,9 @@ export default function DashboardScreen() {
                 - Once database is set up, need to replace "name" with the active user's name */}
 
         <View style={[styles.inlineContainer, styles.topHeader]}>
-            <FontAwesomeIcon icon={faBars} size={20}/>
+            <Pressable onPress={() => navigation.openDrawer()}>
+              <FontAwesomeIcon icon={faBars} size={20}/>
+            </Pressable>
 
             <ThemedText style={[styles.welcomeUserMessage]}>
                 Hello, {userName}!
@@ -146,6 +153,7 @@ export default function DashboardScreen() {
 
             <FontAwesomeIcon icon={faSignOutAlt} size={20}/>
         </View>
+          
           
         
         {/* Buddy System -> Gems, Streak, Buddy Image, Shop/Buddy Settings */}
