@@ -27,7 +27,10 @@ import { useNavigation } from '@react-navigation/native';
 import type { DrawerNavigationProp } from '@react-navigation/drawer';
 import type { RootStackParamList } from '../../types';
 
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
 type NavProp = DrawerNavigationProp<RootStackParamList, 'Dashboard'>;
+
 
 // constants
 const windowWidth = Dimensions.get('window').width;
@@ -57,12 +60,25 @@ async function getUserName() {
 
   } catch (error) {
     console.error('ErrorGetUsername:', error);
-    return 'Error';
+    return 'Unpeakawa';
+  }
+}
+
+async function getPeriodData() {
+  try {
+    const response = await fetch(`${IPAddress}/get-period-data`);
+    const json = await response.json();
+    return json;
+
+  } catch (error) {
+    console.error('ErrorGetPeriodData:', error);
+    return {};
   }
 }
 
 export default function DashboardScreen() {
   const navigation = useNavigation<NavProp>();
+
 
   const [userName, setUserName] = useState('Loading...');
   const [periodData, setPeriodData] = useState<Record<string, any>>({});
@@ -106,7 +122,7 @@ export default function DashboardScreen() {
 
   useEffect(() => {
     getUserName().then(name => setUserName(name));
-    //getPeriodData().then(data => setPeriodData(data));
+    getPeriodData().then(data => setPeriodData(data));
   }, []);
   
 
@@ -116,7 +132,7 @@ export default function DashboardScreen() {
 
 
   return (
-    <ThemedView style={styles.wholeScreen}>
+    <ThemedView>
 
         {/* Top Header Bar -> Hamburger Menu, Hello [User], and Log Out 
             NOTES:
@@ -137,6 +153,7 @@ export default function DashboardScreen() {
 
             <FontAwesomeIcon icon={faSignOutAlt} size={20}/>
         </View>
+          
           
         
         {/* Buddy System -> Gems, Streak, Buddy Image, Shop/Buddy Settings */}
@@ -181,41 +198,132 @@ export default function DashboardScreen() {
 
                 I'm thinking each "child" here is a symptom the user has recorded.
         */}
-
         <View>
             <View style={[styles.dayInfoBoxContainer, styles.inlineContainer]}>
                       <View style={[styles.stepContainer]}>
                         <ThemedText style={[styles.dayInfoBoxDate]}>
-                          11th
+                          {dateValue}
                         </ThemedText>
-                        <ThemedText style={[styles.dayInfoBoxFlow]}>
-                          Medium Flow
+                        <ThemedText style={styles.dayInfoBoxFlow}>
+                          {selectedDayData?.heaviness
+                            ? getFlowLabel(selectedDayData.heaviness)
+                            : 'No Flow Recorded'}
                         </ThemedText>
                       </View>
 
-                      <ThemedText 
-                        numberOfLines={4}
-                        style={[styles.dayInfoBoxGeneral]}
-                        >
-                        Your period is expected to start today. Past logs have indicated you experience cramps, pain, and bloating.
-                      </ThemedText>
+              <ThemedText
+                numberOfLines={4}
+                style={styles.dayInfoBoxGeneral}
+              >
+                {selectedDayData?.description
+                  ? selectedDayData.description
+                  : "This would be an alert. Select a day to see period details."}
+              </ThemedText>
             </View>
 
-            <Calendar style={[styles.calendarContainer]}
-                onDayPress={day => {
-                    console.log('selected day', day);
-                }}
+            <Calendar
+              style={[styles.calendarContainer]}
+              markedDates={markedDates}
+              markingType={'custom'}
+              onDayPress={day => {
+                setSelectedDate(day.dateString);
+              }}
             />
 
             <Pressable
-                style={({ pressed }) => [
+              disabled={!selectedDate}
+              style={({ pressed }) => [
                 styles.buttonContainer,
-                pressed && styles.buttonPressedContainer
-                ]}
-                onPress={() => alert('log period button pressed')}
+                pressed && styles.buttonPressedContainer,
+                !selectedDate && { opacity: 0.4 }
+              ]}
+              onPress={() => setShowLogModal(true)}
             >
-                <ThemedText style={[styles.buttonText]}>+ Log Period</ThemedText>
+              <ThemedText style={styles.buttonText}>+ Log Period</ThemedText>
             </Pressable>
+
+            <Modal
+              visible={showLogModal}
+              transparent={true}
+              animationType="fade"
+              >
+                <View style={styles.modalOverlay}>
+                  <View style={styles.modalContent}>
+                    <ThemedText style={styles.modalTitle}>Log Information</ThemedText>
+                    <ThemedText style={styles.label}>Flow</ThemedText>
+                    <Dropdown
+                      style={styles.dropdown}
+                      data={flowOptions}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select flow level"
+                      value={flow}
+                      onChange={item => {
+                        setFlow(item.value);
+                      }
+                    }
+                    />
+
+                    <ThemedText style={styles.label}>Symptoms</ThemedText>
+                      <TextInput
+                        value={symptoms}
+                        onChangeText={setSymptoms}
+                        style={{
+                          borderWidth: 1,
+                          borderColor: '#ccc',
+                          borderRadius: 5,
+                          padding: 10,
+                          marginTop: 10
+                        }}
+                        placeholder="Cramps..."
+                      />
+
+                      <Pressable
+                        style={styles.saveButton}
+                        onPress={async () => {
+                          if (!selectedDate) {
+                            Alert.alert('Error', 'Please select a date');
+                            return;
+                          }
+
+                          if (!flow) {
+                            Alert.alert('Error', 'Please select flow level');
+                            return;
+                          }
+
+                          try {
+                            await fetch(`${IPAddress}/log-period`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                currentDate: selectedDate,
+                                startDate: selectedDate,
+                                heaviness: flow,
+                                lastDay: false,
+                                description: symptoms || '',
+                            }),
+                            });
+
+                            const updatedPeriodData = await getPeriodData();
+                            setPeriodData(updatedPeriodData);
+
+                            setShowLogModal(false);
+                            setSymptoms('');
+
+                          } catch (error) {
+                            console.error(error);
+                            Alert.alert('Error', 'Could not connect to server');
+                          }
+                        }}
+                      >
+                        <ThemedText style={{ color: '#fff', textAlign: 'center' }}>
+                          Save
+                        </ThemedText>
+                      </Pressable>
+
+                    </View>
+                </View>
+            </Modal>
 
             <Pressable
                 style={({ pressed }) => [
@@ -233,10 +341,6 @@ export default function DashboardScreen() {
 }
 
 const styles = StyleSheet.create({
-  wholeScreen: {
-    flex: 1,
-  },
-
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
