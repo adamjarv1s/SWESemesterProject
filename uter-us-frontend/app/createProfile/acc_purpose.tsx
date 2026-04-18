@@ -11,7 +11,12 @@ import { ThemedView } from '@/components/themed-view';
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+<<<<<<<< HEAD:uter-us-frontend/screens/acc_purpose.tsx
 import type { RootStackParamList } from '../types';
+========
+import type { RootStackParamList } from '../../types';
+import { useRouter } from 'expo-router';
+>>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/createProfile/acc_purpose.tsx
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccPurpose'>;
 
@@ -21,12 +26,22 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function AccPurposeScreen() {
   const navigation = useNavigation<NavProp>();
+<<<<<<<< HEAD:uter-us-frontend/screens/acc_purpose.tsx
 
   const accDetails = () => {
     navigation.navigate("AccDetails");
   };
   return (
     <ThemedView>
+========
+  const router = useRouter();
+
+  const accDetails = () => {
+    router.push("/createProfile/acc_details");
+  };
+  return (
+    <ThemedView style={styles.wholeScreen}>
+>>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/createProfile/acc_purpose.tsx
       <View style={[styles.inlineContainer, styles.topHeader]}>
         <ThemedText style={[styles.inlineContainer]} type="header">
           Account Purpose
@@ -40,8 +55,15 @@ export default function AccPurposeScreen() {
           pressed && styles.createButtonPressContainer
           ]}
           onPress={accDetails}>
+<<<<<<<< HEAD:uter-us-frontend/screens/acc_purpose.tsx
             Individual
             <ThemedText style={styles.inlineContainer} type = {"faint"}>
+========
+            <ThemedText style={[styles.createButtonText]}>
+                Individual
+            </ThemedText>
+            <ThemedText style={[styles.createButtonText]}>
+>>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/createProfile/acc_purpose.tsx
                 Track Your Own Cycle
             </ThemedText>
           </Pressable>
@@ -55,9 +77,17 @@ export default function AccPurposeScreen() {
           pressed && styles.createButtonPressContainer
           ]}
           onPress={accDetails}>
+<<<<<<<< HEAD:uter-us-frontend/screens/acc_purpose.tsx
             Parent
             <ThemedText style={styles.inlineContainer} type = {"faint"}>
                 Track a Loved One's Cycle
+========
+            <ThemedText style={[styles.createButtonText]}>
+                Parent
+            </ThemedText>
+            <ThemedText style={[styles.createButtonText]}>
+                Track a Loved Ones Cycle
+>>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/createProfile/acc_purpose.tsx
             </ThemedText>
           </Pressable>
         </ThemedText>
@@ -68,6 +98,10 @@ export default function AccPurposeScreen() {
 }
 
 const styles = StyleSheet.create({
+  wholeScreen: {
+    flex: 1,
+    paddingTop: windowHeight * 0.10,
+  },
   stepContainer: {
     gap: 8,
     marginBottom: 8,
@@ -101,18 +135,22 @@ const styles = StyleSheet.create({
   },
   createButtonContainer:{
     padding: 10,
+    paddingLeft: 40,
+    paddingRight: 40,
     borderRadius: 5,
-    marginTop: windowHeight * 0.01,
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
     alignItems: 'center',
+    textAlign: 'center',
   },
   createButtonPressContainer:{
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+
+  createButtonText:{
+    color: '#ffffff',
   },
 });

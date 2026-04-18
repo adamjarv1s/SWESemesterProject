@@ -11,7 +11,8 @@ import { ThemedView } from '@/components/themed-view';
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../types';
+import type { RootStackParamList } from '../../types';
+import { useRouter, Link } from 'expo-router';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'CompName'>;
 
@@ -39,14 +40,15 @@ async function HandleCreateProfile() {
 
 export default function CompNameScreen() {
   const navigation = useNavigation<NavProp>();
+  const router = useRouter();
 
   const profiles = () => {
-    navigation.navigate("Profiles");
+    router.push("/");
   };
   return (
-    <ThemedView>
+    <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="header">
+        <ThemedText style={[styles.inlineContainer]} type="title">
           Companion Selection
         </ThemedText>
       </View>
@@ -67,16 +69,32 @@ export default function CompNameScreen() {
           pressed && styles.createButtonPressContainer
           ]}
           onPress={profiles}>
-            Create Profile
+            <ThemedText style={styles.createButtonText}>Create Profile</ThemedText>
           </Pressable>
         </ThemedText>
       </View>
+
+
+      {/* TEMPORARY LINK TO DASHBOARD FOR TESTING!!!
+
+          when we can get to dashboard from index (profiles page) REMOVE THIS!!!
+      
+      */}
+      
+      <Link href="../(tabs)/dashboard" 
+      style={{textAlign: 'center', color: '#007AFF', backgroundColor: '#848484', width:'50%', alignSelf: 'center', padding: 10, borderRadius: 5, marginTop: windowHeight * 0.02}}>
+        to dashboard
+      </Link>
     </ThemedView>
     // </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  wholeScreen: {
+    flex: 1,
+    paddingTop: windowHeight * 0.05,
+  },
   stepContainer: {
     gap: 8,
     marginBottom: 8,
@@ -111,16 +129,12 @@ const styles = StyleSheet.create({
   createButtonContainer:{
     padding: 10,
     borderRadius: 5,
-    marginTop: windowHeight * 0.01,
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
+    width: "60%",
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
     alignItems: 'center',
   },
   createButtonPressContainer:{
-    marginLeft: windowWidth * 0.05,
-    marginRight: windowWidth * 0.05,
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
   },
@@ -134,5 +148,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "#fff",
     fontFamily: "BreeSerif_400Regular",
+  },
+
+  createButtonText:{
+    color: '#ffffff',
   },
 });

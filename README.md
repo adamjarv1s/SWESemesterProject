@@ -33,3 +33,17 @@ npm install
 ```bash
 npx expo start
 ```
+
+## Setting up backend
+Open a different terminal and do the following
+
+CTRL-SHIFT-P 
+Cmake Clean rebuild if lots of changes, otherwise just do build
+
+F5
+Cmake Run
+
+From there insert your MariaDB password
+
+The following files are in the CMAKELISTS are built on rebuild:
+main.cpp, database.cpp utilities.cpp, cyclemath.cpp

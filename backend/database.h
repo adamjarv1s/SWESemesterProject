@@ -17,7 +17,7 @@ class Database{
     Database& operator=(const Database&) = delete;
 
     // todo:
-    void logPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay);
+    void logPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay, string description);
     void logMissedPeriod(int user, string currentDate, string expectedStartDate, bool expectedLastDay);
     void logIrregularPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay);
     void removeOldestPeriod(int user);
@@ -28,11 +28,10 @@ class Database{
     //let Adam do this once logic for pulling dates is written
     int stringDateToInt(string date);
     int getHeaviness(int user, string startDate);
-    void createAccount(string name, string pet, int type);
+    void createAccount(string name, string pet, int pet_id, int type, int averageCycleLength);
     void deleteAccount(int user);
     //See CycleMath.cpp to see why this is vector<pair<int, int>>
     vector<pair<int, int>> getPeriods(int user);
-    string getName(int user);
     void changeName(int user);
     int getDiamonds(int user);
     void spendDiamonds(int user, int price);
@@ -48,12 +47,16 @@ class Database{
     void incrementCurrentStreak(int user);
     vector<pair<int, int>> getPeriodsAsVector(int user);
     string getActiveUserName();
+    string getPeriodsAsString(int user);
+    int getUserId();
+    void runSQLFile(const std::string& filename);
+    string getProfilesAsJson();
+    void deleteAllData();
 
 private:
     Database();
     ~Database();
     std::unique_ptr<sql::Connection> conn;
-    int activeUser;
 };
 
 #endif
