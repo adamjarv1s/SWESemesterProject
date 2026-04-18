@@ -41,3 +41,13 @@ app-example
 # generated native folders
 /ios
 /android
+
+
+import { useNavigation } from '@react-navigation/native';
+import type { DrawerNavigationProp } from '@react-navigation/drawer';
+import type { RootStackParamList } from '../../types';
+
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
+type NavProp = DrawerNavigationProp<RootStackParamList, 'Dashboard'>;
+
