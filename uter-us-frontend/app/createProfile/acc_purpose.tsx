@@ -43,7 +43,7 @@ export default function AccPurposeScreen() {
     <ThemedView style={styles.wholeScreen}>
 >>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/createProfile/acc_purpose.tsx
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="header">
+        <ThemedText style={[styles.inlineContainer]} type="title">
           Account Purpose
         </ThemedText>
       </View>
