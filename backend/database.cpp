@@ -231,15 +231,6 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
 
         updateStmnt2->executeUpdate();
 
-
-        std::unique_ptr<sql::PreparedStatement> updateStmnt2(
-            conn->prepareStatement("UPDATE purchaseData SET currentDiamonds = currentDiamonds + ? WHERE id = ?")
-        );
-        updateStmnt2->setInt(1, 5);
-        updateStmnt2->setInt(2, user);
-
-        updateStmnt2->executeUpdate();
-
     } catch (sql::SQLException &e) {
         cerr << "SQL Error: " << e.what() << endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
