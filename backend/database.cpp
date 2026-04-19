@@ -8,11 +8,9 @@
 #include "utilities.h"
 #include <fstream>
 #include <sstream>
-#include <fstream>
-#include <sstream>
 #include <memory>
 #include <conio.h>
-#include <conio.h>
+
 
 //A lot of the SQL stuff was taken from this lovely tutorial on mariadb
 // https://mariadb.com/resources/blog/how-to-connect-c-programs-to-mariadb/
@@ -68,13 +66,13 @@ That means only one instance of it can exist at a time.
   //if at any point the SQL gets too complicated ask Abby for help <3
   void Database::createAccount(string name, string pet, int pet_id, int accountType,int averageCycleLength){
     try {
-      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, pet_id, `Type`, streak, lastActiveDay, activeUser, averageCycleLength) values (?, ?, ?, ?, ?, ?, ?)"));
+      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, pet_id, accountType, streak, lastActiveDay, activeUser, averageCycleLength) values (?, ?, ?, ?, ?, ?, ?)"));
 
       stmnt->setString(1, name);
       stmnt->setString(2, pet);
       stmnt->setInt(3, pet_id);
       stmnt->setInt(4, accountType);
-      stmnt->setInt(5, 0);
+      stmnt->setInt(5, 1);
       stmnt->setDateTime(6, getCurrentDate());
       stmnt->setBoolean(7, 1);
       stmnt->setInt(8, averageCycleLength);
@@ -109,11 +107,6 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
             "ON DUPLICATE KEY UPDATE "
             "heaviness = VALUES(heaviness), "
             "lastDay = VALUES(lastDay)"
-            "INSERT INTO perioddata (id, currentDate, startDate, currentLength, heaviness, lastDay, description) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?)"
-            "ON DUPLICATE KEY UPDATE "
-            "heaviness = VALUES(heaviness), "
-            "lastDay = VALUES(lastDay)"
         ));
 
         stmnt->setInt(1, user);
@@ -123,33 +116,23 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
         stmnt->setInt(5, heaviness);
         stmnt->setBoolean(6, lastDay);
         stmnt->setString(7, description);
-        stmnt->setString(7, description);
 
         stmnt->executeUpdate();
+
+
+        std::unique_ptr<sql::PreparedStatement> updateStmnt2(
+            conn->prepareStatement("UPDATE purchaseData SET currentDiamonds = currentDiamonds + ? WHERE id = ?")
+        );
+        updateStmnt2->setInt(1, 5);
+        updateStmnt2->setInt(2, user);
+
+        updateStmnt2->executeUpdate();
 
     } catch (sql::SQLException &e) {
         cerr << "SQL Error: " << e.what() << endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
     }
 }
-
-/*
-void Database::removePeriod(int user, string startDate) {
-    try {
-        std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-            "DELETE FROM perioddata WHERE id = ? AND startDate = ?"
-        ));
-
-        stmnt->setInt(1, user);
-        stmnt->setString(2, startDate);
-
-        stmnt->executeUpdate();
-
-    } catch (sql::SQLException &e) {
-        cerr << "SQL Error: " << e.what() << endl;
-        cerr << "SQL State: " << e.getSQLState() << endl;
-    }
-}*/
 
 /*
 void Database::removePeriod(int user, string startDate) {
@@ -232,7 +215,6 @@ string Database::getActiveUserName() {
         std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
 
         if (res->next()) {
-            return string(res->getString("name"));
             return string(res->getString("name"));
         }
 
@@ -318,6 +300,8 @@ int Database::getUserId() {
     }
 }
 
+
+
 void Database::runSQLFile(const std::string& filename) {
     std::ifstream file(filename);
     std::stringstream buffer;
@@ -366,7 +350,7 @@ void Database::deleteAllData(){
 string Database::getProfilesAsJson() {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-            "SELECT name, pet, `Type` FROM userinfo"
+            "SELECT name, pet, accountType FROM userinfo"
         ));
 
         std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
@@ -376,7 +360,7 @@ string Database::getProfilesAsJson() {
         while (res->next()) {
             string name = res->getString("name");
             string pet = res->getString("pet");
-            int accountType = res->getInt("`Type`");
+            int accountType = res->getInt("accountType");
 
             profiles.push_back(make_tuple(name, pet, accountType));
         }
@@ -384,12 +368,12 @@ string Database::getProfilesAsJson() {
             std::string json = "[";
 
         for (size_t i = 0; i < profiles.size(); ++i) {
-            const auto& [name, pet, pet_id] = profiles[i];
+            const auto& [name, pet, accountType] = profiles[i];
 
             json += "{";
             json += "\"name\":\"" + name + "\",";
             json += "\"pet\":\"" + pet + "\",";
-            json += "\"pet_id\":" + std::to_string(pet_id);
+            json += "\"accountType\":" + std::to_string(accountType);
             json += "}";
 
             if (i != profiles.size() - 1) {
@@ -398,12 +382,206 @@ string Database::getProfilesAsJson() {
         }
 
         json += "]";
-
         return json;
 
     } catch (sql::SQLException &e) {
         cerr << "SQL Error: " << e.what() << endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
-        return {};
+        return "[]";
+    }
+}
+
+//This function was generated by ChatGPT
+int Database::streakSystem(int userID) {
+    try {
+        // 1. Get last login date and current streak for the user
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement("SELECT lastActiveDay, streak FROM userinfo WHERE id = ?")
+        );
+        stmnt->setInt(1, userID);
+
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+        if (!res->next()) {
+            std::cerr << "User not found: " << userID << std::endl;
+            return -1;
+        }
+
+        std::string lastLoginStr = res->getString("lastActiveDay"); // YYYY-MM-DD
+        int streak = res->getInt("streak");
+
+        // 2. Extract year and month from last login
+        int lastYear = std::stoi(lastLoginStr.substr(0, 4));
+        int lastMonth = std::stoi(lastLoginStr.substr(5, 2));
+
+        // 3. Extract current year and month
+        std::string todayStr = getCurrentDate();
+        int currentYear = std::stoi(todayStr.substr(0, 4));
+        int currentMonth = std::stoi(todayStr.substr(5, 2));
+        int gems = 0;
+
+        // 4. Update streak logic
+        if (currentYear == lastYear) {
+            if (currentMonth == lastMonth) {
+                // Already logged in this month -> streak unchanged
+            } else if (currentMonth == lastMonth + 1) {
+                streak++; // Consecutive month
+                switch (streak){
+                    case 3:
+                        gems += 60;
+                        break;
+                    case 6:
+                        gems += 105;
+                        break;
+                    case 12:
+                        gems += 245;
+                        break;
+                    default:
+                        gems += 30;
+                        break;
+                }
+                if (streak % 12 == 0 && streak != 12){
+                    gems += 215;
+                }
+            } else {
+                streak = 0; // Skipped month(s)
+            }
+        } else if (currentYear == lastYear + 1 && lastMonth == 12 && currentMonth == 1) {
+            streak++; // December -> January rollover
+        } else {
+            streak = 0; // Year skipped
+        }
+
+        // 5. Update database
+        std::unique_ptr<sql::PreparedStatement> updateStmnt(
+            conn->prepareStatement("UPDATE userinfo SET streak = ?, lastActiveDay = ? WHERE id = ?")
+        );
+        updateStmnt->setInt(1, streak);
+        updateStmnt->setString(2, todayStr);
+        updateStmnt->setInt(3, userID);
+
+        updateStmnt->executeUpdate();
+
+        std::unique_ptr<sql::PreparedStatement> updateStmnt2(
+            conn->prepareStatement("UPDATE purchaseData SET currentDiamonds = currentDiamonds + ? WHERE id = ?")
+        );
+        updateStmnt2->setInt(1, gems);
+        updateStmnt2->setInt(2, userID);
+
+        updateStmnt2->executeUpdate();
+
+        return streak;
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        std::cerr << "SQL State: " << e.getSQLState() << std::endl;
+        return -1;
+    }
+}
+
+// Prints into a txt file for all data for selected user.
+void Database::printAllData(int user){
+    std::vector<std::string> tables;
+    ofstream data("../../../periodData.txt", ios::out);
+    if (!data.is_open()){
+        cout << "File not opened." << endl;
+    }
+    try {
+      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("show tables"));
+      std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+      
+      while (res->next()){
+        tables.push_back(string(res->getString(1)));
+      }
+
+    for (auto table : tables){
+    std::unique_ptr<sql::PreparedStatement> stmnt2(conn->prepareStatement("select * from " + table + " where id = ?"));
+    stmnt2->setInt(1, user);
+    
+    std::unique_ptr<sql::ResultSet> res2(stmnt2->executeQuery());
+    
+    sql::ResultSetMetaData* meta = res2->getMetaData();
+    int cols = meta->getColumnCount();
+
+    while (res2->next()){
+        for (int i =1; i<= cols; i++){
+            data << meta->getColumnLabel(i) << ": " << res2->getString(i);
+            if (i < cols){
+                data << ", ";
+            }
+        }
+         data << "\n";
+    }
+    data << "\n";
+    }
+    data.close();
+    } catch (sql::SQLException &e) {
+        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+    }
+}
+
+// Grab diamonds for various usage
+int Database::getDiamonds(int user){
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT currentDiamonds FROM purchaseData WHERE id = ? LIMIT 1"
+            )
+        );
+
+        stmnt->setInt(1, user);
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+
+        if (res->next()) {
+            return res->getInt("currentDiamonds");
+        }
+
+        return -1;
+
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return -1;
+    }
+}
+
+// Purchase specific item
+void Database::purchaseItem(int user, int item){
+    try{
+        string purchase = "";
+        int gems = 0;
+        switch (item){
+            case 1:
+                purchase = "bowPurchased";
+                gems = 100;
+                break;
+            case 2:
+                purchase = "crownPurchased";
+                gems = 100;
+                break;
+            case 3:
+                purchase = "hotWaterPurchased";
+                gems = 50;
+                break;
+            case 4:
+                purchase = "candyPurchased";
+                gems = 50;
+                break;
+            case 5:
+                purchase = "flowerPurchased";
+                gems = 100;
+                break;
+        }
+        if (gems <= getDiamonds(user)){
+            std::unique_ptr<sql::PreparedStatement> updateStmnt(
+                conn->prepareStatement("UPDATE purchaseData SET " + purchase + " = ?, currentDiamonds = currentDiamonds - ? WHERE id = ?")
+            );
+            updateStmnt->setBoolean(1, true);
+            updateStmnt->setInt(2, gems);
+            updateStmnt->setBoolean(3, user);
+
+            updateStmnt->executeUpdate();
+        }
+    } catch (sql::SQLException &e) {
+        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
     }
 }

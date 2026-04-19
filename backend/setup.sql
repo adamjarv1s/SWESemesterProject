@@ -30,3 +30,16 @@ create table if not exists purchaseData(
                                            purchasedItem float,
                                            FOREIGN KEY (id) REFERENCES UserInfo(id)
 );
+delimiter //
+create trigger if not exists createUserMoney
+after insert on UserInfo
+for each row
+begin
+        insert into purchaseData (
+            id, currentDiamonds, bowPurchased, crownPurchased, hotWaterPurchased, candyPurchased, flowerPurchased
+        )
+        values (
+            NEW.id, 0,false,false,false,false,false
+        );
+end //
+delimiter ;
