@@ -12,12 +12,21 @@
 #include <conio.h>
 
 
+
 //A lot of the SQL stuff was taken from this lovely tutorial on mariadb
 // https://mariadb.com/resources/blog/how-to-connect-c-programs-to-mariadb/
 
-/* Database here is a something called a singleton class
-That means only one instance of it can exist at a time.
-*/
+//DIRECTORY:
+//__________
+//CREATION + DELETION OF DATABASE
+//USER FUNCTIONS (primarily use USERINFO table)
+//PERIOD FUNCTIONS (primarily use periodData table)
+//BUDDY/SHOP FUNCTIONS (primarily use PURCHASEDATA table)
+//UTILITY FUNCTIONS (Don't neatly fit into any category)
+
+//
+//CREATION + DELETION OF DATABASE!!!
+//
 
   Database& Database::getInstance(){
     static Database instance;
@@ -62,8 +71,10 @@ That means only one instance of it can exist at a time.
     if (conn) conn->close();
   }
 
-  //create account! this is a good template for what other functions will look like.
-  //if at any point the SQL gets too complicated ask Abby for help <3
+//
+//USERINFO FUNCTIONS!!!
+//
+
   void Database::createAccount(string name, string pet, int pet_id, int accountType,int averageCycleLength){
     try {
       std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, pet_id, accountType, streak, lastActiveDay, activeUser, averageCycleLength) values (?, ?, ?, ?, ?, ?, ?)"));
@@ -97,6 +108,98 @@ void Database::deleteAccount(int user){
     }
 }
 
+string Database::getActiveUserName() {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT name FROM userinfo WHERE activeUser = 1 LIMIT 1"
+            )
+        );
+
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+
+        if (res->next()) {
+            return string(res->getString("name"));
+        }
+
+        return "No active user";
+
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return "Chiikawa";
+    }
+}
+
+int Database::getUserId() {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT id FROM userinfo WHERE activeUser = 1 LIMIT 1"
+            )
+        );
+
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+
+        if (res->next()) {
+            return res->getInt("id");
+        }
+
+        return 0;
+
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return -1;
+    }
+}
+
+string Database::getProfilesAsJson() {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
+            "SELECT name, pet, accountType FROM userinfo"
+        ));
+
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+
+        vector<tuple<string, string, int>> profiles;
+
+        while (res->next()) {
+            string name = res->getString("name");
+            string pet = res->getString("pet");
+            int accountType = res->getInt("accountType");
+
+            profiles.push_back(make_tuple(name, pet, accountType));
+        }
+
+            std::string json = "[";
+
+        for (size_t i = 0; i < profiles.size(); ++i) {
+            const auto& [name, pet, accountType] = profiles[i];
+
+            json += "{";
+            json += "\"name\":\"" + name + "\",";
+            json += "\"pet\":\"" + pet + "\",";
+            json += "\"accountType\":" + std::to_string(accountType);
+            json += "}";
+
+            if (i != profiles.size() - 1) {
+                json += ",";
+            }
+        }
+
+        json += "]";
+        return json;
+
+    } catch (sql::SQLException &e) {
+        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+        return "[]";
+    }
+}
+
+//
+//PERIOD CREATION FUNCTIONS!!!
+//
+
 void Database::logPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay, string description) {
     try {
         int currentLength = convertSQLDateToInt(currentDate) - convertSQLDateToInt(startDate);
@@ -118,6 +221,15 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
         stmnt->setString(7, description);
 
         stmnt->executeUpdate();
+
+
+        std::unique_ptr<sql::PreparedStatement> updateStmnt2(
+            conn->prepareStatement("UPDATE purchaseData SET currentDiamonds = currentDiamonds + ? WHERE id = ?")
+        );
+        updateStmnt2->setInt(1, 5);
+        updateStmnt2->setInt(2, user);
+
+        updateStmnt2->executeUpdate();
 
 
         std::unique_ptr<sql::PreparedStatement> updateStmnt2(
@@ -204,27 +316,6 @@ vector<pair<int, int>> Database::getPeriodsAsVector(int user) {
     }
 }
 
-string Database::getActiveUserName() {
-    try {
-        std::unique_ptr<sql::PreparedStatement> stmnt(
-            conn->prepareStatement(
-                "SELECT name FROM userinfo WHERE activeUser = 1 LIMIT 1"
-            )
-        );
-
-        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
-
-        if (res->next()) {
-            return string(res->getString("name"));
-        }
-
-        return "No active user";
-
-    } catch (sql::SQLException &e) {
-        std::cerr << "SQL Error: " << e.what() << std::endl;
-        return "Chiikawa";
-    }
-}
 
 string Database::getPeriodsAsString(int user){
     try {
@@ -278,118 +369,9 @@ string Database::getPeriodsAsString(int user){
     }
 }
 
-int Database::getUserId() {
-    try {
-        std::unique_ptr<sql::PreparedStatement> stmnt(
-            conn->prepareStatement(
-                "SELECT id FROM userinfo WHERE activeUser = 1 LIMIT 1"
-            )
-        );
-
-        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
-
-        if (res->next()) {
-            return res->getInt("id");
-        }
-
-        return 0;
-
-    } catch (sql::SQLException &e) {
-        std::cerr << "SQL Error: " << e.what() << std::endl;
-        return -1;
-    }
-}
-
-
-
-void Database::runSQLFile(const std::string& filename) {
-    std::ifstream file(filename);
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    std::string sql = buffer.str();
-
-    std::unique_ptr<sql::Statement> stmt(conn->createStatement());
-
-    std::stringstream ss(sql);
-    std::string query;
-
-    while (std::getline(ss, query, ';')) {
-        if (query.find_first_not_of(" \n\t") == std::string::npos) continue;
-
-        try {
-            stmt->execute(query);
-        } catch (sql::SQLException &e) {
-            std::cerr << "Uh oh! Line: \n" << query << "\n";
-            std::cerr << e.what() << std::endl;
-        }
-    }
-
-    std::cout << "SQL File ran!\n";
-}
-
-void Database::deleteAllData(){
-    std::vector<std::string> tables;
-    try {
-      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("show tables"));
-      std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
-      
-      while (res->next()){
-        tables.push_back(string(res->getString(1)));
-      }
-
-    for (auto table : tables){
-    std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("delete from " + table));
-    }
-
-        } catch (sql::SQLException &e) {
-        cerr << "SQL Error: " << e.what() << endl;
-        cerr << "SQL State: " << e.getSQLState() << endl;
-    }
-}
-
-string Database::getProfilesAsJson() {
-    try {
-        std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-            "SELECT name, pet, accountType FROM userinfo"
-        ));
-
-        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
-
-        vector<tuple<string, string, int>> profiles;
-
-        while (res->next()) {
-            string name = res->getString("name");
-            string pet = res->getString("pet");
-            int accountType = res->getInt("accountType");
-
-            profiles.push_back(make_tuple(name, pet, accountType));
-        }
-
-            std::string json = "[";
-
-        for (size_t i = 0; i < profiles.size(); ++i) {
-            const auto& [name, pet, accountType] = profiles[i];
-
-            json += "{";
-            json += "\"name\":\"" + name + "\",";
-            json += "\"pet\":\"" + pet + "\",";
-            json += "\"accountType\":" + std::to_string(accountType);
-            json += "}";
-
-            if (i != profiles.size() - 1) {
-                json += ",";
-            }
-        }
-
-        json += "]";
-        return json;
-
-    } catch (sql::SQLException &e) {
-        cerr << "SQL Error: " << e.what() << endl;
-        cerr << "SQL State: " << e.getSQLState() << endl;
-        return "[]";
-    }
-}
+//
+//BUDDY/SHOP SECTION
+//
 
 //This function was generated by ChatGPT
 int Database::streakSystem(int userID) {
@@ -477,49 +459,6 @@ int Database::streakSystem(int userID) {
     }
 }
 
-// Prints into a txt file for all data for selected user.
-void Database::printAllData(int user){
-    std::vector<std::string> tables;
-    ofstream data("../../../periodData.txt", ios::out);
-    if (!data.is_open()){
-        cout << "File not opened." << endl;
-    }
-    try {
-      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("show tables"));
-      std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
-      
-      while (res->next()){
-        tables.push_back(string(res->getString(1)));
-      }
-
-    for (auto table : tables){
-    std::unique_ptr<sql::PreparedStatement> stmnt2(conn->prepareStatement("select * from " + table + " where id = ?"));
-    stmnt2->setInt(1, user);
-    
-    std::unique_ptr<sql::ResultSet> res2(stmnt2->executeQuery());
-    
-    sql::ResultSetMetaData* meta = res2->getMetaData();
-    int cols = meta->getColumnCount();
-
-    while (res2->next()){
-        for (int i =1; i<= cols; i++){
-            data << meta->getColumnLabel(i) << ": " << res2->getString(i);
-            if (i < cols){
-                data << ", ";
-            }
-        }
-         data << "\n";
-    }
-    data << "\n";
-    }
-    data.close();
-    } catch (sql::SQLException &e) {
-        cerr << "SQL Error: " << e.what() << endl;
-        cerr << "SQL State: " << e.getSQLState() << endl;
-    }
-}
-
-// Grab diamonds for various usage
 int Database::getDiamonds(int user){
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(
@@ -543,7 +482,6 @@ int Database::getDiamonds(int user){
     }
 }
 
-// Purchase specific item
 void Database::purchaseItem(int user, int item){
     try{
         string purchase = "";
@@ -580,6 +518,97 @@ void Database::purchaseItem(int user, int item){
 
             updateStmnt->executeUpdate();
         }
+    } catch (sql::SQLException &e) {
+        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+    }
+}
+
+//
+// UTILITIES SECTION
+//
+
+void Database::runSQLFile(const std::string& filename) {
+    std::ifstream file(filename);
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string sql = buffer.str();
+
+    std::unique_ptr<sql::Statement> stmt(conn->createStatement());
+
+    std::stringstream ss(sql);
+    std::string query;
+
+    while (std::getline(ss, query, ';')) {
+        if (query.find_first_not_of(" \n\t") == std::string::npos) continue;
+
+        try {
+            stmt->execute(query);
+        } catch (sql::SQLException &e) {
+            std::cerr << "Uh oh! Line: \n" << query << "\n";
+            std::cerr << e.what() << std::endl;
+        }
+    }
+
+    std::cout << "SQL File ran!\n";
+}
+
+void Database::printAllData(int user){
+    std::vector<std::string> tables;
+    ofstream data("../../../periodData.txt", ios::out);
+    if (!data.is_open()){
+        cout << "I didn't open!!!" << endl;
+    }
+    try {
+      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("show tables"));
+      std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+      
+      while (res->next()){
+        tables.push_back(string(res->getString(1)));
+      }
+
+    for (auto table : tables){
+    std::unique_ptr<sql::PreparedStatement> stmnt2(conn->prepareStatement("select * from " + table + " where id = ?"));
+    stmnt2->setInt(1, user);
+    
+    std::unique_ptr<sql::ResultSet> res2(stmnt2->executeQuery());
+    
+    sql::ResultSetMetaData* meta = res2->getMetaData();
+    int cols = meta->getColumnCount();
+
+    while (res2->next()){
+        for (int i =1; i<= cols; i++){
+            data << meta->getColumnLabel(i) << ": " << res2->getString(i);
+            if (i < cols){
+                data << ", ";
+            }
+        }
+         data << "\n";
+    }
+    data << "\n";
+    }
+    data.close();
+    } catch (sql::SQLException &e) {
+        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+    }
+}
+
+void Database::deleteAllData(int user){
+    std::vector<std::string> tables;
+    try {
+      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("show tables"));
+      std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+      
+      while (res->next()){
+        tables.push_back(string(res->getString(1)));
+      }
+
+    for (auto table : tables){
+        std::unique_ptr<sql::PreparedStatement> stmnt2(conn->prepareStatement("delete from " + table + " where id = ?"));
+        stmnt2->setInt(1, user);
+        stmnt2->executeUpdate();
+    }
     } catch (sql::SQLException &e) {
         cerr << "SQL Error: " << e.what() << endl;
         cerr << "SQL State: " << e.getSQLState() << endl;

@@ -16,7 +16,6 @@ import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { Modal, TextInput } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { TouchableWithoutFeedback } from 'react-native';
 
 import { useEffect, useState } from 'react';
 import { View, Alert } from 'react-native';
@@ -28,6 +27,7 @@ import type { DrawerNavigationProp } from '@react-navigation/drawer';
 import type { RootStackParamList } from '../../types';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { ScrollView } from 'react-native-gesture-handler';
 
 type NavProp = DrawerNavigationProp<RootStackParamList, 'Dashboard'>;
 
@@ -76,7 +76,6 @@ async function getPeriodData() {
   }
 }
 
-// Backend connection to grab streak number
 async function getStreak() {
   try {
     const response = await fetch(`${IPAddress}/update-streak`);
@@ -147,7 +146,8 @@ export default function DashboardScreen() {
 
 
   return (
-    <ThemedView>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+  <ThemedView style={{ flex: 1 }}>
 
         {/* Top Header Bar -> Hamburger Menu, Hello [User], and Log Out 
             NOTES:
@@ -244,6 +244,7 @@ export default function DashboardScreen() {
                 setSelectedDate(day.dateString);
               }}
             />
+            
 
             <Pressable
               disabled={!selectedDate}
@@ -342,6 +343,7 @@ export default function DashboardScreen() {
         </View>
 
     </ThemedView>
+    </ScrollView>
   );
 }
 
