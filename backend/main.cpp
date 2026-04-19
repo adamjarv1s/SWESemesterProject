@@ -27,7 +27,7 @@
 }*/
 int main() {
     Database& db = Database::getInstance();
-    db.runSQLFile("setup.sql");
+    //db.runSQLFile("setup.sql");
     
     httplib::Server svr;
 
@@ -79,6 +79,12 @@ int main() {
     svr.Get("/get-profiles", [&db](const httplib::Request &, httplib::Response &res) {
         string profiles = db.getProfilesAsJson();
         res.set_content(profiles, "application/json");
+    });
+
+    svr.Get("/update-streak", [&db](const httplib::Request &, httplib::Response &res) {
+        int streak = db.streakSystem(db.getUserId());
+        res.set_content(to_string(streak), "text/plain");
+        std::cout << "name: " << streak << std::endl;
     });
 
     svr.listen("0.0.0.0", 8080);
