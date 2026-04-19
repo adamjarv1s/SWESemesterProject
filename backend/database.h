@@ -34,7 +34,8 @@ class Database{
     vector<pair<int, int>> getPeriods(int user);
     void changeName(int user);
     int getDiamonds(int user);
-    void spendDiamonds(int user, int price);
+    int spendDiamonds(int user, int price);
+    void purchaseItem(int user, int item);
     string getPetType(int user);
     int getPetHappiness(int user);
     string getNextPeriodStart(int user, string currentDate);
@@ -43,8 +44,7 @@ class Database{
     vector<int> getChildNumbers(int user, bool isParent);
     //commented because I don't know what data type that'd be
     //vector<???> getPetPurchases(int user);
-    int getCurrentStreak(int user);
-    void incrementCurrentStreak(int user);
+    int streakSystem(int user);
     vector<pair<int, int>> getPeriodsAsVector(int user);
     string getActiveUserName();
     string getPeriodsAsString(int user);
@@ -52,6 +52,7 @@ class Database{
     void runSQLFile(const std::string& filename);
     string getProfilesAsJson();
     void deleteAllData();
+    void printAllData(int user);
 
 private:
     Database();

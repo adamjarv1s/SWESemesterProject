@@ -13,11 +13,14 @@ import { faShoppingCart } from '@fortawesome/free-solid-svg-icons/faShoppingCart
 import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
 import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
 
+<<<<<<< HEAD:uter-us-frontend/screens/dashboard.tsx
+=======
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { Modal, TextInput } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { TouchableWithoutFeedback } from 'react-native';
 
+>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/(tabs)/dashboard.tsx
 import { useEffect, useState } from 'react';
 import { View, Alert } from 'react-native';
 import { buildUnavailableHoursBlocks } from 'react-native-calendars/src/timeline/Packer';
@@ -31,6 +34,13 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 type NavProp = DrawerNavigationProp<RootStackParamList, 'Dashboard'>;
 
+
+// React Navigation
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types';
+
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'Dashboard'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
@@ -64,6 +74,9 @@ async function getUserName() {
   }
 }
 
+<<<<<<< HEAD:uter-us-frontend/screens/dashboard.tsx
+export default function DashboardScreen() {
+=======
 async function getPeriodData() {
   try {
     const response = await fetch(`${IPAddress}/get-period-data`);
@@ -76,26 +89,13 @@ async function getPeriodData() {
   }
 }
 
-// Backend connection to grab streak number
-async function getStreak() {
-  try {
-    const response = await fetch(`${IPAddress}/update-streak`);
-    const text = await response.text();
-    return text;
-
-  } catch (error) {
-    console.error('ErrorUpdateStreak:', error);
-    return 'STREAKNUM';
-  }
-}
-
 export default function DashboardScreen() {
   const navigation = useNavigation<NavProp>();
 
+>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/(tabs)/dashboard.tsx
 
   const [userName, setUserName] = useState('Loading...');
   const [periodData, setPeriodData] = useState<Record<string, any>>({});
-  const [streak, setStreak] = useState('Hi');
 
   const [showLogModal, setShowLogModal] = useState(false);
   const [flow, setFlow] = useState(null);
@@ -137,7 +137,6 @@ export default function DashboardScreen() {
   useEffect(() => {
     getUserName().then(name => setUserName(name));
     getPeriodData().then(data => setPeriodData(data));
-    getStreak().then(name => setStreak(name));
   }, []);
   
 
@@ -174,7 +173,7 @@ export default function DashboardScreen() {
         {/* Buddy System -> Gems, Streak, Buddy Image, Shop/Buddy Settings */}
         <View style={[styles.buddyContainer]}>
             <ThemedText style={[]}>
-                buddy system {streak}
+                buddy system
             </ThemedText>
         </View>
 
@@ -339,6 +338,16 @@ export default function DashboardScreen() {
                     </View>
                 </View>
             </Modal>
+
+            <Pressable
+                style={({ pressed }) => [
+                styles.buttonContainer,
+                pressed && styles.buttonPressedContainer
+                ]}
+                onPress={() => alert('settings page will be opened in the future!')}
+            >
+                <ThemedText style={[styles.buttonText]}>Settings</ThemedText>
+            </Pressable>
         </View>
 
     </ThemedView>
