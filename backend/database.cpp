@@ -12,6 +12,7 @@
 #include <conio.h>
 
 
+
 //A lot of the SQL stuff was taken from this lovely tutorial on mariadb
 // https://mariadb.com/resources/blog/how-to-connect-c-programs-to-mariadb/
 
@@ -220,6 +221,15 @@ void Database::logPeriod(int user, string currentDate, string startDate, int hea
         stmnt->setString(7, description);
 
         stmnt->executeUpdate();
+
+
+        std::unique_ptr<sql::PreparedStatement> updateStmnt2(
+            conn->prepareStatement("UPDATE purchaseData SET currentDiamonds = currentDiamonds + ? WHERE id = ?")
+        );
+        updateStmnt2->setInt(1, 5);
+        updateStmnt2->setInt(2, user);
+
+        updateStmnt2->executeUpdate();
 
 
         std::unique_ptr<sql::PreparedStatement> updateStmnt2(

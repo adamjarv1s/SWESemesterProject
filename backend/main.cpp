@@ -103,5 +103,11 @@ int main() {
         std::cout << "data deleted!" << std::endl;
     });
 
+    svr.Get("/update-streak", [&db](const httplib::Request &, httplib::Response &res) {
+        int streak = db.streakSystem(db.getUserId());
+        res.set_content(to_string(streak), "text/plain");
+        std::cout << "name: " << streak << std::endl;
+    });
+
     svr.listen("0.0.0.0", 8080);
 }
