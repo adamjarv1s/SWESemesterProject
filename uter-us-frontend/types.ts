@@ -5,4 +5,5 @@ export type RootStackParamList = {
   AccDetails: undefined;
   CompName: undefined;
   Dashboard: undefined;
+  SelectProfile: undefined;
 };

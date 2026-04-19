@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Alert, View, Pressable } from 'react-native';
 import { IPAddress } from '@/config';
@@ -49,15 +49,47 @@ async function HandleCreateProfile() {
 export default function Index() {
   const navigation = useNavigation<NavProp>();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-<<<<<<<< HEAD:uter-us-frontend/screens/comp_name.tsx
-export default function CompNameScreen() {
-  const navigation = useNavigation<NavProp>();
-========
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkProfile() {
+      try {
+        const response = await fetch('http://localhost:8080/get-profiles');
+        const data = await response.json();
+
+        if (!isMounted) return;
+
+        if (data && data.length > 0) {
+          requestAnimationFrame(() => {
+            router.replace('/createProfile/select_profile');
+          });
+        } else {
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error(err);
+        setLoading(false);
+      }
+    }
+
+    checkProfile();
+
+    return () => { isMounted = false; };
+  }, []);
+
   const newProfile = () => {
     router.push("/createProfile/acc_purpose");
   };
->>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/index.tsx
+
+  if (loading) {
+    return (
+      <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ThemedText>Loading...</ThemedText>
+      </ThemedView>
+    );
+  }
 
   const profiles = () => {
     navigation.navigate("Profiles");

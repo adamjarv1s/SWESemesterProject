@@ -27,7 +27,8 @@
 }*/
 int main() {
     Database& db = Database::getInstance();
-    //db.runSQLFile("setup.sql");
+    db.runSQLFile("setup.sql");
+    db.purchaseItem(db.getUserId(), 5);
     
     httplib::Server svr;
 
@@ -57,11 +58,13 @@ int main() {
     svr.Get("/get-user", [&db](const httplib::Request &, httplib::Response &res) {
         string name = db.getActiveUserName();
         res.set_content(name, "text/plain");
+        std::cout << "name: " << name << std::endl;
     });
 
     svr.Get("/get-period-data", [&db](const httplib::Request &, httplib::Response &res) {
-        string name = db.getPeriodsAsString(db.getUserId());
-        res.set_content(name, "application/json");
+        string periods = db.getPeriodsAsString(db.getUserId());
+        res.set_content(periods, "application/json");
+        std::cout << "periods " << periods << std::endl;
     });
 
     svr.Post("/log-period", [&db](const httplib::Request& req, httplib::Response& res) {
@@ -79,6 +82,25 @@ int main() {
     svr.Get("/get-profiles", [&db](const httplib::Request &, httplib::Response &res) {
         string profiles = db.getProfilesAsJson();
         res.set_content(profiles, "application/json");
+        std::cout << "profiles: " << profiles << std::endl;
+    });
+
+    svr.Get("/update-streak", [&db](const httplib::Request &, httplib::Response &res) {
+        int streak = db.streakSystem(db.getUserId());
+        res.set_content(to_string(streak), "text/plain");
+        std::cout << "streak: " << streak << std::endl;
+    });
+
+    svr.Get("/print-all-data", [&db](const httplib::Request &req, httplib::Response &res) {
+        db.printAllData(db.getUserId());
+        res.set_content(R"({ "status": "printed" })", "application/json");
+        std::cout << "data printed!" << std::endl;
+    });
+
+    svr.Get("/delete-all-data", [&db](const httplib::Request &req, httplib::Response &res) {
+        db.deleteAllData(db.getUserId());
+        res.set_content(R"({ "status": "deleted" })", "application/json");
+        std::cout << "data deleted!" << std::endl;
     });
 
     svr.Get("/update-streak", [&db](const httplib::Request &, httplib::Response &res) {
