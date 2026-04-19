@@ -1,3 +1,4 @@
+drop database uterusdata;
 CREATE DATABASE IF NOT EXISTS uterusdata;
 USE uterusdata;
 create table IF NOT EXISTS UserInfo(
@@ -27,6 +28,24 @@ create table IF NOT EXISTS periodData(
 create table if not exists purchaseData(
                                            id INT AUTO_INCREMENT PRIMARY KEY,
                                            currentDiamonds int not null,
-                                           purchasedItem float,
+                                           bowPurchased bool not null,
+                                           crownPurchased bool not null,
+                                           hotWaterPurchased bool not null,
+                                           candyPurchased bool not null,
+                                           flowerPurchased bool not null,
                                            FOREIGN KEY (id) REFERENCES UserInfo(id)
 );
+
+delimiter //
+create trigger if not exists createUserMoney
+after insert on UserInfo
+for each row
+begin
+        insert into purchaseData (
+            id, currentDiamonds, bowPurchased, crownPurchased, hotWaterPurchased, candyPurchased, flowerPurchased
+        )
+        values (
+            NEW.id, 0,false,false,false,false,false
+        );
+end //
+delimiter ;

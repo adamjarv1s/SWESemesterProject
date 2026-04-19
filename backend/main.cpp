@@ -28,6 +28,7 @@
 int main() {
     Database& db = Database::getInstance();
     db.runSQLFile("setup.sql");
+    db.purchaseItem(db.getUserId(), 5);
     
     httplib::Server svr;
 
@@ -82,6 +83,24 @@ int main() {
         string profiles = db.getProfilesAsJson();
         res.set_content(profiles, "application/json");
         std::cout << "profiles: " << profiles << std::endl;
+    });
+
+    svr.Get("/update-streak", [&db](const httplib::Request &, httplib::Response &res) {
+        int streak = db.streakSystem(db.getUserId());
+        res.set_content(to_string(streak), "text/plain");
+        std::cout << "streak: " << streak << std::endl;
+    });
+
+    svr.Get("/print-all-data", [&db](const httplib::Request &req, httplib::Response &res) {
+        db.printAllData(db.getUserId());
+        res.set_content(R"({ "status": "printed" })", "application/json");
+        std::cout << "data printed!" << std::endl;
+    });
+
+    svr.Get("/delete-all-data", [&db](const httplib::Request &req, httplib::Response &res) {
+        db.deleteAllData(db.getUserId());
+        res.set_content(R"({ "status": "deleted" })", "application/json");
+        std::cout << "data deleted!" << std::endl;
     });
 
     svr.listen("0.0.0.0", 8080);
