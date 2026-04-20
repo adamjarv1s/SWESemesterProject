@@ -13,8 +13,10 @@ export default function Layout() {
         },
       }}>
       {/* Optionally configure static options outside the route.*/}
-      <Stack.Screen name="../(tabs)/dashboard" options={{}} />
-      <Stack.Screen name="index" options={{}} />
+      <Stack.Screen name="select_profile" />
+      <Stack.Screen name="acc_purpose" />
+      <Stack.Screen name="acc_details" />
+      <Stack.Screen name="comp_name" />
     </Stack>
   );
 }

@@ -11,7 +11,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccDetails'>;
 
@@ -21,6 +21,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function AccDetailsScreen() {
   const navigation = useNavigation<NavProp>();
+  const { accountType } = useLocalSearchParams<{ accountType: string }>();
   const router = useRouter();
 
   // Name States
@@ -36,8 +37,8 @@ export default function AccDetailsScreen() {
   // Average Cycle Length States
   const [cycleLength, setCycleLength] = React.useState(28);
 
-  const compName = () => {
-    router.push("/createProfile/comp_name");
+  const compName = (averagePeriodLength: number, averageCycleLength: number) => {
+    router.push(`/createProfile/comp_name?accountType=${accountType}&averagePeriodLength=${averagePeriodLength}&averageCycleLength=${averageCycleLength}`);
   }
   return (
     <ThemedView style={styles.wholeScreen}>
@@ -48,7 +49,8 @@ export default function AccDetailsScreen() {
       </View>
       <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Name (Max 12 Characters)</ThemedText>
       <TextInput
-        // value = {username} onChangeText={setUserName}
+        value = {username}
+        onChangeText={setUserName}
         style={[styles.textInput]}
         autoCapitalize="none"
         placeholder="Name" 
@@ -58,8 +60,6 @@ export default function AccDetailsScreen() {
       <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Last Period Start Date</ThemedText>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <Pressable 
-          //selectedValue={periodDate}
-          //onValueChange={(value) => setPeriodDate(value)}
           style={({ pressed }) => [
           styles.createDateButtonContainer,
           pressed && styles.createButtonPressContainer
@@ -88,53 +88,23 @@ export default function AccDetailsScreen() {
       <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Average Period Length</ThemedText>
       <View style={[styles.dropDownInput, {marginTop: windowHeight * 0.01}]}>
         <Picker
-          //selectedValue={periodLength}
-          //onValueChange={(value) => setPeriodLength(value)}
+          selectedValue={periodLength}
+          onValueChange={(value) => setPeriodLength(value)}
         >
-          <Picker.Item label="1 day" value={1} />
-          <Picker.Item label="2 days" value={2} />
-          <Picker.Item label="3 days" value={3} />
-          <Picker.Item label="4 days" value={4} />
-          <Picker.Item label="5 days" value={5} />
-          <Picker.Item label="6 days" value={6} />
-          <Picker.Item label="7 days" value={7} />
-          <Picker.Item label="8 days" value={8} />
-          <Picker.Item label="9 days" value={9} />
-          <Picker.Item label="10 days" value={10} />
-          <Picker.Item label="11 days" value={11} />
-          <Picker.Item label="12 days" value={12} />
-          <Picker.Item label="13 days" value={13} />
-          <Picker.Item label="14 days" value={14} />
+          {Array.from({ length: 14 }, (_, i) => i + 1).map((n) => (
+            <Picker.Item key={n} label={n === 1 ? "1 day" : `${n} days`} value={n} />
+          ))}
         </Picker>
       </View>
       <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Average Cycle Length</ThemedText>
       <View style={[styles.dropDownInput, {marginTop: windowHeight * 0.01}]}>
         <Picker
-          //selectedValue={cycleLength}
-          //onValueChange={(value) => setCycleLength(value)}
+          selectedValue={cycleLength}
+          onValueChange={(value) => setCycleLength(value)}
         >
-          <Picker.Item label="21 days" value={21} />
-          <Picker.Item label="22 days" value={22} />
-          <Picker.Item label="23 days" value={23} />
-          <Picker.Item label="24 days" value={24} />
-          <Picker.Item label="25 days" value={25} />
-          <Picker.Item label="26 days" value={26} />
-          <Picker.Item label="27 days" value={27} />
-          <Picker.Item label="28 days" value={28} />
-          <Picker.Item label="29 days" value={29} />
-          <Picker.Item label="30 days" value={30} />
-          <Picker.Item label="31 days" value={31} />
-          <Picker.Item label="32 days" value={32} />
-          <Picker.Item label="33 days" value={33} />
-          <Picker.Item label="34 days" value={34} />
-          <Picker.Item label="35 days" value={35} />
-          <Picker.Item label="36 days" value={36} />
-          <Picker.Item label="37 days" value={37} />
-          <Picker.Item label="38 days" value={38} />
-          <Picker.Item label="39 days" value={39} />
-          <Picker.Item label="40 days" value={40} />
-          <Picker.Item label="41 days" value={41} />
-          <Picker.Item label="42 days" value={42} />
+          {Array.from({ length: 22 }, (_, i) => i + 21).map((n) => (
+            <Picker.Item key={n} label={n === 1 ? "1 day" : `${n} days`} value={n} />
+          ))}
         </Picker>
       </View>
 
@@ -146,8 +116,8 @@ export default function AccDetailsScreen() {
             styles.createButtonContainer,
             pressed && styles.createButtonPressContainer
             ]}
-            onPress={compName}>
-              <ThemedText style={[styles.createButtonText]}>Continue</ThemedText>
+            onPress={() => compName(periodLength, cycleLength)}>
+              <ThemedText style={styles.createButtonText}>Continue</ThemedText>
           </Pressable>
         </ThemedText>
       </View>
