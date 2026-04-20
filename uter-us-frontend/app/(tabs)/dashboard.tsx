@@ -104,6 +104,18 @@ async function getGems() {
   }
 }
 
+async function getPetId() {
+  try {
+    const response = await fetch(`${IPAddress}/get-pet-id`);
+    const text = await response.text();
+    return parseInt(text);
+
+  } catch (error) {
+    console.error('ErrorGetPetId:', error);
+    return 1; // default to chiiwawa
+  }
+}
+
 export default function DashboardScreen() {
   const navigation = useNavigation<NavProp>();
   const DrawerNavigation = useNavigation<NavPropDrawer>();
@@ -114,6 +126,7 @@ export default function DashboardScreen() {
   const [periodData, setPeriodData] = useState<Record<string, any>>({});
   const [streak, setStreak] = useState('str');
   const [gems, setGems] = useState('gem');
+  const [petId, setPetId] = useState(1);
 
 
   const [showLogModal, setShowLogModal] = useState(false);
@@ -158,6 +171,7 @@ export default function DashboardScreen() {
     getPeriodData().then(data => setPeriodData(data));
     getStreak().then(name => setStreak(name));
     getGems().then(gems => setGems(gems));
+    getPetId().then(id => setPetId(id));
   }, []);
   
 
@@ -219,9 +233,12 @@ export default function DashboardScreen() {
             </View>
 
 
-            <ThemedText style={[styles.buddyPNG]}>
-                buddy png
-            </ThemedText>
+            <View style={[styles.buddyPNG]}>
+                {petId === 1 && <Image source={require('../../assets/images/chiiwawa.png')} style={[styles.image]} />}
+                {petId === 2 && <Image source={require('../../assets/images/shadow.png')} style={[styles.image]} />}
+                {petId === 3 && <Image source={require('../../assets/images/birb.png')} style={[styles.image]} />}
+                {petId !== 1 && petId !== 2 && petId !== 3 && <ThemedText>buddy</ThemedText>}
+            </View>
           </View>
         </View>
 
@@ -436,7 +453,7 @@ const styles = StyleSheet.create({
 
   buddyContainer: {
     backgroundColor: '#e5ffbf',
-    height: windowHeight * 0.23,
+    height: windowHeight * 0.25,
     paddingLeft: windowWidth * 0.03,
     paddingRight: windowWidth * 0.03,
     paddingTop: windowHeight * 0.007,
@@ -560,19 +577,19 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 5,
     paddingBottom: 5,
-    marginTop: 10,
     marginRight: 5,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderRadius: 5,
     fontSize: 13,
     alignItems: 'center',
+    color: '#000000',
   },
 
   buddyPNG: {
     alignContent: 'center',
-    verticalAlign: 'bottom',
-    height: '60%',
+    verticalAlign: 'top',
+    marginTop: -windowHeight * 0.03,
   },
 
   buttonShopContainer: {
@@ -580,7 +597,6 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 10,
     paddingBottom: 10,
-    marginTop: 10,
     borderRadius: 5,
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
@@ -593,7 +609,8 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 150,
-    height: 150,
+    width: windowWidth * 0.3,
+    height: windowHeight * 0.2,
+    resizeMode: 'contain',
   },
 });
