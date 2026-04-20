@@ -91,22 +91,6 @@ export default function Index() {
   };
   return (
 
-    <ThemedView>
-      <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="header">
-          Companion Selection
-        </ThemedText>
-      </View>
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing]}>Companion Name</ThemedText>
-      <TextInput
-        // value = {username} onChangeText={setUserName}
-        style={[styles.textInput]}
-        autoCapitalize="none"
-        placeholder="Name" 
-        placeholderTextColor="#94a3b8"
-        maxLength={12}
-      />
-
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
         <ThemedText style={[styles.inlineContainer]} type="title">
@@ -126,7 +110,6 @@ export default function Index() {
           <ThemedText style={styles.createButtonText}>+ Create Profile</ThemedText>
         </Pressable>
       </View>
-    </ThemedView>
     </ThemedView>
   );
 }

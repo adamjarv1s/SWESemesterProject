@@ -1,12 +1,10 @@
-import React from 'react';
-import { Image } from 'expo-image';
-import { Dimensions, Platform, StyleSheet, Alert, View, Pressable, Text, TextInput, ScrollView } from 'react-native';
-
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, StyleSheet, View, Pressable, ScrollView, Text, ActivityIndicator } from 'react-native';
+import { IPAddress } from '@/config';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faPerson, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
@@ -21,118 +19,172 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 type Profile = {
-  id: number;
   name: string;
-  accountType: string;
-  companion: string;
+  pet: string;
+  accountType: number;
+}
+
+const accountTypeLabel = (type: number): string => {
+  switch (type) {
+    case 0:
+      return 'Individual';
+    case 1:
+      return 'Parent';
+    default:
+      return 'ThisIsJustToPreventAnError';
+  }
+};
+
+async function getProfiles() {
+  try {
+    const response = await fetch(`${IPAddress}/get-profiles`);
+    const json = await response.json();
+    console.log(json);
+    return json;
+
+  } catch (error) {
+    console.error('ErrorGetProfiles', error);
+    return [];
+  }
 }
 
 export default function selectProfilesScreen() {
-  const navigation = useNavigation<NavProp>();
   const router = useRouter();
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const profiles = () => {
-    router.push("/");
-  };
+  useEffect(() =>{
+    getProfiles().then((data) =>{
+      setProfiles(data);
+      setLoading(false);
+    });
+  }, []);
+
   return (
     <ThemedView style={styles.wholeScreen}>
-      <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="header">
-          UterUs
-        </ThemedText>
+      <Text style ={styles.existingUserLabel}>Existing User</Text>
 
-        {/* <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {profiles.map((profile)=> (
+      <View style={styles.card}>
+        <ThemedText style={styles.title}>UterUs</ThemedText>
+    {loading ? (
+      <ActivityIndicator style={{marginTop: 40}} />
+    ) : (
+        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        {profiles.map((profile, index) => (
           <Pressable
-            key={profile.id}
-            style={styles.card}
+            key={index}
+            style={({pressed}) => [styles.profileRow, pressed && styles.profileRowPressed]}
             onPress={() => router.push('/dashboard')}
             >
+            <View style={styles.avatarCircle}>
+              <FontAwesomeIcon icon={faPerson} size={22} color="#555" />
+            </View>
+            <View style={styles.profileInfo}>
+              <Text style={styles.profileName}>{profile.name}</Text>
+              <Text style={styles.profileType}>{accountTypeLabel(profile.accountType)}</Text>
+              <Text style={styles.profileName}>{profile.pet}</Text>
+            </View>
+            </Pressable>
+        ))}
 
-            </Pressable>))}
-        </ScrollView> */}
-      <Link href="../(tabs)/dashboard" 
-      style={{textAlign: 'center', color: '#007AFF', backgroundColor: '#848484', width:'50%', alignSelf: 'center', padding: 10, borderRadius: 5, marginTop: windowHeight * 0.02}}>
-        to dashboard
-      </Link>
+        <Pressable
+          style={({pressed}) => [styles.profileRow, pressed && styles.profileRowPressed]}
+          onPress={() => router.push('/createProfile/acc_purpose' as any)}
+          >
+            <View style={styles.addCircle}>
+              <FontAwesomeIcon icon={faPlus} size={18} color="#555"/>
+            </View>
+        </Pressable>
+         </ScrollView> 
+       )}
       </View>
-    
-      {/* TEMPORARY LINK TO DASHBOARD FOR TESTING!!!
-
-          when we can get to dashboard from index (profiles page) REMOVE THIS!!!
-      
-      */}
-      
-      <Link href="../(tabs)/dashboard" 
-      style={{textAlign: 'center', color: '#007AFF', backgroundColor: '#848484', width:'50%', alignSelf: 'center', padding: 10, borderRadius: 5, marginTop: windowHeight * 0.02}}>
-        to dashboard
-      </Link>
     </ThemedView>
-    // </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
-    paddingTop: windowHeight * 0.05,
+    backgroundColor: '#1c1c1c',
+    paddingTop: windowHeight * 0.07,
+    paddingHorizontal: windowWidth * 0.05,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  existingUserLabel: {
+    color: '#aaa',
+    fontSize: 16,
+    marginBottom: 12,
+    fontFamily: 'BreeSerif_400Regular',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  card: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: 20,
+    padding: 24,
+    flex: 1,
+    maxHeight: windowHeight * 0.82,
   },
-  topHeader: {
-    paddingLeft: windowWidth * 0.05,
-    paddingRight: windowWidth * 0.05,
-    marginTop: windowHeight * 0.10,
-    marginBottom: windowHeight * 0.05,
-    //backgroundColor: '#A1CEDC',
+  title: {
+    fontSize: 32,
+    fontFamily: 'BreeSerif_400Regular',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 28,
+    color: '#111',
   },
-  bodySpacing:{
-    paddingLeft: windowWidth * 0.05,
-    paddingRight: windowWidth * 0.05,
-    marginTop: windowHeight * 0.005,
-    marginBottom: windowHeight * 0.005,
+  scrollContainer: {
+    gap: 12,
+    paddingBottom: 20,
   },
-  inlineContainer: {
+  profileRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    textAlignVertical: 'center',
-    justifyContent: 'center',
-    fontFamily: "BreeSerif_400Regular",
-  },
-  createButtonContainer:{
-    padding: 10,
-    borderRadius: 5,
-    width: "60%",
-    color: '#ffffff',
-    backgroundColor: '#2C2C2C',
-    alignItems: 'center',
-  },
-  createButtonPressContainer:{
-    color: '#ffffff',
-    backgroundColor: '#1E1E1E',
-  },
-  textInput:{
-    marginLeft: windowWidth * 0.05,
-    height: 45,
-    width: "30%",
+    backgroundColor: '#fff',
+    borderRadius: 14,
+    padding: 14,
+    gap: 14,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    backgroundColor: "#fff",
-    fontFamily: "BreeSerif_400Regular",
+    borderColor: '#e8e8e8',
   },
-
-  createButtonText:{
-    color: '#ffffff',
+  profileRowPressed: {
+    backgroundColor: '#f0f0f0',
+  },
+  avatarCircle: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: '#ebebeb',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profileInfo: {
+    gap: 2,
+  },
+  profileName: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#111',
+    fontFamily: 'BreeSerif_400Regular',
+  },
+  profileType: {
+    fontSize: 14,
+    color: '#444',
+    fontFamily: 'BreeSerif_400Regular',
+  },
+  profilePet: {
+    fontSize: 12,
+    color: '#888',
+    fontFamily: 'BreeSerif_400Regular',
+  },
+  addCircle: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: '#ebebeb',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addProfileText: {
+    fontSize: 16,
+    color: '#111',
+    fontFamily: 'BreeSerif_400Regular',
   },
 });

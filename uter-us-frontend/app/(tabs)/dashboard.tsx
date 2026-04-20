@@ -88,6 +88,18 @@ async function getStreak() {
   }
 }
 
+async function getCycleAlerts() {
+  try {
+    const response = await fetch(`${IPAddress}/cycle-alerts`);
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error("CycleAlertError:", error);
+    return null;
+  }
+}
+
+
 export default function DashboardScreen() {
   const navigation = useNavigation<NavProp>();
 
@@ -101,6 +113,7 @@ export default function DashboardScreen() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [symptoms, setSymptoms] = useState('');
   const selectedDayData = selectedDate ? periodData[selectedDate] : null;
+  const [alerts, setAlerts] = useState<any>(null);
 
   const flowOptions = [
     { label: 'None', value: 0 },
@@ -116,18 +129,38 @@ export default function DashboardScreen() {
   return 'No Flow Recorded';
 };
 
-  const markedDates = {
-  ...periodData,
+const markedDates = Object.fromEntries(
+  Object.entries(periodData).map(([date, data]: [string, any]) => {
+    const isSelected = date === selectedDate;
+    return [
+      date,
+      {
+        ...data,
+        customStyles: {
+          ...data.customStyles,
+          container: {
+            ...data.customStyles?.container,
+            borderWidth: isSelected ? 2 : 0,
+            borderColor: isSelected ? '#ff69b4' : 'transparent',
+          },
+        },
+      },
+    ];
+  })
+);
 
-  ...(selectedDate && {
-    [selectedDate]: {
-      ...(periodData[selectedDate] || {}),
-
-      selected: true,
-      selectedColor: '#ff69b4',
+if (selectedDate && !periodData[selectedDate]) {
+  markedDates[selectedDate] = {
+    customStyles: {
+      container: {
+        borderWidth: 2,
+        borderColor: '#ff69b4',
+        borderRadius: 6,
+      },
+      text: { color: '#000' },
     },
-  }),
-};
+  };
+}
 
   let [fontsLoaded] = useFonts({
     BreeSerif_400Regular
@@ -137,6 +170,10 @@ export default function DashboardScreen() {
     getUserName().then(name => setUserName(name));
     getPeriodData().then(data => setPeriodData(data));
     getStreak().then(name => setStreak(name));
+    getCycleAlerts().then(data => {
+      console.log("RAW ALERTS:", data);
+      setAlerts(data);
+    });
   }, []);
   
 
@@ -144,6 +181,23 @@ export default function DashboardScreen() {
     return null;
   }
 
+  let alertMessage = "Loading alerts...";
+
+if (alerts) {
+  switch (true) {
+    case alerts.missed:
+      alertMessage = "You may have missed your period.";
+      break;
+    case alerts.fertility:
+      alertMessage = "You are in your fertility window.";
+      break;
+    case alerts.irregular:
+      alertMessage = "Your cycle may be irregular.";
+      break;
+    default:
+      alertMessage = "Everything looks normal.";
+  }
+}
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -226,13 +280,8 @@ export default function DashboardScreen() {
                         </ThemedText>
                       </View>
 
-              <ThemedText
-                numberOfLines={4}
-                style={styles.dayInfoBoxGeneral}
-              >
-                {selectedDayData?.description
-                  ? selectedDayData.description
-                  : "This would be an alert. Select a day to see period details."}
+              <ThemedText numberOfLines={4} style={styles.dayInfoBoxGeneral}>
+                {alertMessage}
               </ThemedText>
             </View>
 
@@ -302,7 +351,7 @@ export default function DashboardScreen() {
                             return;
                           }
 
-                          if (!flow) {
+                          if (flow == null) {
                             Alert.alert('Error', 'Please select flow level');
                             return;
                           }
@@ -313,7 +362,6 @@ export default function DashboardScreen() {
                               headers: { 'Content-Type': 'application/json' },
                               body: JSON.stringify({
                                 currentDate: selectedDate,
-                                startDate: selectedDate,
                                 heaviness: flow,
                                 lastDay: false,
                                 description: symptoms || '',
@@ -322,6 +370,7 @@ export default function DashboardScreen() {
 
                             const updatedPeriodData = await getPeriodData();
                             setPeriodData(updatedPeriodData);
+                            getCycleAlerts();
 
                             setShowLogModal(false);
                             setSymptoms('');
