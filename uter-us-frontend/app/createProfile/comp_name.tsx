@@ -21,8 +21,13 @@ type NavProp = NativeStackNavigationProp<RootStackParamList, 'CompName'>;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+const PETS = [
+  { id: 1, name: 'Chiikawa', image: require('../../assets/images/chiiwawa.png') },
+  { id: 2, name: 'Shadow',   image: require('../../assets/images/shadow.png') },
+  { id: 3, name: 'Bird',     image: require('../../assets/images/birb.png') },
+];
+
 export default function CompNameScreen() {
-  const navigation = useNavigation<NavProp>();
   const router = useRouter();
   const { accountType, averageCycleLength } = useLocalSearchParams<{
   accountType: string;
