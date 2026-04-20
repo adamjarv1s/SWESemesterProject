@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Alert, View, Pressable, Text, TextInput } from 'react-native';
+import { IPAddress } from '@/config';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { HelloWave } from '@/components/hello-wave';
@@ -36,13 +37,11 @@ export default function CompNameScreen() {
     router.push("../(tabs)/dashboard");
   };
 
-  async function HandleCreateProfile() {
+  async function CreateProfile() {
   try {
-    const response = await fetch('http://localhost:8080/create-user', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch(`${IPAddress}/create-user`, {
       body: JSON.stringify({
-        username,
+        name: username,
         pet,
         pet_id: petId,
         accountType: Number(accountType),
@@ -69,37 +68,26 @@ export default function CompNameScreen() {
         </ThemedText>
       </View>
       <ThemedText style={[styles.bodySpacing]}>Companion Name</ThemedText>
-      <TextInput
-        // value = {username} onChangeText={setUserName}
-        style={[styles.textInput]}
-        autoCapitalize="none"
-        placeholder="Name" 
-        placeholderTextColor="#94a3b8"
-        maxLength={12}
-      />
+        <TextInput
+          value={username}
+          onChangeText={setuserName}
+          style={[styles.textInput]}
+          autoCapitalize="none"
+          placeholder="Name"
+          placeholderTextColor="#94a3b8"
+          maxLength={12}
+        />
 
 
-      <ThemedText style={[styles.createButtonContainer]}>
-          <Pressable 
+        <Pressable
           style={({ pressed }) => [
-          pressed && styles.createButtonPressContainer
+            styles.createButtonContainer,
+            pressed && styles.createButtonPressContainer
           ]}
-          onPress={profiles}>
-            <ThemedText style={styles.createButtonText}>Create Profile</ThemedText>
-          </Pressable>
-      </ThemedText>
-
-
-      {/* TEMPORARY LINK TO DASHBOARD FOR TESTING!!!
-
-          when we can get to dashboard from index (profiles page) REMOVE THIS!!!
-      
-      */}
-      
-      <Link href="../(tabs)/dashboard" 
-      style={{textAlign: 'center', color: '#007AFF', backgroundColor: '#848484', width:'50%', alignSelf: 'center', padding: 10, borderRadius: 5, marginTop: windowHeight * 0.02}}>
-        to dashboard
-      </Link>
+          onPress={CreateProfile}
+        >
+          <ThemedText style={styles.createButtonText}>Create Profile</ThemedText>
+        </Pressable>
     </ThemedView>
     // </ParallaxScrollView>
   );

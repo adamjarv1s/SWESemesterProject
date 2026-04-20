@@ -256,7 +256,9 @@ if (alerts) {
                 Hello, {userName}!
             </ThemedText>
 
+          <Pressable onPress={() => router.push("../createProfile/select_profile")}>
             <FontAwesomeIcon icon={faSignOutAlt} size={20}/>
+          </Pressable>
         </View>
           
           
