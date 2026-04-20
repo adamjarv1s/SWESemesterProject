@@ -65,16 +65,104 @@ async function getUserName() {
   }
 }
 
+
+async function getFlowerPurchased(){
+  try {
+      const response = await fetch(`${IPAddress}/get-flower-purchased`);
+      const text = await response.text();
+      return text;
+    } catch (error) {
+      console.error('ErrorUpdateCrownPurchase:', error);
+      return '-';
+    }
+}
+
+async function getCrownPurchased() {
+    try {
+      const response = await fetch(`${IPAddress}/get-crown-purchased`);
+      const text = await response.text();
+      return text;
+    } catch (error) {
+      console.error('ErrorUpdateCrownPurchase:', error);
+      return '-';
+    }
+  }
+
+async function getBowPurchased() {
+    try {
+      const response = await fetch(`${IPAddress}/get-bow-purchased`);
+      const text = await response.text();
+      return text;
+  
+    } catch (error) {
+      console.error('ErrorUpdateBowPurchase:', error);
+      return '-';
+    }
+  }
+
+async function getHotWaterPurchased() {
+    try {
+      const response = await fetch(`${IPAddress}/get-hotwater-purchased`);
+      const text = await response.text();
+      return text;
+    } catch (error) {
+      console.error('ErrorUpdateHotWaterPurchase:', error);
+      return '-';
+    }
+  }
+
+async function getCandyPurchased() {
+    try {
+      const response = await fetch(`${IPAddress}/get-candy-purchased`);
+      const text = await response.text();
+      return text;
+    } catch (error) {
+      console.error('ErrorUpdateCandyPurchase:', error);
+      return '-';
+    }
+  }
+
+async function getCurrentHeadwear() {
+    try {
+      const response = await fetch(`${IPAddress}/get-current-headwear`);
+      const text = await response.text();
+      return text;
+    } catch (error) {
+      console.error('ErrorUpdateCurrentHeadwear:', error);
+      return '0';
+    }
+  }
+
+async function getCurrentHoldable() {
+    try {
+      const response = await fetch(`${IPAddress}/get-current-holdable`);
+      const text = await response.text();
+      return text;
+    } catch (error) {
+      console.error('ErrorUpdateCurrentHoldable:', error);
+      return '0';
+    }
+  }
+
 export default function TabTwoScreen() {
 
   const navigation = useNavigation<NavProp>();
   const DrawerNavigation = useNavigation<NavPropDrawer>();
   const router = useRouter();
 
-  const [showLogModal, setShowLogModal] = useState(false);
+  const [showBuyModal, setShowBuyModal] = useState(false);
 
   const [userName, setUserName] = useState('Loading...');
   const [gems, setGems] = useState('gem');
+
+  const [flowerPurchased, setFlowerPurchased] = useState('-');
+  const [crownPurchased, setCrownPurchased] = useState('-');
+  const [bowPurchased, setBowPurchased] = useState('-');
+  const [hotWaterPurchased, setHotWaterPurchased] = useState('-');
+  const [candyPurchased, setCandyPurchased] = useState('-');
+
+  const [currentHeadwear, setCurrentHeadwear] = useState("0"); 
+  const [currentHoldable, setCurrentHoldable] = useState("0");
 
   let [fontsLoaded] = useFonts({
       BreeSerif_400Regular
@@ -83,6 +171,13 @@ export default function TabTwoScreen() {
     useEffect(() => {
       getUserName().then(name => setUserName(name));
       getGems().then(gems => setGems(gems));
+      getFlowerPurchased().then(purchased => setFlowerPurchased(purchased));
+      getCrownPurchased().then(purchased => setCrownPurchased(purchased));
+      getBowPurchased().then(purchased => setBowPurchased(purchased));
+      getHotWaterPurchased().then(purchased => setHotWaterPurchased(purchased));
+      getCandyPurchased().then(purchased => setCandyPurchased(purchased));
+      getCurrentHeadwear().then(headwear => setCurrentHeadwear(headwear));
+      getCurrentHoldable().then(holdable => setCurrentHoldable(holdable));
     }, []);
     
   
@@ -144,27 +239,27 @@ export default function TabTwoScreen() {
               </ThemedText>
 
               <View style={[styles.inlineContainer, styles.spacingContainer]}>
-                <View style={[styles.stepContainer, styles.itemContainer]}>
+                <Pressable style={[styles.stepContainer, styles.itemContainer]}>
                   <Image source={require('../../assets/images/flowercrop.png')} style={[styles.image]} />
                   <ThemedText style={[styles.priceStyle]}>
                     100 <FontAwesomeIcon size={10} icon={faGem}/>
                   </ThemedText>
-                </View>
+                </Pressable>
               
 
-                <View style={[styles.stepContainer, styles.itemContainer]}>
+                <Pressable style={[styles.stepContainer, styles.itemContainer]}>
                   <Image source={require('../../assets/images/crowncrop.png')} style={[styles.image]} />
                   <ThemedText style={[styles.priceStyle]}>
                     100 <FontAwesomeIcon size={10} icon={faGem}/>
                   </ThemedText>
-                </View>
+                </Pressable>
 
-                <View style={[styles.stepContainer, styles.itemContainer]}>
+                <Pressable style={[styles.stepContainer, styles.itemContainer]}>
                   <Image source={require('../../assets/images/bowcrop.png')} style={[styles.image]} />
                   <ThemedText style={[styles.priceStyle]}>
                     100 <FontAwesomeIcon size={10} icon={faGem}/>
                   </ThemedText>
-                </View>
+                </Pressable>
               </View>
 
               <ThemedText>
@@ -172,24 +267,86 @@ export default function TabTwoScreen() {
               </ThemedText>
 
               <View style={[styles.spacingContainer]}>
-                <View style={[styles.stepContainer, styles.itemContainer]}>
+                <Pressable style={[styles.stepContainer, styles.itemContainer]}>
                   <Image source={require('../../assets/images/hotWaterPackcrop.png')} style={[styles.image]} />
                   <ThemedText style={[styles.priceStyle]}>
                     50 <FontAwesomeIcon size={10} icon={faGem}/>
                   </ThemedText>
-                </View>
+                </Pressable>
 
-                <View style={[styles.stepContainer, styles.itemContainer]}>
+                <Pressable style={[styles.stepContainer, styles.itemContainer]}>
                   <Image source={require('../../assets/images/candycrop.png')} style={[styles.image]} />
                   <ThemedText style={[styles.priceStyle]}>
                     50 <FontAwesomeIcon size={10} icon={faGem}/>
                   </ThemedText>
-                </View>
+                </Pressable>
 
 
               </View>
             </View>
           </View>
+
+        {/* REF FROM ABBY
+
+        <Pressable
+              disabled={!selectedDate}
+              style={({ pressed }) => [
+                styles.buttonContainer,
+                pressed && styles.buttonPressedContainer,
+                !selectedDate && { opacity: 0.4 }
+              ]}
+              onPress={() => setShowBuyModal(true)}
+            >
+              <ThemedText style={styles.buttonText}>Buy Item</ThemedText>
+            </Pressable>
+
+            <Modal
+              visible={showBuyModal}
+              transparent={true}
+              animationType="fade"
+              >
+                <View style={styles.modalOverlay}>
+                  <View style={styles.modalContent}>
+                    <ThemedText style={styles.modalTitle}>Buy Item?</ThemedText>
+
+                      <Pressable
+                        style={styles.saveButton}
+                        onPress={async () => {
+
+                          try {
+                            await fetch(`${IPAddress}/log-period`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                currentDate: selectedDate,
+                                heaviness: flow,
+                                lastDay: false,
+                                description: symptoms || '',
+                            }),
+                            });
+
+                            const updatedPeriodData = await getPeriodData();
+                            setPeriodData(updatedPeriodData);
+                            getCycleAlerts();
+
+                            setShowBuyModal(false);
+                            setSymptoms('');
+
+                          } catch (error) {
+                            console.error(error);
+                            Alert.alert('Error', 'Could not connect to server');
+                          }
+                        }}
+                      >
+                        <ThemedText style={{ color: '#fff', textAlign: 'center' }}>
+                          Cancel
+                        </ThemedText>
+                      </Pressable>
+
+                    </View>
+                </View>
+            </Modal> */}
+
 
     </ThemedView>
   );
@@ -358,5 +515,19 @@ const styles = StyleSheet.create({
   priceStyle:{
     width: '100%',
     textAlign: 'center',
-  }
+  },
+
+  modalContent: {
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 20,
+  },
+
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#000000',
+  },
 });
