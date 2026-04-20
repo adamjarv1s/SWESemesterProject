@@ -53,14 +53,22 @@
     std::cout << std::endl;
 
       sql::Driver* driver = sql::mariadb::get_driver_instance();
-      sql::SQLString url("jdbc:mariadb://127.0.0.1:3306/uterusdata");
+      sql::SQLString url("jdbc:mariadb://127.0.0.1:3306/");
       sql::Properties properties({
         {"user", "root"},
         {"password", password}
         });
-        
+
         conn.reset (driver->connect(url, properties));
+        std::cout << "Database connected!" << std::endl;
+
+        std::unique_ptr<sql::Statement> stmt(conn->createStatement());
+        stmt->execute("CREATE DATABASE IF NOT EXISTS uterusdata");
+        stmt->execute("USE uterusdata");
+
+        runSQLFile("../../backend/setup.sql");
         std::cout << "I'm working!" << std::endl;
+
         } catch (sql::SQLException &e){
           std::cerr << "If you see this, talk to Abby! " << e.what() << std::endl;
     }
@@ -201,28 +209,6 @@ void Database::setActiveUser(int user){
         } catch (sql::SQLException &e) {
         std::cerr << "SQL Error: " << e.what() << std::endl;
         return;
-    }
-}
-
-int Database::getActiveUserPetId() {
-    try {
-        std::unique_ptr<sql::PreparedStatement> stmnt(
-            conn->prepareStatement(
-                "SELECT pet_id FROM userinfo WHERE activeUser = 1 LIMIT 1"
-            )
-        );
-
-        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
-
-        if (res->next()) {
-            return res->getInt("pet_id");
-        }
-
-        return -1; // No active user
-
-    } catch (sql::SQLException &e) {
-        std::cerr << "SQL Error: " << e.what() << std::endl;
-        return -1;
     }
 }
 
@@ -583,27 +569,75 @@ void Database::purchaseItem(int user, int item){
 // UTILITIES SECTION
 //
 
+
+//I got ChatGPT help for this one because triggers are weird. -Abby
 void Database::runSQLFile(const std::string& filename) {
     std::ifstream file(filename);
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    std::string sql = buffer.str();
+    if (!file.is_open()) {
+        std::cerr << "Could not open SQL file: " << filename << std::endl;
+        return;
+    }
 
     std::unique_ptr<sql::Statement> stmt(conn->createStatement());
 
-    std::stringstream ss(sql);
-    std::string query;
+    std::string line;
+    std::string block;
+    bool inTrigger = false;
 
-    while (std::getline(ss, query, ';')) {
-        if (query.find_first_not_of(" \n\t") == std::string::npos) continue;
-
+    auto executeBlock = [&](const std::string& sql) {
+        std::string trimmed = sql;
+        size_t start = trimmed.find_first_not_of(" \n\t\r");
+        if (start == std::string::npos) return;
+        trimmed = trimmed.substr(start);
         try {
-            stmt->execute(query);
+            stmt->execute(trimmed);
         } catch (sql::SQLException &e) {
-            std::cerr << "Uh oh! Line: \n" << query << "\n";
+            std::cerr << "SQL Error in block:\n" << trimmed << "\n";
             std::cerr << e.what() << std::endl;
         }
+    };
+
+    while (std::getline(file, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+
+        std::string upper = line;
+        size_t s = upper.find_first_not_of(" \t");
+        upper = (s != std::string::npos) ? upper.substr(s) : "";
+        for (auto& c : upper) c = toupper(c);
+
+        if (upper.rfind("DELIMITER //", 0) == 0) {
+            inTrigger = true;
+            block.clear();
+            continue;
+        }
+
+        if (upper.rfind("DELIMITER ;", 0) == 0) {
+            inTrigger = false;
+            block.clear();
+            continue;
+        }
+
+        if (inTrigger) {
+            if (upper.rfind("END //", 0) == 0 || upper == "//") {
+                block += "\nEND";
+                executeBlock(block);
+                block.clear();
+            } else {
+                block += line + "\n";
+            }
+        } else {
+            block += line + "\n";
+            if (line.find(';') != std::string::npos) {
+                std::string toRun = block;
+                size_t pos = toRun.rfind(';');
+                if (pos != std::string::npos) toRun.erase(pos, 1);
+                executeBlock(toRun);
+                block.clear();
+            }
+        }
     }
+
+    if (!block.empty()) executeBlock(block);
 
     std::cout << "SQL File ran!\n";
 }
