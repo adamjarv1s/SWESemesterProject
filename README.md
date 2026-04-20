@@ -19,6 +19,10 @@ so that it encourages users to report their symptoms.
 - C++
 - MariaDB
 
+## Viewing Figma -> Reference this for designs!
+(Figma)[https://www.figma.com/design/Dgkb2VfXTq9qRCwfa5NQ9X/UterUs-Main-Designs?node-id=7-6&t=mNrpzuBlpNFpYPjj-1] 
+Password: uterus
+
 ## Setting up Frontend
 To set up frontend, do the following commands in your terminal:
 ### Navigate to uter-us Folder

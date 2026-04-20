@@ -26,6 +26,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types';
 import { useRouter } from 'expo-router';
+
 import type { DrawerNavigationProp } from '@react-navigation/drawer';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -33,7 +34,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 type NavPropDrawer = DrawerNavigationProp<RootStackParamList, 'Dashboard'>;
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccPurpose'>;
-
 
 
 // constants
@@ -286,12 +286,29 @@ if (alerts) {
             </View>
 
 
-            <View style={[styles.buddyPNG]}>
+            <View style={[styles.container]}>
+              <View style={[styles.buddy]}>
                 {petId === 1 && <Image source={require('../../assets/images/chiiwawa.png')} style={[styles.image]} />}
                 {petId === 2 && <Image source={require('../../assets/images/shadow.png')} style={[styles.image]} />}
                 {petId === 3 && <Image source={require('../../assets/images/birb.png')} style={[styles.image]} />}
                 {petId !== 1 && petId !== 2 && petId !== 3 && <ThemedText>buddy</ThemedText>}
+              </View>
+
+              <View style={[styles.overlayHand]}>
+                <Image source={require('../../assets/images/hotWaterPack.png')} style={[styles.image]} />
+              </View>
+
+              <View style={[styles.overlayHead]}>
+                <Image source={require('../../assets/images/flower.png')} style={[styles.image]} />
+              </View>
             </View>
+
+            {/* <View style={[styles.buddyPNG]}>
+                {petId === 1 && <Image source={require('../../assets/images/chiiwawa.png')} style={[styles.image]} />}
+                {petId === 2 && <Image source={require('../../assets/images/shadow.png')} style={[styles.image]} />}
+                {petId === 3 && <Image source={require('../../assets/images/birb.png')} style={[styles.image]} />}
+                {petId !== 1 && petId !== 2 && petId !== 3 && <ThemedText>buddy</ThemedText>}
+            </View> */}
           </View>
         </View>
 
@@ -661,4 +678,25 @@ const styles = StyleSheet.create({
     height: windowHeight * 0.2,
     resizeMode: 'contain',
   },
+
+  container: {
+    position: 'relative',
+    marginTop: -windowHeight * 0.03,
+  },
+
+  buddy:{
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+
+  overlayHand:{
+    position: 'absolute',
+    resizeMode: 'contain',
+  },
+
+  overlayHead:{
+    position: 'absolute',
+    resizeMode: 'contain',
+  }
 });
