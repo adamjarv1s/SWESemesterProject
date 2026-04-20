@@ -101,6 +101,11 @@ async function CreateProfile() {
         >
           <ThemedText style={styles.createButtonText}>Create Profile</ThemedText>
         </Pressable>
+
+        <Link href="../(tabs)/dashboard" 
+      style={{textAlign: 'center', color: '#007AFF', backgroundColor: '#848484', width:'50%', alignSelf: 'center', padding: 10, borderRadius: 5, marginTop: windowHeight * 0.02}}>
+        to dashboard
+      </Link>
         </View>
     </ThemedView>
   );

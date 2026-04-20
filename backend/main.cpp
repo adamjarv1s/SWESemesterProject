@@ -49,7 +49,7 @@ int main() {
     std::regex json("\"name\":\"([^\"]+)\".*?\"pet\":\"([^\"]+)\".*?\"pet_id\":(\\d+).*?\"accountType\":(\\d+).*?\"averageCycleLength\":(\\d+).*?\"averagePeriodLength\":(\\d+)");
     std::smatch match;
     if (std::regex_search(body, match, json)) {
-        db.createAccount(match[1], match[2], std::stoi(match[3]), std::stoi(match[4]), std::stoi(match[6]), std::stoi(match[5]));
+        db.createAccount(match[1], match[2], std::stoi(match[3]), std::stoi(match[3]), std::stoi(match[4]), std::stoi(match[6]), std::stoi(match[5]));
             std::cout << "Added user to database" << std::endl;
         }
         res.set_content("{\"status\": \"ok\"}", "application/json");
@@ -111,10 +111,54 @@ int main() {
         std::cout << "streak: " << streak << std::endl;
     });
 
+
     svr.Get("/get-diamonds", [&db](const httplib::Request &, httplib::Response &res) {
         int diamonds = db.getDiamonds(db.getUserId());
         res.set_content(to_string(diamonds), "text/plain");
         std::cout << "diamonds: " << diamonds << std::endl;
+    });
+
+    // new stuff for if the items are purchased (bools)
+    svr.Get("/get-bow-purchased", [&db](const httplib::Request &, httplib::Response &res) {
+        bool purchased = db.getBowPurchased(db.getUserId());
+        res.set_content(to_string(purchased), "text/plain");
+        std::cout << "bowPurchased: " << purchased << std::endl;
+    });
+
+    svr.Get("/get-crown-purchased", [&db](const httplib::Request &, httplib::Response &res) {
+        bool purchased = db.getCrownPurchased(db.getUserId());
+        res.set_content(to_string(purchased), "text/plain");
+        std::cout << "crownPurchased: " << purchased << std::endl;
+    });
+
+    svr.Get("/get-hotwater-purchased", [&db](const httplib::Request &, httplib::Response &res) {
+        bool purchased = db.getHotWaterPurchased(db.getUserId());
+        res.set_content(to_string(purchased), "text/plain");
+        std::cout << "hotWaterPurchased: " << purchased << std::endl;
+    });
+
+    svr.Get("/get-candy-purchased", [&db](const httplib::Request &, httplib::Response &res) {
+        bool purchased = db.getCandyPurchased(db.getUserId());
+        res.set_content(to_string(purchased), "text/plain");
+        std::cout << "candyPurchased: " << purchased << std::endl;
+    });
+
+    svr.Get("/get-flower-purchased", [&db](const httplib::Request &, httplib::Response &res) {
+        bool purchased = db.getFlowerPurchased(db.getUserId());
+        res.set_content(to_string(purchased), "text/plain");
+        std::cout << "flowerPurchased: " << purchased << std::endl;
+    });
+
+    svr.Get("/get-current-headwear", [&db](const httplib::Request &, httplib::Response &res) {
+        int headwear = db.getCurrentHeadwear(db.getUserId());
+        res.set_content(to_string(headwear), "text/plain");
+        std::cout << "currentHeadwear: " << headwear << std::endl;
+    });
+
+    svr.Get("/get-current-holdable", [&db](const httplib::Request &, httplib::Response &res) {
+        int holdable = db.getCurrentHoldable(db.getUserId());
+        res.set_content(to_string(holdable), "text/plain");
+        std::cout << "currentHoldable: " << holdable << std::endl;
     });
 
     svr.Get("/print-all-data", [&db](const httplib::Request &req, httplib::Response &res) {

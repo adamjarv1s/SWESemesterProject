@@ -125,6 +125,28 @@ async function getPetId() {
   }
 }
 
+async function getCurrentHeadwear() {
+  try { 
+    const response = await fetch(`${IPAddress}/get-current-headwear`);
+    const text = await response.text();
+    return parseInt(text);
+  } catch (error) {
+    console.error('ErrorGetCurrentHeadwear:', error);
+    return 0;
+  }
+}
+
+async function getCurrentHoldable() {
+  try { 
+    const response = await fetch(`${IPAddress}/get-current-holdable`);
+    const text = await response.text();
+    return parseInt(text);
+  } catch (error) {
+    console.error('ErrorGetCurrentHoldable:', error);
+    return 0;
+  }
+}
+
 export default function DashboardScreen() {
   const navigation = useNavigation<NavProp>();
   const DrawerNavigation = useNavigation<NavPropDrawer>();
@@ -135,6 +157,8 @@ export default function DashboardScreen() {
   const [streak, setStreak] = useState('str');
   const [diamondCount, setDiamondCount] = useState('0');
   const [petId, setPetId] = useState(1);
+  const [currentHeadwear, setCurrentHeadwear] = useState(0);
+  const [currentHoldable, setCurrentHoldable] = useState(0);
 
   const [showLogModal, setShowLogModal] = useState(false);
   const [flow, setFlow] = useState(null);
@@ -204,6 +228,8 @@ if (selectedDate && !periodData[selectedDate]) {
     });
     getDiamonds().then(diamonds => setDiamondCount(diamonds));
     getPetId().then(id => setPetId(id));
+    getCurrentHeadwear().then(headwear => setCurrentHeadwear(headwear));
+    getCurrentHoldable().then(holdable => setCurrentHoldable(holdable));
   }, []);
   
 
@@ -288,15 +314,20 @@ if (alerts) {
                 {petId === 1 && <Image source={require('../../assets/images/chiiwawa.png')} style={[styles.image]} />}
                 {petId === 2 && <Image source={require('../../assets/images/shadow.png')} style={[styles.image]} />}
                 {petId === 3 && <Image source={require('../../assets/images/birb.png')} style={[styles.image]} />}
-                {petId !== 1 && petId !== 2 && petId !== 3 && <ThemedText>buddy</ThemedText>}
+                {petId !== 1 && petId !== 2 && petId !== 3 && <ThemedText>buddy err</ThemedText>}
               </View>
 
               <View style={[styles.overlayHand]}>
-                <Image source={require('../../assets/images/hotWaterPack.png')} style={[styles.image]} />
+                {currentHoldable === 1 && <Image source={require('../../assets/images/hotWaterPack.png')} style={[styles.image]} />}
+                {currentHoldable === 2 && <Image source={require('../../assets/images/candy.png')} style={[styles.image]} />}
+                {currentHoldable !== 1 && currentHoldable !== 2 && <ThemedText></ThemedText>}
               </View>
 
               <View style={[styles.overlayHead]}>
-                <Image source={require('../../assets/images/flower.png')} style={[styles.image]} />
+                {currentHeadwear === 1 && <Image source={require('../../assets/images/flower.png')} style={[styles.image]} />}
+                {currentHeadwear === 2 && <Image source={require('../../assets/images/crown.png')} style={[styles.image]} />}
+                {currentHeadwear === 3 && <Image source={require('../../assets/images/bow.png')} style={[styles.image]} />}
+                {currentHeadwear !== 1 && currentHeadwear !== 2 && currentHeadwear !== 3 && <ThemedText></ThemedText>}
               </View>
             </View>
 
