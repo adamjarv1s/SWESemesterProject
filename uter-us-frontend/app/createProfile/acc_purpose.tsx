@@ -7,18 +7,12 @@ import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
-
 
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types';
-import { useRouter } from 'expo-router';
-<<<<<<< HEAD
-=======
-import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
->>>>>>> 29eda8d57aad0b7640a2212d57541c7a52a30207
+import { useRouter, useLocalSearchParams } from 'expo-router';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccPurpose'>;
 
@@ -30,12 +24,8 @@ export default function AccPurposeScreen() {
   const navigation = useNavigation<NavProp>();
   const router = useRouter();
 
-  let [fontsLoaded] = useFonts({
-    BreeSerif_400Regular
-  });
-
-  const accDetails = () => {
-    router.push("/createProfile/acc_details");
+  const accDetails = (type: number) => {
+    router.push(`/createProfile/acc_details?accountType=${type}`);
   };
   return (
     <ThemedView style={styles.wholeScreen}>
@@ -51,7 +41,7 @@ export default function AccPurposeScreen() {
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={accDetails}>
+          onPress={() => accDetails(0)}>
             Individual
             <ThemedText style={[styles.createButtonText]}>
                 Individual
@@ -69,7 +59,7 @@ export default function AccPurposeScreen() {
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={accDetails}>
+          onPress={accDetails(1)}>
             <ThemedText style={[styles.createButtonText]}>
                 Parent
             </ThemedText>
@@ -87,7 +77,6 @@ const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
     paddingTop: windowHeight * 0.10,
-    alignItems: 'center',
   },
   stepContainer: {
     gap: 8,
