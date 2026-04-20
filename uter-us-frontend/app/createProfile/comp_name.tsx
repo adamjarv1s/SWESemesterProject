@@ -47,12 +47,12 @@ export default function CompNameScreen() {
   };
   return (
     <ThemedView style={styles.wholeScreen}>
-      <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="title">
+      <View style={[styles.topHeader]}>
+        <ThemedText style={[]} type="title">
           Companion Selection
         </ThemedText>
       </View>
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing]}>Companion Name</ThemedText>
+      <ThemedText style={[styles.bodySpacing]}>Companion Name</ThemedText>
       <TextInput
         // value = {username} onChangeText={setUserName}
         style={[styles.textInput]}
@@ -61,18 +61,17 @@ export default function CompNameScreen() {
         placeholderTextColor="#94a3b8"
         maxLength={12}
       />
-      <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
-        <ThemedText style={styles.inlineContainer}>
+
+
+      <ThemedText style={[styles.createButtonContainer]}>
           <Pressable 
           style={({ pressed }) => [
-          styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
           onPress={profiles}>
             <ThemedText style={styles.createButtonText}>Create Profile</ThemedText>
           </Pressable>
-        </ThemedText>
-      </View>
+      </ThemedText>
 
 
       {/* TEMPORARY LINK TO DASHBOARD FOR TESTING!!!
@@ -94,17 +93,6 @@ const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
     paddingTop: windowHeight * 0.05,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
   },
   topHeader: {
     paddingLeft: windowWidth * 0.05,
@@ -133,6 +121,9 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
     alignItems: 'center',
+    alignSelf: 'center',
+    textAlign: 'center',
+    marginTop: windowHeight * 0.05,
   },
   createButtonPressContainer:{
     color: '#ffffff',
@@ -141,7 +132,7 @@ const styles = StyleSheet.create({
   textInput:{
     marginLeft: windowWidth * 0.05,
     height: 45,
-    width: "30%",
+    width: "80%",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
