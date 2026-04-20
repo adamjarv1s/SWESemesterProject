@@ -1,8 +1,12 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
-
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
+import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
+
+
 
 export type ThemedTextProps = TextProps & {
+  
   lightColor?: string;
   darkColor?: string;
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'header' | 'faint';
@@ -17,7 +21,16 @@ export function ThemedText({
 }: ThemedTextProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
+  let [fontsLoaded] = useFonts({
+    BreeSerif_400Regular
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
+    
     <Text
       style={[
         { color },
@@ -36,6 +49,7 @@ export function ThemedText({
 }
 
 const styles = StyleSheet.create({
+  
   default: {
     fontSize: 16,
     lineHeight: 24,
@@ -48,6 +62,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 48,
     fontWeight: 'bold',
+    textAlign: 'center',
     lineHeight: 48,
   },
   subtitle: {

@@ -27,7 +27,7 @@ type Profile = {
   companion: string;
 }
 
-export default function selectProfilesScreen() {
+export default function SelectProfilesScreen() {
   const navigation = useNavigation<NavProp>();
   const router = useRouter();
 
