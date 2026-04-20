@@ -147,7 +147,11 @@ int Database::getActiveUserPetId() {
             return res->getInt("pet_id");
         }
 
+<<<<<<< HEAD
+        return -1; // no active user
+=======
         return -1; // No active user
+>>>>>>> 2118fdc1c715c8eebf7def5ececb67b049c6f6a3
 
     } catch (sql::SQLException &e) {
         std::cerr << "SQL Error: " << e.what() << std::endl;
