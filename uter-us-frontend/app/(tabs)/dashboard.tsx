@@ -26,6 +26,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types';
 import { useRouter } from 'expo-router';
+
 import type { DrawerNavigationProp } from '@react-navigation/drawer';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -33,7 +34,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 type NavPropDrawer = DrawerNavigationProp<RootStackParamList, 'Dashboard'>;
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccPurpose'>;
-
 
 
 // constants
@@ -172,6 +172,8 @@ export default function DashboardScreen() {
     getStreak().then(name => setStreak(name));
     getGems().then(gems => setGems(gems));
     getPetId().then(id => setPetId(id));
+    getGems().then(gems => setGems(gems));
+    getPetId().then(id => setPetId(id));
   }, []);
   
 
@@ -182,7 +184,6 @@ export default function DashboardScreen() {
   const toBuddy = () => {
     router.push("./buddy");
   };
-
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
