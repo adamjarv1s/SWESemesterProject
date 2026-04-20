@@ -149,6 +149,18 @@ int main() {
         std::cout << "flowerPurchased: " << purchased << std::endl;
     });
 
+    svr.Get("/get-current-headwear", [&db](const httplib::Request &, httplib::Response &res) {
+        int headwear = db.getCurrentHeadwear(db.getUserId());
+        res.set_content(to_string(headwear), "text/plain");
+        std::cout << "currentHeadwear: " << headwear << std::endl;
+    });
+
+    svr.Get("/get-current-holdable", [&db](const httplib::Request &, httplib::Response &res) {
+        int holdable = db.getCurrentHoldable(db.getUserId());
+        res.set_content(to_string(holdable), "text/plain");
+        std::cout << "currentHoldable: " << holdable << std::endl;
+    });
+
     svr.Get("/print-all-data", [&db](const httplib::Request &req, httplib::Response &res) {
         db.printAllData(db.getUserId());
         res.set_content(R"({ "status": "printed" })", "application/json");

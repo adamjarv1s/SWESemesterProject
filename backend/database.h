@@ -39,8 +39,12 @@ class Database{
     bool getHotWaterPurchased(int user);
     bool getCandyPurchased(int user);
     bool getFlowerPurchased(int user);
+    int getCurrentHeadwear(int user);
+    int getCurrentHoldable(int user);
     int spendDiamonds(int user, int price);
     void purchaseItem(int user, int item);
+    void setCurrentHeadwear(int user, int headwear);
+    void setCurrentHoldable(int user, int holdable);
 
     //UTILITY FUNCTIONS (Don't neatly fit into any category)
     void runSQLFile(const std::string& filename);
