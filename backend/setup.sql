@@ -27,15 +27,18 @@ create table IF NOT EXISTS periodData(
                                          FOREIGN KEY (id) REFERENCES UserInfo(id),
                                          UNIQUE KEY unique_user_date (id, CurrentDate)
 );
+
+
 create table if not exists purchaseData(
-                                           id INT AUTO_INCREMENT PRIMARY KEY,
-                                           currentDiamonds int not null,
-                                           bowPurchased bool not null,
-                                           crownPurchased bool not null,
-                                           hotWaterPurchased bool not null,
-                                           candyPurchased bool not null,
-                                           flowerPurchased bool not null,
-                                           FOREIGN KEY (id) REFERENCES UserInfo(id)
+                                        id INT AUTO_INCREMENT PRIMARY KEY,
+                                        currentDiamonds int not null,
+                                        currentOutfit int null null,
+                                        bowPurchased bool not null default false,
+                                        crownPurchased bool not null default false,
+                                        hotWaterPurchased bool not null default false,
+                                        candyPurchased bool not null default false,
+                                        flowerPurchased bool not null default false,
+                                        FOREIGN KEY (id) REFERENCES UserInfo(id)
 );
 
 delimiter //
@@ -44,10 +47,10 @@ after insert on UserInfo
 for each row
 begin
         insert into purchaseData (
-            id, currentDiamonds, bowPurchased, crownPurchased, hotWaterPurchased, candyPurchased, flowerPurchased
+            id, currentDiamonds, currentOutfit
         )
         values (
-            NEW.id, 0,false,false,false,false,false
+            NEW.id, 0, 0
         );
 end //
 delimiter ;
@@ -57,7 +60,7 @@ create trigger if not exists deleteUserMoney
 after delete on UserInfo
 for each row
 begin
-        delete from purchaseData  where id = NEW.id;
+        delete from purchaseData where id = NEW.id;
 delimiter ;
 
 delimiter //
