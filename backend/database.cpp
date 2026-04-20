@@ -75,23 +75,31 @@
 //USERINFO FUNCTIONS!!!
 //
 
-  void Database::createAccount(string name, string pet, int pet_id, int accountType,int averagePeriodLength){
+  void Database::createAccount(string name, string pet, int pet_id, int accountType,int averagePeriodLength, int averageCycleLength){
     try {
+
+        std::unique_ptr<sql::PreparedStatement> deactivate(conn->prepareStatement(
+            "UPDATE userinfo SET activeUser = 0"
+        ));
+        deactivate->executeUpdate();
+
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-        "insert into userinfo (name, pet, pet_id, accountType, streak, lastActiveDay, activeUser, averagePeriodLength) "
-        "values (?, ?, ?, ?, ?, ?, ?, ?)"
+        "insert into userinfo (name, pet, pet_id, accountType, streak, lastActiveDay, activeUser, averagePeriodLength, averageCycleLength) "
+        "values (?, ?, ?, ?, ?, ?, ?, ?, ?)"
         ));
 
         stmnt->setString(1, name);
         stmnt->setString(2, pet);
-      stmnt->setInt(3, pet_id);
-      stmnt->setInt(4, accountType);
-      stmnt->setInt(5, 1);
-      stmnt->setDateTime(6, getCurrentDate());
-      stmnt->setBoolean(7, 1);
-      stmnt->setInt(8, averagePeriodLength);
+        stmnt->setInt(3, pet_id);
+        stmnt->setInt(4, accountType);
+        stmnt->setInt(5, 1);
+        stmnt->setDateTime(6, getCurrentDate());
+        stmnt->setBoolean(7, 1);
+        stmnt->setInt(8, averagePeriodLength);
+        stmnt->setInt(9, averagePeriodLength);
 
-      stmnt->executeUpdate();
+        stmnt->executeUpdate();
+
         } catch (sql::SQLException &e) {
         cerr << "SQL Error: " << e.what() << endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
@@ -133,32 +141,6 @@ string Database::getActiveUserName() {
     }
 }
 
-int Database::getActiveUserPetId() {
-    try {
-        std::unique_ptr<sql::PreparedStatement> stmnt(
-            conn->prepareStatement(
-                "SELECT pet_id FROM userinfo WHERE activeUser = 1 LIMIT 1"
-            )
-        );
-
-        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
-
-        if (res->next()) {
-            return res->getInt("pet_id");
-        }
-
-<<<<<<< HEAD
-        return -1; // no active user
-=======
-        return -1; // No active user
->>>>>>> 2118fdc1c715c8eebf7def5ececb67b049c6f6a3
-
-    } catch (sql::SQLException &e) {
-        std::cerr << "SQL Error: " << e.what() << std::endl;
-        return -1;
-    }
-}
-
 int Database::getUserId() {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(
@@ -181,38 +163,69 @@ int Database::getUserId() {
     }
 }
 
+void Database::setActiveUser(int user){
+    try {
+        std::unique_ptr<sql::PreparedStatement> deactivate(conn->prepareStatement(
+            "UPDATE userinfo SET activeUser = 0"
+        ));
+        deactivate->executeUpdate(); 
+
+        std::unique_ptr<sql::PreparedStatement> activate(conn->prepareStatement(
+            "UPDATE userinfo SET activeUser = 1 WHERE id = ?"
+        ));
+        activate->setInt(1, user);
+        activate->executeUpdate();
+
+        } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return;
+    }
+}
+
+int Database::getActiveUserPetId() {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT pet_id FROM userinfo WHERE activeUser = 1 LIMIT 1"
+            )
+        );
+
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+
+        if (res->next()) {
+            return res->getInt("pet_id");
+        }
+
+        return -1; // No active user
+
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return -1;
+    }
+}
+
 string Database::getProfilesAsJson() {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-            "SELECT name, pet, accountType FROM userinfo"
+            "SELECT id, name, pet, pet_id, accountType FROM userinfo"
         ));
 
         std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
 
-        vector<tuple<string, string, int>> profiles;
+        std::string json = "[";
+        bool first = true;
 
         while (res->next()) {
-            string name = res->getString("name");
-            string pet = res->getString("pet");
-            int accountType = res->getInt("accountType");
-
-            profiles.push_back(make_tuple(name, pet, accountType));
-        }
-
-            std::string json = "[";
-
-        for (size_t i = 0; i < profiles.size(); ++i) {
-            const auto& [name, pet, accountType] = profiles[i];
+            if (!first) json += ",";
+            first = false;
 
             json += "{";
-            json += "\"name\":\"" + name + "\",";
-            json += "\"pet\":\"" + pet + "\",";
-            json += "\"accountType\":" + std::to_string(accountType);
+            json += "\"id\":" + std::to_string(res->getInt("id")) + ",";
+            json += "\"name\":\"" + string(res->getString("name")) + "\",";
+            json += "\"pet\":\"" + string(res->getString("pet")) + "\",";
+            json += "\"pet_id\":" + std::to_string(res->getInt("pet_id")) + ",";
+            json += "\"accountType\":" + std::to_string(res->getInt("accountType"));
             json += "}";
-
-            if (i != profiles.size() - 1) {
-                json += ",";
-            }
         }
 
         json += "]";
@@ -225,9 +238,6 @@ string Database::getProfilesAsJson() {
     }
 }
 
-void Database::changeActiveUser(int user){
-    return;
-}
 
 //
 //PERIOD CREATION FUNCTIONS!!!
@@ -245,9 +255,9 @@ void Database::logPeriod(int user, string currentDate,
         stmnt->setInt(1, user);
         stmnt->setString(2, currentDate);
         stmnt->setInt(3, heaviness);
-        stmnt->setBoolean(4, true);      // FirstDay
-        stmnt->setBoolean(5, lastDay);   // LastDay
-        stmnt->setBoolean(6, false);     // predicted
+        stmnt->setBoolean(4, true);
+        stmnt->setBoolean(5, lastDay);
+        stmnt->setBoolean(6, false); 
         stmnt->setString(7, description);
 
         stmnt->executeUpdate();

@@ -55,7 +55,7 @@ begin
 end //
 delimiter ;
 
-delimiter //
+elimiter //
 create trigger if not exists deleteUserMoney
 after delete on UserInfo
 for each row
@@ -64,7 +64,7 @@ begin
 delimiter ;
 
 delimiter //
-CREATE TRIGGER setPeriodFlags
+create trigger setPeriodFlags
 BEFORE INSERT ON periodData
 FOR EACH ROW
 BEGIN

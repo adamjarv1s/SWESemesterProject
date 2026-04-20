@@ -5,6 +5,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPerson, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Image } from 'expo-image';
 
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
@@ -18,9 +19,17 @@ type NavProp = NativeStackNavigationProp<RootStackParamList, 'SelectProfile'>;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+const PETS = [
+  { id: 1, name: 'Chiikawa', image: require('../../assets/images/chiiwawa.png') },
+  { id: 2, name: 'Shadow',   image: require('../../assets/images/shadow.png') },
+  { id: 3, name: 'Bird',     image: require('../../assets/images/birb.png') },
+];
+
 type Profile = {
+  id: number;
   name: string;
   pet: string;
+  pet_id: number;
   accountType: number;
 }
 
@@ -62,7 +71,6 @@ export default function selectProfilesScreen() {
 
   return (
     <ThemedView style={styles.wholeScreen}>
-      <Text style ={styles.existingUserLabel}>Existing User</Text>
 
       <View style={styles.card}>
         <ThemedText style={styles.title}>UterUs</ThemedText>
@@ -74,10 +82,17 @@ export default function selectProfilesScreen() {
           <Pressable
             key={index}
             style={({pressed}) => [styles.profileRow, pressed && styles.profileRowPressed]}
-            onPress={() => router.push('/dashboard')}
-            >
+            onPress={async () => {
+              await fetch(`${IPAddress}/set-active-user?id=${profile.id}`);
+              router.push('/(tabs)/dashboard' as any);
+              console.log("Setting active user to:", profile.id);
+            }}
+          >
             <View style={styles.avatarCircle}>
-              <FontAwesomeIcon icon={faPerson} size={22} color="#555" />
+              {PETS.find(p => p.id === profile.pet_id)
+                ? <Image source={PETS.find(p => p.id === profile.pet_id)!.image} style={styles.avatarImage} />
+                : <FontAwesomeIcon icon={faPerson} size={22} color="#555" />
+              }
             </View>
             <View style={styles.profileInfo}>
               <Text style={styles.profileName}>{profile.name}</Text>
@@ -88,12 +103,13 @@ export default function selectProfilesScreen() {
         ))}
 
         <Pressable
-          style={({pressed}) => [styles.profileRow, pressed && styles.profileRowPressed]}
+          style={({pressed}) => [styles.addProfileButton, pressed && styles.profileRowPressed]}
           onPress={() => router.push('/createProfile/acc_purpose' as any)}
           >
             <View style={styles.addCircle}>
               <FontAwesomeIcon icon={faPlus} size={18} color="#555"/>
             </View>
+            <ThemedText style={styles.textButton}>Add Profile</ThemedText>
         </Pressable>
          </ScrollView> 
        )}
@@ -186,5 +202,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#111',
     fontFamily: 'BreeSerif_400Regular',
+  },
+  addProfileButton:{
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 14,
+    padding: 14,
+    gap: 14,
+    borderWidth: 1,
+    borderColor: '#e8e8e8',
+  },
+  avatarImage: {
+  width: '100%',
+  height: '100%',
+  borderRadius: 23,
+},
+ textButton: {
+    fontSize: 18,
+    fontFamily: 'BreeSerif_400Regular',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#111',
   },
 });
