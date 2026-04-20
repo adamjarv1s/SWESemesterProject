@@ -21,6 +21,7 @@ class Database{
     void deleteAccount(int user);
     int getUserId();
     string getActiveUserName();
+    int getActiveUserPetId();
     string getProfilesAsJson();
     vector<pair<int, int>> getPeriodsAsVector(int user);
     void changeActiveUser(int user);

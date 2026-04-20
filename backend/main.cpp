@@ -61,6 +61,12 @@ int main() {
         std::cout << "name: " << name << std::endl;
     });
 
+    svr.Get("/get-pet-id", [&db](const httplib::Request &, httplib::Response &res) {
+        int petId = db.getActiveUserPetId();
+        res.set_content(to_string(petId), "text/plain");
+        std::cout << "pet_id: " << petId << std::endl;
+    });
+
     svr.Get("/get-period-data", [&db](const httplib::Request &, httplib::Response &res) {
         string periods = db.getPeriodsAsString(db.getUserId());
         res.set_content(periods, "application/json");
