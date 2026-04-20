@@ -41,7 +41,7 @@ type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccPurpose'>;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-  async function getGems() {
+async function getGems() {
     try {
       const response = await fetch(`${IPAddress}/update-gems`);
       const text = await response.text();
@@ -52,6 +52,18 @@ const windowHeight = Dimensions.get('window').height;
       return 'GEMSNUM';
     }
   }
+
+async function getUserName() {
+  try {
+    const response = await fetch(`${IPAddress}/get-user`);
+    const text = await response.text();
+    return text;
+
+  } catch (error) {
+    console.error('ErrorGetUsername:', error);
+    return 'Unpeakawa';
+  }
+}
 
 export default function TabTwoScreen() {
 

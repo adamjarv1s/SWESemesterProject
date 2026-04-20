@@ -1,6 +1,7 @@
-import React from 'react';
+import {useState} from 'react';
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Alert, View, Pressable, Text, TextInput } from 'react-native';
+import { IPAddress } from '@/config';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { HelloWave } from '@/components/hello-wave';
@@ -12,7 +13,7 @@ import { ThemedView } from '@/components/themed-view';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types';
-import { useRouter, Link } from 'expo-router';
+import { useLocalSearchParams, useRouter, Link } from 'expo-router';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'CompName'>;
 
@@ -20,12 +21,32 @@ type NavProp = NativeStackNavigationProp<RootStackParamList, 'CompName'>;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-async function HandleCreateProfile() {
+export default function CompNameScreen() {
+  const navigation = useNavigation<NavProp>();
+  const router = useRouter();
+  const { accountType, averageCycleLength } = useLocalSearchParams<{
+  accountType: string;
+  averagePeriodLength: string;
+  averageCycleLength: string;
+  }>();
+  const [username, setuserName] = useState('');
+  const [pet, setPet] = useState('');
+  const [petId, setPetId] = useState(0);
+
+  const profiles = () => {
+    router.push("../(tabs)/dashboard");
+  };
+
+  async function CreateProfile() {
   try {
-    const response = await fetch('http://localhost:8080/create-user', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'Jared', pet: 'Shadow', accountType: 1 }) 
+    const response = await fetch(`${IPAddress}/create-user`, {
+      body: JSON.stringify({
+        name: username,
+        pet,
+        pet_id: petId,
+        accountType: Number(accountType),
+        averageCycleLength: Number(averageCycleLength),
+      }),
     });
 
     if (response.ok) {
@@ -33,18 +54,12 @@ async function HandleCreateProfile() {
     } else {
       Alert.alert('Error', 'Failed to create profile');
     }
+
+    router.push('/(tabs)/dashboard');
   } catch (error) {
     Alert.alert('Error', 'Could not connect to server');
   }
 }
-
-export default function CompNameScreen() {
-  const navigation = useNavigation<NavProp>();
-  const router = useRouter();
-
-  const profiles = () => {
-    router.push("/");
-  };
   return (
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.topHeader]}>
@@ -53,37 +68,26 @@ export default function CompNameScreen() {
         </ThemedText>
       </View>
       <ThemedText style={[styles.bodySpacing]}>Companion Name</ThemedText>
-      <TextInput
-        // value = {username} onChangeText={setUserName}
-        style={[styles.textInput]}
-        autoCapitalize="none"
-        placeholder="Name" 
-        placeholderTextColor="#94a3b8"
-        maxLength={12}
-      />
+        <TextInput
+          value={username}
+          onChangeText={setuserName}
+          style={[styles.textInput]}
+          autoCapitalize="none"
+          placeholder="Name"
+          placeholderTextColor="#94a3b8"
+          maxLength={12}
+        />
 
 
-      <ThemedText style={[styles.createButtonContainer]}>
-          <Pressable 
+        <Pressable
           style={({ pressed }) => [
-          pressed && styles.createButtonPressContainer
+            styles.createButtonContainer,
+            pressed && styles.createButtonPressContainer
           ]}
-          onPress={profiles}>
-            <ThemedText style={styles.createButtonText}>Create Profile</ThemedText>
-          </Pressable>
-      </ThemedText>
-
-
-      {/* TEMPORARY LINK TO DASHBOARD FOR TESTING!!!
-
-          when we can get to dashboard from index (profiles page) REMOVE THIS!!!
-      
-      */}
-      
-      <Link href="../(tabs)/dashboard" 
-      style={{textAlign: 'center', color: '#007AFF', backgroundColor: '#848484', width:'50%', alignSelf: 'center', padding: 10, borderRadius: 5, marginTop: windowHeight * 0.02}}>
-        to dashboard
-      </Link>
+          onPress={CreateProfile}
+        >
+          <ThemedText style={styles.createButtonText}>Create Profile</ThemedText>
+        </Pressable>
     </ThemedView>
     // </ParallaxScrollView>
   );

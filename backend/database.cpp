@@ -75,18 +75,21 @@
 //USERINFO FUNCTIONS!!!
 //
 
-  void Database::createAccount(string name, string pet, int pet_id, int accountType,int averageCycleLength){
+  void Database::createAccount(string name, string pet, int pet_id, int accountType,int averagePeriodLength){
     try {
-      std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, pet_id, accountType, streak, lastActiveDay, activeUser, averageCycleLength) values (?, ?, ?, ?, ?, ?, ?)"));
+        std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
+        "insert into userinfo (name, pet, pet_id, accountType, streak, lastActiveDay, activeUser, averagePeriodLength) "
+        "values (?, ?, ?, ?, ?, ?, ?, ?)"
+        ));
 
-      stmnt->setString(1, name);
-      stmnt->setString(2, pet);
+        stmnt->setString(1, name);
+        stmnt->setString(2, pet);
       stmnt->setInt(3, pet_id);
       stmnt->setInt(4, accountType);
       stmnt->setInt(5, 1);
       stmnt->setDateTime(6, getCurrentDate());
       stmnt->setBoolean(7, 1);
-      stmnt->setInt(8, averageCycleLength);
+      stmnt->setInt(8, averagePeriodLength);
 
       stmnt->executeUpdate();
         } catch (sql::SQLException &e) {
@@ -222,42 +225,103 @@ string Database::getProfilesAsJson() {
     }
 }
 
+void Database::changeActiveUser(int user){
+    return;
+}
+
 //
 //PERIOD CREATION FUNCTIONS!!!
 //
 
-void Database::logPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay, string description) {
+void Database::logPeriod(int user, string currentDate,
+                         int heaviness, bool lastDay, string description) {
     try {
-        int currentLength = convertSQLDateToInt(currentDate) - convertSQLDateToInt(startDate);
-
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-            "INSERT INTO perioddata (id, currentDate, startDate, currentLength, heaviness, lastDay, description) "
+            "INSERT INTO perioddata "
+            "(id, Currentdate, Heaviness, FirstDay, LastDay, predicted, description) "
             "VALUES (?, ?, ?, ?, ?, ?, ?)"
-            "ON DUPLICATE KEY UPDATE "
-            "heaviness = VALUES(heaviness), "
-            "lastDay = VALUES(lastDay)"
         ));
 
         stmnt->setInt(1, user);
         stmnt->setString(2, currentDate);
-        stmnt->setString(3, startDate);
-        stmnt->setInt(4, currentLength);
-        stmnt->setInt(5, heaviness);
-        stmnt->setBoolean(6, lastDay);
+        stmnt->setInt(3, heaviness);
+        stmnt->setBoolean(4, true);      // FirstDay
+        stmnt->setBoolean(5, lastDay);   // LastDay
+        stmnt->setBoolean(6, false);     // predicted
         stmnt->setString(7, description);
 
         stmnt->executeUpdate();
 
+        std::unique_ptr<sql::PreparedStatement> diamonds(conn->prepareStatement(
+            "UPDATE purchaseData SET currentDiamonds = currentDiamonds + 5 WHERE id = ?"
+        ));
+        diamonds->setInt(1, user);
+        diamonds->executeUpdate();
 
-        std::unique_ptr<sql::PreparedStatement> updateStmnt2(
-            conn->prepareStatement("UPDATE purchaseData SET currentDiamonds = currentDiamonds + ? WHERE id = ?")
-        );
-        updateStmnt2->setInt(1, 5);
-        updateStmnt2->setInt(2, user);
 
-        updateStmnt2->executeUpdate();
-    }catch (sql::SQLException &e) {
-        cerr << "SQL Error: " << e.what() << endl;
+
+    } catch (sql::SQLException &e) {
+        cerr << "LP SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+    }
+    generatePredictedPeriod(user);
+}
+
+void Database::clearPredictedPeriods(int user) {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
+            "DELETE FROM perioddata WHERE id = ? AND predicted = TRUE"
+        ));
+        stmnt->setInt(1, user);
+        stmnt->executeUpdate();
+    } catch (sql::SQLException &e) {
+        cerr << "CPP SQL Error: " << e.what() << endl;
+        cerr << "SQL State: " << e.getSQLState() << endl;
+    }
+}
+
+void Database::generatePredictedPeriod(int user) {
+    clearPredictedPeriods(user);
+
+    try {
+        std::unique_ptr<sql::PreparedStatement> firstDayStmnt(conn->prepareStatement(
+            "SELECT CurrentDate FROM perioddata "
+            "WHERE id = ? AND FirstDay = TRUE AND predicted = FALSE "
+            "ORDER BY CurrentDate DESC LIMIT 1"
+        ));
+        firstDayStmnt->setInt(1, user);
+        std::unique_ptr<sql::ResultSet> res(firstDayStmnt->executeQuery());
+        if (!res->next()) return;
+        string lastFirstDay = string(res->getString("CurrentDate"));
+
+        std::unique_ptr<sql::PreparedStatement> infoStmnt(conn->prepareStatement(
+            "SELECT averagePeriodLength FROM userinfo WHERE id = ?"
+        ));
+        infoStmnt->setInt(1, user);
+        std::unique_ptr<sql::ResultSet> infoRes(infoStmnt->executeQuery());
+        if (!infoRes->next()) return;
+        int periodLength = infoRes->getInt("averagePeriodLength") - 1;
+
+        std::unique_ptr<sql::PreparedStatement> insertStmnt(conn->prepareStatement(
+            "INSERT INTO perioddata (id, currentDate, heaviness, firstDay, lastDay, predicted, description) "
+            "VALUES (?, DATE_ADD(?, INTERVAL ? DAY), 2, ?, ?, TRUE, 'Predicted') "
+            "ON DUPLICATE KEY UPDATE predicted = predicted"
+        ));
+
+        for (int dayOffset = 1; dayOffset <= periodLength; dayOffset++) {
+            bool isFirstDay = (dayOffset == 1);
+            bool isLastDay  = (dayOffset == periodLength);
+
+            insertStmnt->setInt(1, user);
+            insertStmnt->setString(2, lastFirstDay);
+            insertStmnt->setInt(3, dayOffset);
+            insertStmnt->setBoolean(4, isFirstDay);
+            insertStmnt->setBoolean(5, isLastDay);
+            insertStmnt->executeUpdate();
+        }
+
+    } catch (sql::SQLException &e) {
+        cerr << "GPP SQL Error: " << e.what() << endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
     }
 }
@@ -286,7 +350,7 @@ void Database::removeOldestPeriod(int user) {
             "DELETE FROM periodData "
             "WHERE PeriodID <= ("
             "  SELECT PeriodID FROM periodData "
-            "  WHERE id = ? AND LastDay = 1 "
+            "  WHERE id = ? AND FirstDay = 1 AND predicted = FALSE "
             "  ORDER BY PeriodID ASC LIMIT 1"
             ") AND id = ?"
         ));
@@ -305,7 +369,9 @@ void Database::removeOldestPeriod(int user) {
 vector<pair<int, int>> Database::getPeriodsAsVector(int user) {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-            "SELECT * FROM perioddata WHERE id = ? AND lastday = 1 ORDER BY StartDate"
+            "SELECT CurrentDate FROM perioddata "
+            "WHERE id = ? AND FirstDay = 1 AND predicted = FALSE "
+            "ORDER BY CurrentDate"
         ));
 
         stmnt->setInt(1, user);
@@ -315,7 +381,7 @@ vector<pair<int, int>> Database::getPeriodsAsVector(int user) {
         vector<pair<int, int>> periods;
 
         while (res->next()) {
-            string date = res->getString("StartDate");
+            string date = res->getString("CurrentDate");
 
             int currentDate = convertSQLDateToInt(date);
             int year = stoi(date.substr(0, 4));
@@ -333,12 +399,12 @@ vector<pair<int, int>> Database::getPeriodsAsVector(int user) {
 }
 
 
-string Database::getPeriodsAsString(int user){
+string Database::getPeriodsAsString(int user) {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-            "SELECT * FROM perioddata WHERE id = ? ORDER BY StartDate"
+            "SELECT CurrentDate, Heaviness, FirstDay, LastDay, predicted, description "
+            "FROM perioddata WHERE id = ? ORDER BY CurrentDate"
         ));
-
         stmnt->setInt(1, user);
         std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
 
@@ -349,28 +415,36 @@ string Database::getPeriodsAsString(int user){
             if (!first) periods += ",";
             first = false;
 
-            string date = res->getString("currentDate");
-            string start = res->getString("startDate");
-            int heaviness = res->getInt("heaviness");
-            bool lastDay = res->getBoolean("lastDay");
+            string date = res->getString("CurrentDate");
+            int heaviness = res->getInt("Heaviness");
+            bool firstDay = res->getBoolean("FirstDay");
+            bool lastDay = res->getBoolean("LastDay");
+            bool isPredicted = res->getBoolean("predicted");
             string description = res->getString("description");
 
             string bgColor;
-            if (heaviness == 3) bgColor = "#FF6161";
-            else if (heaviness == 2) bgColor = "#FFA4A4";
-            else bgColor = "#FFE0E0";
+            if (isPredicted) {
+                bgColor = "#D3D3D3";
+            } else if (heaviness == 3) {
+                bgColor = "#FF6161";
+            } else if (heaviness == 2) {
+                bgColor = "#FFA4A4";
+            } else {
+                bgColor = "#FFE0E0";
+            }
 
             periods += "\"" + date + "\": {";
             periods += "\"heaviness\": " + std::to_string(heaviness) + ",";
+            periods += "\"predicted\": " + std::string(isPredicted ? "true" : "false") + ",";
             periods += "\"description\": \"" + description + "\",";
             periods += "\"customStyles\": {";
             periods += "\"container\": {";
-            periods += "\"backgroundColor\": \"" + bgColor + "\",";
-            periods += "\"borderRadius\": 6";
-            if (date == start) periods += ", \"startingDay\": true";
-            if (lastDay) periods += ", \"endingDay\": true";
+            periods += "\"backgroundColor\": \"" + bgColor + "\"";
+            periods += ",\"borderRadius\": 6";
+            if (firstDay) periods += ",\"startingDay\": true";
+            if (lastDay)  periods += ",\"endingDay\": true";
             periods += "},";
-            periods += "\"text\": { \"color\": \"#000\" }";
+            periods += "\"text\": {\"color\": \"" + std::string(isPredicted ? "#888" : "#000") + "\"}";
             periods += "}";
             periods += "}";
         }
@@ -379,7 +453,7 @@ string Database::getPeriodsAsString(int user){
         return periods;
 
     } catch (sql::SQLException &e) {
-        cerr << "SQL Error: " << e.what() << endl;
+        cerr << "GPAS SQL Error: " << e.what() << endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
         return "{}";
     }
@@ -546,25 +620,72 @@ void Database::purchaseItem(int user, int item){
 
 void Database::runSQLFile(const std::string& filename) {
     std::ifstream file(filename);
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    std::string sql = buffer.str();
+    if (!file.is_open()) {
+        std::cerr << "Could not open SQL file: " << filename << std::endl;
+        return;
+    }
 
     std::unique_ptr<sql::Statement> stmt(conn->createStatement());
 
-    std::stringstream ss(sql);
-    std::string query;
+    std::string line;
+    std::string block;
+    bool inTrigger = false;
 
-    while (std::getline(ss, query, ';')) {
-        if (query.find_first_not_of(" \n\t") == std::string::npos) continue;
+    auto executeBlock = [&](const std::string& sql) {
+        std::string trimmed = sql;
+        size_t start = trimmed.find_first_not_of(" \n\t\r");
+        if (start == std::string::npos) return;
+        trimmed = trimmed.substr(start);
 
         try {
-            stmt->execute(query);
+            stmt->execute(trimmed);
         } catch (sql::SQLException &e) {
-            std::cerr << "Uh oh! Line: \n" << query << "\n";
+            std::cerr << "SQL Error in block:\n" << trimmed << "\n";
             std::cerr << e.what() << std::endl;
         }
+    };
+
+    while (std::getline(file, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+
+        std::string trimmedLine = line;
+        size_t s = trimmedLine.find_first_not_of(" \t");
+        std::string upper = (s != std::string::npos) ? trimmedLine.substr(s) : "";
+        for (auto& c : upper) c = toupper(c);
+
+        if (upper.rfind("DELIMITER //", 0) == 0) {
+            inTrigger = true;
+            block.clear();
+            continue;
+        }
+
+        if (upper.rfind("DELIMITER ;", 0) == 0) {
+            inTrigger = false;
+            block.clear();
+            continue;
+        }
+
+        if (inTrigger) {
+            if (upper.rfind("END //", 0) == 0 || upper == "//") {
+                block += "\nEND";
+                executeBlock(block);
+                block.clear();
+            } else {
+                block += line + "\n";
+            }
+        } else {
+            block += line + "\n";
+            if (line.find(';') != std::string::npos) {
+                std::string toRun = block;
+                size_t pos = toRun.rfind(';');
+                if (pos != std::string::npos) toRun.erase(pos, 1);
+                executeBlock(toRun);
+                block.clear();
+            }
+        }
     }
+
+    if (!block.empty()) executeBlock(block);
 
     std::cout << "SQL File ran!\n";
 }
