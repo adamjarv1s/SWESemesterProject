@@ -130,6 +130,28 @@ string Database::getActiveUserName() {
     }
 }
 
+int Database::getActiveUserPetId() {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT pet_id FROM userinfo WHERE activeUser = 1 LIMIT 1"
+            )
+        );
+
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+
+        if (res->next()) {
+            return res->getInt("pet_id");
+        }
+
+        return -1; // No active user
+
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return -1;
+    }
+}
+
 int Database::getUserId() {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(
