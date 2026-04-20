@@ -8,22 +8,12 @@ import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-
+import { TextInput } from 'react-native-gesture-handler';
+import SelectProfilesScreen from './createProfile/select_profile';
 // React Navigation
-<<<<<<<< HEAD:uter-us-frontend/screens/comp_name.tsx
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../types';
 
-type NavProp = NativeStackNavigationProp<RootStackParamList, 'CompName'>;
-========
-import { Link, useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../types';
+import { Link } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-
-type NavProp = NativeStackNavigationProp<RootStackParamList, 'Profiles'>;
->>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/index.tsx
 
 // constants
 const windowWidth = Dimensions.get('window').width;
@@ -47,7 +37,6 @@ async function HandleCreateProfile() {
   }
 }
 export default function Index() {
-  const navigation = useNavigation<NavProp>();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -63,7 +52,7 @@ export default function Index() {
 
         if (data && data.length > 0) {
           requestAnimationFrame(() => {
-            router.replace('/createProfile/select_profile');
+            router.replace("./createProfile/select_profile");
           });
         } else {
           setLoading(false);
@@ -91,27 +80,9 @@ export default function Index() {
     );
   }
 
-  const profiles = () => {
-    navigation.navigate("Profiles");
-  };
+
   return (
-<<<<<<<< HEAD:uter-us-frontend/screens/comp_name.tsx
-    <ThemedView>
-      <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="header">
-          Companion Selection
-        </ThemedText>
-      </View>
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing]}>Companion Name</ThemedText>
-      <TextInput
-        // value = {username} onChangeText={setUserName}
-        style={[styles.textInput]}
-        autoCapitalize="none"
-        placeholder="Name" 
-        placeholderTextColor="#94a3b8"
-        maxLength={12}
-      />
-========
+
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
         <ThemedText style={[styles.inlineContainer]} type="title">
@@ -122,25 +93,13 @@ export default function Index() {
         <ThemedText style={styles.inlineContainer} type="subtitle">Welcome!</ThemedText>
       </View>
       <View style={[styles.inlineContainer]}>
-        <ThemedText style={styles.inlineContainer} type="default">Create a Profile to Get Started!</ThemedText>
+        <ThemedText type="default">Create a Profile to Get Started!</ThemedText>
       </View>
->>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/index.tsx
-      <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
+      <View style={[styles.inlineContainer, styles.createButtonContainer]}>
           <Pressable 
-          style={({ pressed }) => [
-            styles.createButtonContainer,
-            pressed && styles.createButtonPressContainer
-          ]}
-<<<<<<<< HEAD:uter-us-frontend/screens/comp_name.tsx
-          onPress={profiles}>
-            Create Profile
-          </Pressable>
-        </ThemedText>
-========
           onPress={newProfile}>
           <ThemedText style={styles.createButtonText}>+ Create Profile</ThemedText>
         </Pressable>
->>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/index.tsx
       </View>
     </ThemedView>
   );
@@ -150,6 +109,7 @@ const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
     paddingTop: windowHeight * 0.15,
+    alignItems: 'center',
   },
   stepContainer: {
     gap: 8,
@@ -187,6 +147,8 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingRight: 40,
     borderRadius: 5,
+    marginTop: windowHeight * 0.05,
+    width: "60%",
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
     alignItems: 'center',
@@ -198,7 +160,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
   },
-<<<<<<<< HEAD:uter-us-frontend/screens/comp_name.tsx
   textInput:{
     marginLeft: windowWidth * 0.05,
     height: 45,
@@ -209,10 +170,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "#fff",
     fontFamily: "BreeSerif_400Regular",
-========
-
+  },
   createButtonText:{
     color: '#ffffff',
->>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/index.tsx
-  },
+  }
 });

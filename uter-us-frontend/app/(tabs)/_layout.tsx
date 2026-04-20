@@ -20,6 +20,7 @@ import ProfilesScreen from '../index';
 import AccPurposeScreen from '../createProfile/acc_purpose';
 import AccDetailsScreen from '../createProfile/acc_details';
 import CompDetailsScreen from '../createProfile/comp_name';
+import SelectProfilesScreen from '../createProfile/select_profile';
 import DashboardScreen from './dashboard';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
