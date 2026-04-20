@@ -11,6 +11,7 @@ import { ThemedView } from '@/components/themed-view';
 import { TextInput } from 'react-native-gesture-handler';
 import SelectProfilesScreen from './createProfile/select_profile';
 // React Navigation
+<<<<<<< HEAD
 <<<<<<<< HEAD:uter-us-frontend/screens/comp_name.tsx
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -21,6 +22,10 @@ type NavProp = NativeStackNavigationProp<RootStackParamList, 'CompName'>;
 import { Link, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types';
+=======
+
+import { Link } from '@react-navigation/native';
+>>>>>>> 14f87c8d15af59f45847d4aa41ce8167f5af09a2
 import { useRouter } from 'expo-router';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'Profiles'>;
@@ -82,9 +87,21 @@ export default function Index() {
     router.push("/createProfile/acc_purpose");
   };
 
+<<<<<<< HEAD
   const profiles = () => {
     navigation.navigate("Profiles");
   };
+=======
+  if (loading) {
+    return (
+      <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ThemedText>Loading...</ThemedText>
+      </ThemedView>
+    );
+  }
+
+
+>>>>>>> 14f87c8d15af59f45847d4aa41ce8167f5af09a2
   return (
     <ThemedView>
       <View style={[styles.inlineContainer, styles.topHeader]}>
@@ -113,12 +130,15 @@ export default function Index() {
       <View style={[styles.inlineContainer]}>
         <ThemedText type="default">Create a Profile to Get Started!</ThemedText>
       </View>
-      <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
+      <View style={[styles.inlineContainer, styles.createButtonContainer]}>
           <Pressable 
+<<<<<<< HEAD
           style={({ pressed }) => [
             styles.createButtonContainer,
             pressed && styles.createButtonPressContainer
           ]}
+=======
+>>>>>>> 14f87c8d15af59f45847d4aa41ce8167f5af09a2
           onPress={newProfile}>
           <ThemedText style={styles.createButtonText}>+ Create Profile</ThemedText>
         </Pressable>
@@ -197,6 +217,10 @@ const styles = StyleSheet.create({
 
   createButtonText:{
     color: '#ffffff',
+<<<<<<< HEAD
 >>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/index.tsx
   },
+=======
+  }
+>>>>>>> 14f87c8d15af59f45847d4aa41ce8167f5af09a2
 });

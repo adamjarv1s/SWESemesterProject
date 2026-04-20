@@ -7,6 +7,8 @@ import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
+
 
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
@@ -23,6 +25,10 @@ const windowHeight = Dimensions.get('window').height;
 export default function AccPurposeScreen() {
   const navigation = useNavigation<NavProp>();
   const router = useRouter();
+
+  let [fontsLoaded] = useFonts({
+    BreeSerif_400Regular
+  });
 
   const accDetails = (type: number) => {
     router.push(`/createProfile/acc_details?accountType=${type}`);
@@ -77,6 +83,7 @@ const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
     paddingTop: windowHeight * 0.10,
+    alignItems: 'center',
   },
   stepContainer: {
     gap: 8,
