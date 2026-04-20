@@ -1,4 +1,4 @@
-/*import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
@@ -19,8 +19,9 @@ export default function RootLayout() {
         <Stack.Screen name = "index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="createProfile" options={{ headerShown: false }} />
+        <Stack.Screen name="/createProfile/select_profile" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
-}*/
+}

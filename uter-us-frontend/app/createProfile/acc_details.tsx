@@ -46,7 +46,7 @@ export default function AccDetailsScreen() {
           Account Details
         </ThemedText>
       </View>
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing]}>Name (Max 12 Characters)</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Name (Max 12 Characters)</ThemedText>
       <TextInput
         // value = {username} onChangeText={setUserName}
         style={[styles.textInput]}
@@ -55,13 +55,13 @@ export default function AccDetailsScreen() {
         placeholderTextColor="#94a3b8"
         maxLength={12}
       />
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing]}>Last Period Start Date</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Last Period Start Date</ThemedText>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <Pressable 
           //selectedValue={periodDate}
           //onValueChange={(value) => setPeriodDate(value)}
           style={({ pressed }) => [
-          styles.createButtonContainer,
+          styles.createDateButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
           onPress={() => setShowPicker(true)}>
@@ -85,7 +85,7 @@ export default function AccDetailsScreen() {
         />
       )}
 
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing]}>Average Period Length</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Average Period Length</ThemedText>
       <View style={[styles.dropDownInput, {marginTop: windowHeight * 0.01}]}>
         <Picker
           //selectedValue={periodLength}
@@ -107,7 +107,7 @@ export default function AccDetailsScreen() {
           <Picker.Item label="14 days" value={14} />
         </Picker>
       </View>
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing]}>Average Cycle Length</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Average Cycle Length</ThemedText>
       <View style={[styles.dropDownInput, {marginTop: windowHeight * 0.01}]}>
         <Picker
           //selectedValue={cycleLength}
@@ -138,7 +138,8 @@ export default function AccDetailsScreen() {
         </Picker>
       </View>
 
-      <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
+      <View style={[styles.flexCenter]}>
+        <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.05}]}>
         <ThemedText style={styles.inlineContainer}>
           <Pressable 
             style={({ pressed }) => [
@@ -146,10 +147,13 @@ export default function AccDetailsScreen() {
             pressed && styles.createButtonPressContainer
             ]}
             onPress={compName}>
-              <ThemedText style={styles.createButtonText}>Continue</ThemedText>
+              <ThemedText style={[styles.createButtonText]}>Continue</ThemedText>
           </Pressable>
         </ThemedText>
       </View>
+      </View>
+
+    
     </ThemedView>
   );
 }
@@ -157,7 +161,13 @@ export default function AccDetailsScreen() {
 const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
+    alignItems: 'flex-start',
   },
+  flexCenter:{
+    alignSelf: 'flex-end',
+
+  },
+
   stepContainer: {
     gap: 8,
     marginBottom: 8,
@@ -173,7 +183,6 @@ const styles = StyleSheet.create({
     paddingLeft: windowWidth * 0.05,
     paddingRight: windowWidth * 0.05,
     marginTop: windowHeight * 0.10,
-    marginBottom: windowHeight * 0.05,
     //backgroundColor: '#A1CEDC',
   },
   bodySpacing:{
@@ -189,10 +198,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontFamily: "BreeSerif_400Regular",
   },
+
+  createDateButtonContainer:{
+    padding: 10,
+    borderRadius: 5,
+    marginLeft: windowWidth * 0.05,
+    width: "60%",
+    height: "auto",
+    color: '#ffffff',
+    backgroundColor: '#2C2C2C',
+    alignItems: 'center',
+  },
+
   createButtonContainer:{
     padding: 10,
     borderRadius: 5,
-    width: "60%",
+    width: "90%",
     height: "auto",
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
@@ -205,7 +226,7 @@ const styles = StyleSheet.create({
   textInput:{
     marginLeft: windowWidth * 0.05,
     height: 45,
-    width: "30%",
+    width: "60%",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
@@ -215,12 +236,16 @@ const styles = StyleSheet.create({
   },
   dropDownInput:{
     marginLeft: windowWidth * 0.05,
-    width: "12%",
+    width: "40%",
     fontFamily: "BreeSerif_400Regular",
-    marginBottom: windowHeight * 0.005,
   },
 
   createButtonText:{
     color: '#ffffff',
   },
+
+  elemSpace:{
+    marginTop: windowHeight * 0.02,
+  }
+
 });
