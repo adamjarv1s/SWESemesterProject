@@ -9,7 +9,7 @@ import { ThemedView } from '@/components/themed-view';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons/faShoppingCart';
+import { faGem, faFire, faStore } from '@fortawesome/free-solid-svg-icons';
 import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
 import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
 
@@ -23,13 +23,17 @@ import { buildUnavailableHoursBlocks } from 'react-native-calendars/src/timeline
 
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
-import type { DrawerNavigationProp } from '@react-navigation/drawer';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types';
+import { useRouter } from 'expo-router';
+import type { DrawerNavigationProp } from '@react-navigation/drawer';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { ScrollView } from 'react-native-gesture-handler';
 
-type NavProp = DrawerNavigationProp<RootStackParamList, 'Dashboard'>;
+type NavPropDrawer = DrawerNavigationProp<RootStackParamList, 'Dashboard'>;
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccPurpose'>;
+
 
 
 // constants
@@ -88,13 +92,29 @@ async function getStreak() {
   }
 }
 
+async function getGems() {
+  try {
+    const response = await fetch(`${IPAddress}/update-gems`);
+    const text = await response.text();
+    return text;
+
+  } catch (error) {
+    console.error('ErrorUpdateGems:', error);
+    return 'GEMSNUM';
+  }
+}
+
 export default function DashboardScreen() {
   const navigation = useNavigation<NavProp>();
+  const DrawerNavigation = useNavigation<NavPropDrawer>();
+  const router = useRouter();
 
 
   const [userName, setUserName] = useState('Loading...');
   const [periodData, setPeriodData] = useState<Record<string, any>>({});
-  const [streak, setStreak] = useState('Hi');
+  const [streak, setStreak] = useState('str');
+  const [gems, setGems] = useState('gem');
+
 
   const [showLogModal, setShowLogModal] = useState(false);
   const [flow, setFlow] = useState(null);
@@ -137,12 +157,17 @@ export default function DashboardScreen() {
     getUserName().then(name => setUserName(name));
     getPeriodData().then(data => setPeriodData(data));
     getStreak().then(name => setStreak(name));
+    getGems().then(gems => setGems(gems));
   }, []);
   
 
   if (!fontsLoaded) {
     return null;
   }
+
+  const toBuddy = () => {
+    router.push("./buddy");
+  };
 
 
   return (
@@ -158,7 +183,7 @@ export default function DashboardScreen() {
                 - Once database is set up, need to replace "name" with the active user's name */}
 
         <View style={[styles.inlineContainer, styles.topHeader]}>
-            <Pressable onPress={() => navigation.openDrawer()}>
+            <Pressable onPress={() => DrawerNavigation.openDrawer()}>
               <FontAwesomeIcon icon={faBars} size={20}/>
             </Pressable>
 
@@ -173,9 +198,31 @@ export default function DashboardScreen() {
         
         {/* Buddy System -> Gems, Streak, Buddy Image, Shop/Buddy Settings */}
         <View style={[styles.buddyContainer]}>
-            <ThemedText style={[]}>
-                buddy system {streak}
+          <View style={[styles.stepContainer, {alignItems: 'center'}]}>
+            <View style={[styles.inlineContainer, styles.infoContainers]}>
+              <View style={[styles.inlineContainer]}>
+                <ThemedText style={[styles.infoContainer]}>
+                  {streak} <FontAwesomeIcon size={10} icon={faFire}/>
+                </ThemedText>
+
+                <ThemedText style={[styles.infoContainer]}>
+                  {gems} <FontAwesomeIcon size={10} icon={faGem}/>
+                </ThemedText>
+
+              </View>
+
+            <Pressable 
+              style={[styles.buttonShopContainer]}
+              onPress={toBuddy}>
+                <FontAwesomeIcon size={20} color='#ffffff' icon={faStore}/>
+            </Pressable>
+            </View>
+
+
+            <ThemedText style={[styles.buddyPNG]}>
+                buddy image
             </ThemedText>
+          </View>
         </View>
 
         {/* Calendar System -> Day Information Box, Calendar, and + Log Period Button 
@@ -396,6 +443,7 @@ const styles = StyleSheet.create({
     marginLeft: windowWidth * 0.05,
     marginRight: windowWidth * 0.05,
     marginBottom: windowHeight * 0.02,
+    overflow: 'hidden',
   },
 
   dayInfoBoxContainer: {
@@ -502,4 +550,50 @@ const styles = StyleSheet.create({
   marginTop: 15,
   textAlign: 'center',
 },
+
+  infoContainers:{
+    justifyContent: "space-between",
+  },
+
+  infoContainer:{
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginTop: 10,
+    marginRight: 5,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderRadius: 5,
+    fontSize: 13,
+    alignItems: 'center',
+  },
+
+  buddyPNG: {
+    alignContent: 'center',
+    verticalAlign: 'bottom',
+    height: '60%',
+  },
+
+  buttonShopContainer: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+    marginTop: 10,
+    borderRadius: 5,
+    color: '#ffffff',
+    backgroundColor: '#2C2C2C',
+    alignItems: 'center',
+  },
+
+  buttonShopPressedContainer: {
+    color: '#ffffff',
+    backgroundColor: '#1E1E1E',
+  },
+
+  image: {
+    width: 150,
+    height: 150,
+  },
 });
