@@ -102,15 +102,14 @@ async function getCycleAlerts() {
   }
 }
 
-async function getGems() {
+async function getDiamonds() {
   try {
-    const response = await fetch(`${IPAddress}/update-gems`);
+    const response = await fetch(`${IPAddress}/get-diamonds`);
     const text = await response.text();
     return text;
-
   } catch (error) {
-    console.error('ErrorUpdateGems:', error);
-    return 'GEMSNUM';
+    console.error('ErrorGetDiamonds:', error);
+    return '0';
   }
 }
 
@@ -122,7 +121,7 @@ async function getPetId() {
 
   } catch (error) {
     console.error('ErrorGetPetId:', error);
-    return 1; // default to chiiwawa
+    return -1;
   }
 }
 
@@ -131,13 +130,11 @@ export default function DashboardScreen() {
   const DrawerNavigation = useNavigation<NavPropDrawer>();
   const router = useRouter();
 
-
   const [userName, setUserName] = useState('Loading...');
   const [periodData, setPeriodData] = useState<Record<string, any>>({});
   const [streak, setStreak] = useState('str');
-  const [gems, setGems] = useState('gem');
+  const [diamondCount, setDiamondCount] = useState('0');
   const [petId, setPetId] = useState(1);
-
 
   const [showLogModal, setShowLogModal] = useState(false);
   const [flow, setFlow] = useState(null);
@@ -201,11 +198,11 @@ if (selectedDate && !periodData[selectedDate]) {
     getUserName().then(name => setUserName(name));
     getPeriodData().then(data => setPeriodData(data));
     getStreak().then(name => setStreak(name));
-        getCycleAlerts().then(data => {
+    getCycleAlerts().then(data => {
       console.log("RAW ALERTS:", data);
       setAlerts(data);
     });
-    getGems().then(gems => setGems(gems));
+    getDiamonds().then(diamonds => setDiamondCount(diamonds));
     getPetId().then(id => setPetId(id));
   }, []);
   
@@ -253,7 +250,7 @@ if (alerts) {
             </Pressable>
 
             <ThemedText style={[styles.welcomeUserMessage]}>
-                Hello, {userName}!
+                Hellos, {userName}!
             </ThemedText>
 
           <Pressable onPress={() => router.push("../createProfile/select_profile")}>
@@ -271,9 +268,9 @@ if (alerts) {
                 <ThemedText style={[styles.infoContainer]}>
                   {streak} <FontAwesomeIcon size={10} icon={faFire}/>
                 </ThemedText>
-
+              
                 <ThemedText style={[styles.infoContainer]}>
-                  {gems} <FontAwesomeIcon size={10} icon={faGem}/>
+                  {diamondCount} <FontAwesomeIcon size={10} icon={faGem}/>
                 </ThemedText>
 
               </View>
