@@ -7,7 +7,6 @@ import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
 
 
 // React Navigation
@@ -26,9 +25,6 @@ export default function AccPurposeScreen() {
   const navigation = useNavigation<NavProp>();
   const router = useRouter();
 
-  let [fontsLoaded] = useFonts({
-    BreeSerif_400Regular
-  });
 
   const accDetails = (type: number) => {
     router.push(`/createProfile/acc_details?accountType=${type}`);
@@ -65,7 +61,7 @@ export default function AccPurposeScreen() {
           styles.createButtonContainer,
           pressed && styles.createButtonPressContainer
           ]}
-          onPress={accDetails(1)}>
+          onPress={() => accDetails(1)}>
             <ThemedText style={[styles.createButtonText]}>
                 Parent
             </ThemedText>

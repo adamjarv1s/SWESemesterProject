@@ -33,7 +33,7 @@ export default function CompNameScreen() {
   const [petId, setPetId] = useState(0);
 
   const profiles = () => {
-    router.push("/");
+    router.push("../(tabs)/dashboard");
   };
 
   async function HandleCreateProfile() {
