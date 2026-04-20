@@ -250,7 +250,7 @@ if (alerts) {
             </Pressable>
 
             <ThemedText style={[styles.welcomeUserMessage]}>
-                Hellos, {userName}!
+                Hello, {userName}!
             </ThemedText>
 
           <Pressable onPress={() => router.push("../createProfile/select_profile")}>

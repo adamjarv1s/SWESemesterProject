@@ -75,7 +75,7 @@
 //USERINFO FUNCTIONS!!!
 //
 
-  void Database::createAccount(string name, string pet, int pet_id, int accountType,int averageCycleLength){
+  void Database::createAccount(string name, string pet, int pet_id, int accountType, int type, int averagePeriodLength, int averageCycleLength){
     try {
       std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("insert into userinfo (name, pet, pet_id, accountType, streak, lastActiveDay, activeUser, averageCycleLength) values (?, ?, ?, ?, ?, ?, ?)"));
 
@@ -501,6 +501,104 @@ int Database::getDiamonds(int user){
         return -1;
     }
 }
+
+// new stuff for if the items are purchased (bools)
+bool Database::getBowPurchased(int user) {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT bowPurchased FROM purchaseData WHERE id = ? LIMIT 1"
+            )
+        );
+        stmnt->setInt(1, user);
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+        if (res->next()) {
+            return res->getBoolean("bowPurchased");
+        }
+        return false;
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+bool Database::getCrownPurchased(int user) {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT crownPurchased FROM purchaseData WHERE id = ? LIMIT 1"
+            )
+        );
+        stmnt->setInt(1, user);
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+        if (res->next()) {
+            return res->getBoolean("crownPurchased");
+        }
+        return false;
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+bool Database::getHotWaterPurchased(int user) {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT hotWaterPurchased FROM purchaseData WHERE id = ? LIMIT 1"
+            )
+        );
+        stmnt->setInt(1, user);
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+        if (res->next()) {
+            return res->getBoolean("hotWaterPurchased");
+        }
+        return false;
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+bool Database::getCandyPurchased(int user) {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT candyPurchased FROM purchaseData WHERE id = ? LIMIT 1"
+            )
+        );
+        stmnt->setInt(1, user);
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+        if (res->next()) {
+            return res->getBoolean("candyPurchased");
+        }
+        return false;
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+bool Database::getFlowerPurchased(int user) {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT flowerPurchased FROM purchaseData WHERE id = ? LIMIT 1"
+            )
+        );
+        stmnt->setInt(1, user);
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+        if (res->next()) {
+            return res->getBoolean("flowerPurchased");
+        }
+        return false;
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+
 
 void Database::purchaseItem(int user, int item){
     try{

@@ -17,7 +17,7 @@ class Database{
     Database& operator=(const Database&) = delete;
 
     //USER FUNCTIONS (primarily use USERINFO table)
-    void createAccount(string name, string pet, int pet_id, int type, int averagePeriodLength, int averageCycleLength);
+    void createAccount(string name, string pet, int pet_id, int accountType, int type, int averagePeriodLength, int averageCycleLength);
     void deleteAccount(int user);
     int getUserId();
     void setActiveUser(int user);
@@ -34,6 +34,11 @@ class Database{
     //BUDDY/SHOP FUNCTIONS (primarily use PURCHASEDATA table)
     int streakSystem(int user);
     int getDiamonds(int user);
+    bool getBowPurchased(int user);
+    bool getCrownPurchased(int user);
+    bool getHotWaterPurchased(int user);
+    bool getCandyPurchased(int user);
+    bool getFlowerPurchased(int user);
     int spendDiamonds(int user, int price);
     void purchaseItem(int user, int item);
 

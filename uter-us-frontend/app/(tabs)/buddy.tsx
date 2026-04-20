@@ -14,7 +14,7 @@ import { Modal, TextInput } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt';
-import { faGem, faFire, faStore } from '@fortawesome/free-solid-svg-icons';
+import { faGem, faFire, faHouse } from '@fortawesome/free-solid-svg-icons';
 import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
 import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
 
@@ -81,6 +81,7 @@ export default function TabTwoScreen() {
     });
   
     useEffect(() => {
+      getUserName().then(name => setUserName(name));
       getGems().then(gems => setGems(gems));
     }, []);
     
@@ -122,7 +123,7 @@ export default function TabTwoScreen() {
               <Pressable 
               style={[styles.buttonShopContainer]}
               onPress={toDashboard}>
-                <FontAwesomeIcon size={20} color='#ffffff' icon={faStore}/>
+                <FontAwesomeIcon size={20} color='#ffffff' icon={faHouse}/>
             </Pressable>
             </View>
 
@@ -133,6 +134,63 @@ export default function TabTwoScreen() {
           </View>
         </View>
 
+
+        {/* Shop View -> Maybe a tab for outfits, tab for buddies? */}
+          <View style={[styles.shopContainer]}>
+            <View style={[styles.stepContainer]}>
+
+              <ThemedText>
+                Headwear
+              </ThemedText>
+
+              <View style={[styles.inlineContainer, styles.spacingContainer]}>
+                <View style={[styles.stepContainer, styles.itemContainer]}>
+                  <Image source={require('../../assets/images/flowercrop.png')} style={[styles.image]} />
+                  <ThemedText style={[styles.priceStyle]}>
+                    100 <FontAwesomeIcon size={10} icon={faGem}/>
+                  </ThemedText>
+                </View>
+              
+
+                <View style={[styles.stepContainer, styles.itemContainer]}>
+                  <Image source={require('../../assets/images/crowncrop.png')} style={[styles.image]} />
+                  <ThemedText style={[styles.priceStyle]}>
+                    100 <FontAwesomeIcon size={10} icon={faGem}/>
+                  </ThemedText>
+                </View>
+
+                <View style={[styles.stepContainer, styles.itemContainer]}>
+                  <Image source={require('../../assets/images/bowcrop.png')} style={[styles.image]} />
+                  <ThemedText style={[styles.priceStyle]}>
+                    100 <FontAwesomeIcon size={10} icon={faGem}/>
+                  </ThemedText>
+                </View>
+              </View>
+
+              <ThemedText>
+                Holdables
+              </ThemedText>
+
+              <View style={[styles.spacingContainer]}>
+                <View style={[styles.stepContainer, styles.itemContainer]}>
+                  <Image source={require('../../assets/images/hotWaterPackcrop.png')} style={[styles.image]} />
+                  <ThemedText style={[styles.priceStyle]}>
+                    50 <FontAwesomeIcon size={10} icon={faGem}/>
+                  </ThemedText>
+                </View>
+
+                <View style={[styles.stepContainer, styles.itemContainer]}>
+                  <Image source={require('../../assets/images/candycrop.png')} style={[styles.image]} />
+                  <ThemedText style={[styles.priceStyle]}>
+                    50 <FontAwesomeIcon size={10} icon={faGem}/>
+                  </ThemedText>
+                </View>
+
+
+              </View>
+            </View>
+          </View>
+
     </ThemedView>
   );
 }
@@ -140,6 +198,7 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
+    backgroundColor:  '#FAFAFA',
   },
   headerImage: {
     color: '#808080',
@@ -151,6 +210,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
+  },
+
+  spacingContainer:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    textAlignVertical: 'center',
+    gap: 17,
+  },
+
+  inlineContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    textAlignVertical: 'center',
+  },
 
   topHeader: {
     paddingLeft: windowWidth * 0.05,
@@ -159,12 +235,6 @@ const styles = StyleSheet.create({
     marginBottom: windowHeight * 0.02,
     justifyContent: 'space-between',
     //backgroundColor: '#A1CEDC',
-  },
-
-  inlineContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    textAlignVertical: 'center',
   },
 
   welcomeUserMessage: {
@@ -224,7 +294,6 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 5,
     paddingBottom: 5,
-    marginTop: 10,
     marginRight: 5,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
@@ -244,7 +313,6 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 10,
     paddingBottom: 10,
-    marginTop: 10,
     borderRadius: 5,
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
@@ -255,4 +323,40 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     backgroundColor: '#1E1E1E',
   },
+
+  shopContainer:{
+    backgroundColor: '#ffffff',
+    flex:1,
+    padding: windowWidth * 0.03,
+    marginLeft: windowWidth * 0.05,
+    marginRight: windowWidth * 0.05,
+    marginBottom: windowHeight * 0.05,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E8E8E7',
+    borderRadius: 5,
+  },
+
+  itemContainer:{
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#bdbdbd',
+    borderRadius: 5,
+    paddingBottom: windowHeight * 0.01,
+    paddingLeft: windowWidth * 0.05,
+    paddingRight: windowWidth * 0.05,
+    width: '30%',
+    alignItems: 'center',
+  },
+  image: {
+    width: windowWidth * 0.18,
+    height: windowHeight * 0.09,
+    //backgroundColor: '#dcdcdc',
+    resizeMode: 'cover',
+  },
+
+  priceStyle:{
+    width: '100%',
+    textAlign: 'center',
+  }
 });
