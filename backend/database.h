@@ -24,12 +24,9 @@ class Database{
     int getActiveUserPetId();
     string getProfilesAsJson();
     vector<pair<int, int>> getPeriodsAsVector(int user);
-    void changeActiveUser(int user);
 
     //PERIOD FUNCTIONS (primarily use periodData table)
-    void logPeriod(int user, string currentDate, int heaviness, bool lastDay, string description);
-    void generatePredictedPeriod(int user);
-    void clearPredictedPeriods(int user);
+    void logPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay, string description);
     void removeOldestPeriod(int user);
     string getPeriodsAsString(int user);
 
