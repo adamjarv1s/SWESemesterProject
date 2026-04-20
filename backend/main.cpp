@@ -27,8 +27,8 @@
 }*/
 int main() {
     Database& db = Database::getInstance();
-    //db.runSQLFile("setup.sql");
-    //db.purchaseItem(db.getUserId(), 5);
+    db.runSQLFile("setup.sql");
+    db.purchaseItem(db.getUserId(), 5);
     
     httplib::Server svr;
 
@@ -75,30 +75,13 @@ int main() {
 
     svr.Post("/log-period", [&db](const httplib::Request& req, httplib::Response& res) {
         std::string body = req.body;
-        std::cout << "Received body: " << body << std::endl;
-
-        std::smatch m;
-        std::string currentDate = getCurrentDate();
-        std::string description;
-        int heaviness = 1;
-        bool lastDay = false;
-
-        if (std::regex_search(body, m, std::regex("\"currentDate\":\"([^\"]+)\"")))
-            currentDate = m[1];
-        if (std::regex_search(body, m, std::regex("\"heaviness\":(\\d+)")))
-            heaviness = std::stoi(m[1]);
-        if (std::regex_search(body, m, std::regex("\"lastDay\":(true|false)")))
-            lastDay = (m[1] == "true");
-        if (std::regex_search(body, m, std::regex("\"description\":\"([^\"]*)\"")))
-            description = m[1];
-
-        if (!currentDate.empty()) {
-            db.logPeriod(db.getUserId(), currentDate, heaviness, lastDay, description);
+        
+        std::regex json("\"currentDate\":\"([^\"]+)\".*\"startDate\":\"([^\"]+)\",\"heaviness\":(\\d+),\"lastDay\":(true|false),\"description\":\"([^\"]*)\"");
+        std::smatch match;
+        if (std::regex_search(body, match, json)) {
+            db.logPeriod(db.getUserId(), match[1], match[2], std::stoi(match[3]), match[4] == "true", match[5]);
             std::cout << "Logged period in database" << std::endl;
-        } else {
-            std::cout << "Could not parse currentDate!" << std::endl;
         }
-
         res.set_content("{\"status\": \"ok\"}", "application/json");
     });
 
@@ -106,6 +89,18 @@ int main() {
         string profiles = db.getProfilesAsJson();
         res.set_content(profiles, "application/json");
         std::cout << "profiles: " << profiles << std::endl;
+    });
+
+    svr.Get("/update-streak", [&db](const httplib::Request &, httplib::Response &res) {
+        int streak = db.streakSystem(db.getUserId());
+        res.set_content(to_string(streak), "text/plain");
+        std::cout << "streak: " << streak << std::endl;
+    });
+
+    svr.Get("/get-diamonds", [&db](const httplib::Request &, httplib::Response &res) {
+        int diamonds = db.getDiamonds(db.getUserId());
+        res.set_content(to_string(diamonds), "text/plain");
+        std::cout << "diamonds: " << diamonds << std::endl;
     });
 
     svr.Get("/print-all-data", [&db](const httplib::Request &req, httplib::Response &res) {
@@ -125,45 +120,6 @@ int main() {
         res.set_content(to_string(streak), "text/plain");
         std::cout << "name: " << streak << std::endl;
     });
-
-    svr.Get("/cycle-alerts", [&db](const httplib::Request& req, httplib::Response& res) {
-    try {
-        int user = db.getUserId();
-
-        auto periods = db.getPeriodsAsVector(user);
-
-        if (periods.empty()) {
-            res.set_content("{\"message\":\"No data\"}", "application/json");
-            return;
-        }
-
-        std::string today = getCurrentDate();
-        int day = convertSQLDateToInt(today);
-        int year = stoi(today.substr(0, 4));
-
-        int lastStart = periods.back().first;
-        double avg = averageCycleLength(periods);
-
-        bool fertility = inFertilityWindow(day, year, lastStart, avg);
-        bool missed = checkMissed(day, year, lastStart, avg);
-        bool irregular = checkIrregular(day, year, lastStart, avg, periods);
-        bool shouldStart = shouldBleedingStartingtoday(day, year, lastStart, avg);
-
-        std::string json = "{";
-        json += "\"fertility\":" + std::string(fertility ? "true" : "false") + ",";
-        json += "\"missed\":" + std::string(missed ? "true" : "false") + ",";
-        json += "\"irregular\":" + std::string(irregular ? "true" : "false") + ",";
-        json += "\"shouldStart\":" + std::string(shouldStart ? "true" : "false");
-        json += "}";
-
-        res.set_content(json, "application/json");
-        std::cout << fertility << ", " << missed << ", " << irregular << ", " << shouldStart << std::endl;
-
-    } catch (...) {
-        res.status = 500;
-        res.set_content("{\"error\":\"server error\"}", "application/json");
-    }
-});
 
     svr.listen("0.0.0.0", 8080);
 }

@@ -48,7 +48,7 @@ async function getProfiles() {
   }
 }
 
-export default function selectProfilesScreen() {
+export default function SelectProfilesScreen() {
   const router = useRouter();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
