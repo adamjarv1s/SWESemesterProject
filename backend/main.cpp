@@ -46,10 +46,10 @@ int main() {
     svr.Post("/create-user", [&db](const httplib::Request& req, httplib::Response& res) {
         std::string body = req.body;
         
-        std::regex json("\"name\":\"([^\"]+)\".*?\"pet\":\"([^\"]+)\".*?\"pet_id\":(\\d+).*?\"accountType\":(\\d+).*?\"averageCycleLength\":(\\d+)");
-        std::smatch match;
-        if (std::regex_search(body, match, json)) {
-            db.createAccount(match[1], match[2], std::stoi(match[3]), std::stoi(match[4]), std::stoi(match[5]));
+    std::regex json("\"name\":\"([^\"]+)\".*?\"pet\":\"([^\"]+)\".*?\"pet_id\":(\\d+).*?\"accountType\":(\\d+).*?\"averageCycleLength\":(\\d+).*?\"averagePeriodLength\":(\\d+)");
+    std::smatch match;
+    if (std::regex_search(body, match, json)) {
+        db.createAccount(match[1], match[2], std::stoi(match[3]), std::stoi(match[4]), std::stoi(match[6]), std::stoi(match[5]));
             std::cout << "Added user to database" << std::endl;
         }
         res.set_content("{\"status\": \"ok\"}", "application/json");
@@ -59,6 +59,20 @@ int main() {
         string name = db.getActiveUserName();
         res.set_content(name, "text/plain");
         std::cout << "name: " << name << std::endl;
+    });
+
+    svr.Get("/set-active-user", [&db](const httplib::Request& req, httplib::Response& res) {
+        if (req.has_param("id")) {
+            int userId = std::stoi(req.get_param_value("id"));
+            std::cout << "Setting active user to: " << userId << std::endl;
+            db.setActiveUser(userId);
+            int verify = db.getUserId();
+            std::cout << "Active user is now: " << verify << std::endl;
+            res.set_content("{\"status\": \"ok\"}", "application/json");
+        } else {
+            res.status = 400;
+            res.set_content("{\"error\": \"missing id param\"}", "application/json");
+        }
     });
 
     svr.Get("/get-pet-id", [&db](const httplib::Request &, httplib::Response &res) {

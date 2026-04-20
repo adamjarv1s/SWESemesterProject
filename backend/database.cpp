@@ -88,7 +88,6 @@
       stmnt->setBoolean(7, 1);
       stmnt->setInt(8, averageCycleLength);
 
-      stmnt->executeUpdate();
         } catch (sql::SQLException &e) {
         cerr << "SQL Error: " << e.what() << endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
@@ -130,28 +129,6 @@ string Database::getActiveUserName() {
     }
 }
 
-int Database::getActiveUserPetId() {
-    try {
-        std::unique_ptr<sql::PreparedStatement> stmnt(
-            conn->prepareStatement(
-                "SELECT pet_id FROM userinfo WHERE activeUser = 1 LIMIT 1"
-            )
-        );
-
-        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
-
-        if (res->next()) {
-            return res->getInt("pet_id");
-        }
-
-        return -1; // no active user
-
-    } catch (sql::SQLException &e) {
-        std::cerr << "SQL Error: " << e.what() << std::endl;
-        return -1;
-    }
-}
-
 int Database::getUserId() {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(
@@ -166,7 +143,48 @@ int Database::getUserId() {
             return res->getInt("id");
         }
 
-        return 0;
+        return -1; // no active user
+
+    } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return -1;
+    }
+}
+
+void Database::setActiveUser(int user){
+    try {
+        std::unique_ptr<sql::PreparedStatement> deactivate(conn->prepareStatement(
+            "UPDATE userinfo SET activeUser = 0"
+        ));
+        deactivate->executeUpdate(); 
+
+        std::unique_ptr<sql::PreparedStatement> activate(conn->prepareStatement(
+            "UPDATE userinfo SET activeUser = 1 WHERE id = ?"
+        ));
+        activate->setInt(1, user);
+        activate->executeUpdate();
+
+        } catch (sql::SQLException &e) {
+        std::cerr << "SQL Error: " << e.what() << std::endl;
+        return;
+    }
+}
+
+int Database::getActiveUserPetId() {
+    try {
+        std::unique_ptr<sql::PreparedStatement> stmnt(
+            conn->prepareStatement(
+                "SELECT pet_id FROM userinfo WHERE activeUser = 1 LIMIT 1"
+            )
+        );
+
+        std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
+
+        if (res->next()) {
+            return res->getInt("pet_id");
+        }
+
+        return -1; // No active user
 
     } catch (sql::SQLException &e) {
         std::cerr << "SQL Error: " << e.what() << std::endl;
@@ -177,35 +195,25 @@ int Database::getUserId() {
 string Database::getProfilesAsJson() {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-            "SELECT name, pet, accountType FROM userinfo"
+            "SELECT id, name, pet, pet_id, accountType FROM userinfo"
         ));
 
         std::unique_ptr<sql::ResultSet> res(stmnt->executeQuery());
 
-        vector<tuple<string, string, int>> profiles;
+        std::string json = "[";
+        bool first = true;
 
         while (res->next()) {
-            string name = res->getString("name");
-            string pet = res->getString("pet");
-            int accountType = res->getInt("accountType");
-
-            profiles.push_back(make_tuple(name, pet, accountType));
-        }
-
-            std::string json = "[";
-
-        for (size_t i = 0; i < profiles.size(); ++i) {
-            const auto& [name, pet, accountType] = profiles[i];
+            if (!first) json += ",";
+            first = false;
 
             json += "{";
-            json += "\"name\":\"" + name + "\",";
-            json += "\"pet\":\"" + pet + "\",";
-            json += "\"accountType\":" + std::to_string(accountType);
+            json += "\"id\":" + std::to_string(res->getInt("id")) + ",";
+            json += "\"name\":\"" + string(res->getString("name")) + "\",";
+            json += "\"pet\":\"" + string(res->getString("pet")) + "\",";
+            json += "\"pet_id\":" + std::to_string(res->getInt("pet_id")) + ",";
+            json += "\"accountType\":" + std::to_string(res->getInt("accountType"));
             json += "}";
-
-            if (i != profiles.size() - 1) {
-                json += ",";
-            }
         }
 
         json += "]";
