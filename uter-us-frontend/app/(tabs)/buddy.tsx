@@ -82,10 +82,6 @@ export default function TabTwoScreen() {
     };
 
 
-
-  
-
-
   return (
     <ThemedView style={[styles.wholeScreen]}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
@@ -120,7 +116,7 @@ export default function TabTwoScreen() {
 
 
             <ThemedText style={[styles.buddyPNG]}>
-                buddy image
+                buddy png
             </ThemedText>
           </View>
         </View>

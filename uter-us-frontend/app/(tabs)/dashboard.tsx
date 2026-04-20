@@ -220,7 +220,7 @@ export default function DashboardScreen() {
 
 
             <ThemedText style={[styles.buddyPNG]}>
-                buddy image
+                buddy png
             </ThemedText>
           </View>
         </View>
