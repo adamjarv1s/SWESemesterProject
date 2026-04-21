@@ -1,72 +1,47 @@
-import {useState} from 'react';
+import React from 'react';
 import { Image } from 'expo-image';
 import { Dimensions, Platform, StyleSheet, Alert, View, Pressable, Text, TextInput } from 'react-native';
-import { IPAddress } from '@/config';
-
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { ScrollView } from 'react-native-gesture-handler';
+
+import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 // React Navigation
-import { useLocalSearchParams, useRouter, Link } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../../types';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccDetails'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const PETS = [
-  { id: 1, name: 'Chiikawa', image: require('../../assets/images/chiiwawa.png') },
-  { id: 2, name: 'Shadow',   image: require('../../assets/images/shadow.png') },
-  { id: 3, name: 'Bird',     image: require('../../assets/images/birb.png') },
-];
-
-export default function CompNameScreen() {
+export default function AccDetailsScreen() {
+  const navigation = useNavigation<NavProp>();
+  const { accountType } = useLocalSearchParams<{ accountType: string }>();
   const router = useRouter();
-  const { accountType, averageCycleLength, averagePeriodLength, username, childName } = useLocalSearchParams<{
-  accountType: string;
-  averagePeriodLength: string;
-  averageCycleLength: string;
-  username: string;
-  childName: string;
-  }>();
-  const [petName, setPetName] = useState('');
-  const [petId, setPetId] = useState<number | null>(null);
 
+  // Name States
+  const [username, setUserName] = React.useState('');
+  const [childName, setChildName] = React.useState('');
 
-async function CreateProfile() {
-  if (!petId) {
-    Alert.alert('Please select a companion first!');
-    return;
+  // Date Picker States (for last period start date)
+  const [date, setDate] = React.useState(new Date());
+  const [showPicker, setShowPicker] = React.useState(false);
+
+  // Average Period Length States
+  const [periodLength, setPeriodLength] = React.useState(5);
+
+  // Average Cycle Length States
+  const [cycleLength, setCycleLength] = React.useState(28);
+
+  const compName = (averagePeriodLength: number, averageCycleLength: number, username: string, childName: string) => {
+    router.push(`/createProfile/comp_name?accountType=${accountType}&averagePeriodLength=${averagePeriodLength}&averageCycleLength=${averageCycleLength}&username=${username}&childName=${childName}`);
   }
-  try {
-    const response = await fetch(`${IPAddress}/create-user`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: username,
-        childName: childName,
-        pet: petName,
-        pet_id: petId,
-        accountType: Number(accountType),
-        averageCycleLength: Number(averageCycleLength),
-        averagePeriodLength: Number(averagePeriodLength),
-      }),
-    });
-    if (response.ok) {
-      router.push('/(tabs)/dashboard' as any);
-    } else {
-      Alert.alert('Error', 'Failed to create profile');
-    }
-  } catch (error) {
-    Alert.alert('Error', 'Could not connect to server');
-  }
-}
-
   return (
-<<<<<<< HEAD
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
         <ThemedText style={[styles.inlineContainer, styles.blackText]} type="title">
@@ -163,122 +138,108 @@ async function CreateProfile() {
           </Pressable>
         </ThemedText>
       </View>
-=======
-    <ScrollView contentContainerStyle={[{ flexGrow: 1 }]}>
-      <ThemedView style={[styles.wholeScreen, { flex: 1 }]}>
-       <ThemedView style={styles.wholeScreen}>
-      <View style={[styles.topHeader]}>
-      <ThemedText style={[styles.blackText, {fontFamily:"BreeSerif_400Regular"}]} type="title">
-      Companion Selection
-        </ThemedText>
-      </View>
-
-      <View style={styles.grid}>
-        {PETS.map((item) => (
-          <Pressable
-            key={item.id}
-            style={[styles.petCell, petId === item.id && styles.petCellSelected]}
-            onPress={() => { setPetId(item.id); setPetName(item.name); }}
-          >
-            <Image source={item.image} style={styles.petImage} />
-          </Pressable>
-        ))}
->>>>>>> f9b6ae7a88e05a1635befef6b07e93ac552d749b
       </View>
 
     
     </ThemedView>
-    </ScrollView>
   );
 }
-const cellSize = (windowWidth * 0.80) / 3 - 12;
 
 const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
-    alignItems: 'center',
-    paddingTop: windowHeight * 0.05,
+    alignItems: 'flex-start',
     backgroundColor: '#FAFAFA',
   },
+  flexCenter:{
+    alignSelf: 'flex-end',
+
+  },
+
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
+  },
+  reactLogo: {
+    height: 178,
+    width: 290,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+  },
   topHeader: {
-    marginTop: windowHeight * 0.08,
-    marginBottom: windowHeight * 0.04,
-    alignItems: 'center',
+    paddingLeft: windowWidth * 0.05,
+    paddingRight: windowWidth * 0.05,
+    marginTop: windowHeight * 0.10,
+    //backgroundColor: '#A1CEDC',
   },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: '80%',
-    gap: 12,
-    justifyContent: 'center',
-    marginBottom: windowHeight * 0.04,
-  },
-  petCell: {
-    width: cellSize,
-    height: cellSize,
-    borderRadius: 10,
-    backgroundColor: '#f0f0f0',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  petCellSelected: {
-    borderColor: '#1c1c1c',
-    backgroundColor: '#e0e0e0',
-  },
-  petImage: {
-    width: '80%',
-    height: '80%',
-  },
-  card: {
-    width: '80%',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
-    alignItems: 'center',
-    gap: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  label: {
-    alignSelf: 'flex-start',
-    color: '#555',
-    fontSize: 14,
-  },
-  textInput: {
-    width: '100%',
-    height: 45,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
-  },
-  createButton: {
-    width: '100%',
-    backgroundColor: '#1c1c1c',
-    borderRadius: 8,
-    padding: 14,
-    alignItems: 'center',
-  },
-  createButtonPressed: {
-    backgroundColor: '#333',
-  },
-  createButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  bodySpacing: {
+  bodySpacing:{
     paddingLeft: windowWidth * 0.05,
     paddingRight: windowWidth * 0.05,
     marginTop: windowHeight * 0.005,
     marginBottom: windowHeight * 0.005,
   },
+  inlineContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    textAlignVertical: 'center',
+    justifyContent: 'center',
+    fontFamily: "BreeSerif_400Regular",
+  },
+
+  createDateButtonContainer:{
+    padding: 10,
+    paddingLeft: 20,
+    borderRadius: 5,
+    marginLeft: windowWidth * 0.1,
+    width: "100%",
+    height: "auto",
+    color: '#ffffff',
+    backgroundColor: '#2C2C2C',
+  },
+
+  createButtonContainer:{
+    padding: 10,
+    paddingLeft: 90,
+    paddingRight:90,
+    borderRadius: 5,
+    width: "100%",
+    height: "auto",
+    color: '#ffffff',
+    backgroundColor: '#2C2C2C',
+    alignItems: 'center',
+  },
+  createButtonPressContainer:{
+    color: '#ffffff',
+    backgroundColor: '#1E1E1E',
+  },
+  textInput:{
+    marginLeft: windowWidth * 0.05,
+    height: 45,
+    width: "60%",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    backgroundColor: "#fff",
+    fontFamily: "BreeSerif_400Regular",
+  },
+  dropDownInput:{
+    marginLeft: windowWidth * 0.05,
+    width: "40%",
+    fontFamily: "BreeSerif_400Regular",
+  },
+
+  createButtonText:{
+    color: '#ffffff',
+  },
+
+  elemSpace:{
+    marginTop: windowHeight * 0.02,
+  },
 
   blackText:{
     color: '#000000',
   }
+
 });
