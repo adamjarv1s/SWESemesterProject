@@ -121,8 +121,8 @@ export default function SelectProfilesScreen() {
 const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
-    paddingTop: windowHeight * 0.09,
+    backgroundColor: '#1c1c1c',
+    paddingTop: windowHeight * 0.07,
     paddingHorizontal: windowWidth * 0.05,
   },
   existingUserLabel: {
@@ -132,10 +132,8 @@ const styles = StyleSheet.create({
     fontFamily: 'BreeSerif_400Regular',
   },
   card: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e8e8e8',
-    borderRadius: 5,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 20,
     padding: 24,
     flex: 1,
     maxHeight: windowHeight * 0.82,
@@ -155,11 +153,11 @@ const styles = StyleSheet.create({
   profileRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FAFAFA',
-    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderRadius: 14,
     padding: 14,
     gap: 14,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: '#e8e8e8',
   },
   profileRowPressed: {
@@ -210,7 +208,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 5,
+    borderRadius: 14,
     padding: 14,
     gap: 14,
     borderWidth: 1,

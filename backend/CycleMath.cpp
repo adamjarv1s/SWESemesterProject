@@ -112,6 +112,7 @@ bool checkIrregular(int day, int year, int lastStart, double averageCycle, vecto
         result = (isLeapYear(year) ? 366 : 365) - lastStart + day;
     } else {
         result = day - lastStart;
+        result = day - lastStart;
     }
 
     return result >= roundedCycle + 7;

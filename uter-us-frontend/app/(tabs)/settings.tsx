@@ -76,14 +76,14 @@ export default function TabTwoScreen() {
   return (
 
     
-    <View style={styles.wholeScreen}>
+    <View>
 
     <View style={[styles.inlineContainer, styles.topHeader]}>
                 <Pressable onPress={() => DrawerNavigation.openDrawer()}>
                   <FontAwesomeIcon icon={faBars} size={20}/>
                 </Pressable>
     
-                <ThemedText style={[styles.welcomeUserMessage, styles.blackText]}>
+                <ThemedText style={[styles.welcomeUserMessage]}>
                     Hello, {userName}!
                 </ThemedText>
     
@@ -95,7 +95,7 @@ export default function TabTwoScreen() {
     <Pressable style={styles.buttonContainer} onPress={printAllData}>
       <ThemedText style={styles.buttonText}>Print All Data</ThemedText>
     </Pressable>
-    <ThemedText style={[styles.buttonLabel, styles.blackText]}>Download a .csv of your period data</ThemedText>
+    <ThemedText style={styles.buttonLabel}>Download a .csv of your period data</ThemedText>
 
     <Pressable
       style={styles.buttonDangerContainer}
@@ -128,7 +128,6 @@ export default function TabTwoScreen() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,

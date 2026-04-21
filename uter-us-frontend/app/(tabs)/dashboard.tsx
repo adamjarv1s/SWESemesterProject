@@ -17,8 +17,9 @@ import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { Modal, TextInput } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { View, Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { buildUnavailableHoursBlocks } from 'react-native-calendars/src/timeline/Packer';
 
 // React Navigation
@@ -232,27 +233,25 @@ if (selectedDate && !periodData[selectedDate]) {
     BreeSerif_400Regular
   });
 
-  useEffect(() => {
-    getUserName().then(name => setUserName(name));
-    getPeriodData().then(data => setPeriodData(data));
-    getStreak().then(name => setStreak(name));
-    getCycleAlerts().then(data => {
-      console.log("RAW ALERTS:", data);
-      setAlerts(data);
-    });
-    getDiamonds().then(diamonds => setDiamondCount(diamonds));
-    getPetId().then(id => setPetId(id));
+useEffect(() => {
+  getUserName().then(name => setUserName(name));
+  getPeriodData().then(data => setPeriodData(data));
+  getStreak().then(name => setStreak(name));
+  getCycleAlerts().then(data => {
+    console.log("RAW ALERTS:", data);
+    setAlerts(data);
+  });
+  getDiamonds().then(diamonds => setDiamondCount(diamonds));
+  getPetId().then(id => setPetId(id));
+}, []);
+  
+useFocusEffect(
+  useCallback(() => {
     getCurrentHeadwear().then(headwear => setCurrentHeadwear(headwear));
     getCurrentHoldable().then(holdable => setCurrentHoldable(holdable));
-
-    // copilot helped create this listener!!
-    const unsubscribe = navigation.addListener('focus', () => {
-      getCurrentHeadwear().then(headwear => setCurrentHeadwear(headwear));
-      getCurrentHoldable().then(holdable => setCurrentHoldable(holdable));
-    });
-    return unsubscribe;
-  }, [navigation]);
-  
+    getDiamonds().then(diamonds => setDiamondCount(diamonds));
+  }, [])
+);
 
   if (!fontsLoaded) {
     return null;
@@ -296,7 +295,7 @@ if (alerts) {
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-  <ThemedView style={{ flex: 1, backgroundColor:  '#FAFAFA', }}>
+  <ThemedView style={{ flex: 1 }}>
 
         {/* Top Header Bar -> Hamburger Menu, Hello [User], and Log Out 
             NOTES:
@@ -311,12 +310,12 @@ if (alerts) {
               <FontAwesomeIcon icon={faBars} size={20}/>
             </Pressable>
 
-            <ThemedText style={[styles.welcomeUserMessage, styles.blackText]}>
+            <ThemedText style={[styles.welcomeUserMessage]}>
                 Hello, {userName}!
             </ThemedText>
 
-          <Pressable onPress={() => router.push("../../")}>
-            <FontAwesomeIcon icon={faSignOutAlt} size={20}/>
+          <Pressable onPress={() => router.push("../createProfile/select_profile")}>
+            <FontAwesomeIcon icon={faSignOutAlt} size={20} />
           </Pressable>
         </View>
           
@@ -327,11 +326,11 @@ if (alerts) {
           <View style={[styles.stepContainer, {alignItems: 'center'}]}>
             <View style={[styles.inlineContainer, styles.infoContainers]}>
               <View style={[styles.inlineContainer]}>
-                <ThemedText style={[styles.infoContainer, styles.blackText]}>
+                <ThemedText style={[styles.infoContainer]}>
                   {streak} <FontAwesomeIcon size={10} icon={faFire}/>
                 </ThemedText>
               
-                <ThemedText style={[styles.infoContainer, styles.blackText]}>
+                <ThemedText style={[styles.infoContainer]}>
                   {diamondCount} <FontAwesomeIcon size={10} icon={faGem}/>
                 </ThemedText>
 
@@ -414,23 +413,23 @@ if (alerts) {
         <View>
             <View style={[styles.dayInfoBoxContainer, styles.inlineContainer]}>
                       <View style={[styles.stepContainer]}>
-                        <ThemedText style={[styles.dayInfoBoxDate, styles.blackText]}>
+                        <ThemedText style={[styles.dayInfoBoxDate]}>
                           {dateValue}
                         </ThemedText>
-                        <ThemedText style={[styles.dayInfoBoxFlow, styles.blackText]}>
+                        <ThemedText style={styles.dayInfoBoxFlow}>
                           {selectedDayData?.heaviness
                             ? getFlowLabel(selectedDayData.heaviness)
                             : 'No Flow Recorded'}
                         </ThemedText>
                       </View>
 
-              <ThemedText numberOfLines={4} style={[styles.dayInfoBoxGeneral, styles.blackText]}>
+              <ThemedText numberOfLines={4} style={styles.dayInfoBoxGeneral}>
                 {alertMessage}
               </ThemedText>
             </View>
 
             <Calendar
-              style={[styles.calendarContainer, {marginTop: windowHeight * 0.02}]}
+              style={[styles.calendarContainer]}
               markedDates={markedDates}
               markingType={'custom'}
               onDayPress={day => {

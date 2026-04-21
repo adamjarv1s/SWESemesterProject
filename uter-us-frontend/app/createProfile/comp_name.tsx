@@ -66,11 +66,11 @@ async function CreateProfile() {
 }
 
   return (
-    <ScrollView contentContainerStyle={[{ flexGrow: 1 }]}>
-      <ThemedView style={[styles.wholeScreen, { flex: 1 }]}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ThemedView style={{ flex: 1 }}>
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.topHeader]}>
-        <ThemedText style={[styles.blackText, {fontFamily:"BreeSerif_400Regular"}]} type="title">
+        <ThemedText style={[]} type="title">
           Companion Selection
         </ThemedText>
       </View>
@@ -88,7 +88,7 @@ async function CreateProfile() {
       </View>
 
     <View style={styles.card}>
-      <ThemedText style={[styles.bodySpacing, styles.blackText]}>Companion Name</ThemedText>
+      <ThemedText style={[styles.bodySpacing]}>Companion Name</ThemedText>
         <TextInput
           value={petName}
           onChangeText={setPetName}

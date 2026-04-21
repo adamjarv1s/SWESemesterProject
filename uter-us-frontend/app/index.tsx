@@ -45,7 +45,7 @@ export default function Index() {
 
     async function checkProfile() {
       try {
-        const response = await fetch('http://localhost:8080/get-profiles');
+        const response = await fetch(`${IPAddress}/get-profiles`);
         const data = await response.json();
 
         if (!isMounted) return;
