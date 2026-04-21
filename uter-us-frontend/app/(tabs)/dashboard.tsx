@@ -245,7 +245,7 @@ if (selectedDate && !periodData[selectedDate]) {
     getCurrentHeadwear().then(headwear => setCurrentHeadwear(headwear));
     getCurrentHoldable().then(holdable => setCurrentHoldable(holdable));
 
-    // Add navigation focus listener to refresh headwear/holdable
+    // copilot helped create this listener!!
     const unsubscribe = navigation.addListener('focus', () => {
       getCurrentHeadwear().then(headwear => setCurrentHeadwear(headwear));
       getCurrentHoldable().then(holdable => setCurrentHoldable(holdable));
@@ -296,7 +296,7 @@ if (alerts) {
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-  <ThemedView style={{ flex: 1 }}>
+  <ThemedView style={{ flex: 1, backgroundColor:  '#FAFAFA', }}>
 
         {/* Top Header Bar -> Hamburger Menu, Hello [User], and Log Out 
             NOTES:
@@ -430,7 +430,7 @@ if (alerts) {
             </View>
 
             <Calendar
-              style={[styles.calendarContainer]}
+              style={[styles.calendarContainer, {marginTop: windowHeight * 0.02}]}
               markedDates={markedDates}
               markingType={'custom'}
               onDayPress={day => {

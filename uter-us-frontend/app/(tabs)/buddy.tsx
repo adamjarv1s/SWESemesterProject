@@ -144,7 +144,7 @@ async function getCurrentHoldable() {
   }
 }
 
-  async function getPetId() {
+async function getPetId() {
   try {
     const response = await fetch(`${IPAddress}/get-pet-id`);
     const text = await response.text();
@@ -167,7 +167,7 @@ export default function TabTwoScreen() {
 
   const [userName, setUserName] = useState('Loading...');
   const [diamondCount, setDiamondCount] = useState('0');
-  const [petId, setPetId] = useState(1);
+  const [petId, setPetId] = useState(0);
 
   const [flowerPurchased, setFlowerPurchased] = useState(-1);
   const [crownPurchased, setCrownPurchased] = useState(-1);
@@ -186,6 +186,7 @@ export default function TabTwoScreen() {
     useEffect(() => {
       getUserName().then(name => setUserName(name));
       getDiamonds().then(diamonds => setDiamondCount(diamonds));
+      getPetId().then(id => setPetId(id));
       getFlowerPurchased().then(purchased => setFlowerPurchased(purchased));
       getCrownPurchased().then(purchased => setCrownPurchased(purchased));
       getBowPurchased().then(purchased => setBowPurchased(purchased));
@@ -375,7 +376,7 @@ export default function TabTwoScreen() {
               </View>
 
               <ThemedText>
-                Holdables
+                Holdable
               </ThemedText>
 
               <View style={[styles.spacingContainer]}>

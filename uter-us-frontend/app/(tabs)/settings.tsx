@@ -76,7 +76,7 @@ export default function TabTwoScreen() {
   return (
 
     
-    <View>
+    <View style={styles.wholeScreen}>
 
     <View style={[styles.inlineContainer, styles.topHeader]}>
                 <Pressable onPress={() => DrawerNavigation.openDrawer()}>
@@ -132,14 +132,9 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
-    alignItems: 'center',
+    backgroundColor:  '#FAFAFA',
   },
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
+
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
