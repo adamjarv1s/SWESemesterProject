@@ -17,8 +17,9 @@ import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { Modal, TextInput } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { View, Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { buildUnavailableHoursBlocks } from 'react-native-calendars/src/timeline/Packer';
 
 // React Navigation
@@ -232,20 +233,25 @@ if (selectedDate && !periodData[selectedDate]) {
     BreeSerif_400Regular
   });
 
-  useEffect(() => {
-    getUserName().then(name => setUserName(name));
-    getPeriodData().then(data => setPeriodData(data));
-    getStreak().then(name => setStreak(name));
-    getCycleAlerts().then(data => {
-      console.log("RAW ALERTS:", data);
-      setAlerts(data);
-    });
-    getDiamonds().then(diamonds => setDiamondCount(diamonds));
-    getPetId().then(id => setPetId(id));
+useEffect(() => {
+  getUserName().then(name => setUserName(name));
+  getPeriodData().then(data => setPeriodData(data));
+  getStreak().then(name => setStreak(name));
+  getCycleAlerts().then(data => {
+    console.log("RAW ALERTS:", data);
+    setAlerts(data);
+  });
+  getDiamonds().then(diamonds => setDiamondCount(diamonds));
+  getPetId().then(id => setPetId(id));
+}, []);
+  
+useFocusEffect(
+  useCallback(() => {
     getCurrentHeadwear().then(headwear => setCurrentHeadwear(headwear));
     getCurrentHoldable().then(holdable => setCurrentHoldable(holdable));
-  }, []);
-  
+    getDiamonds().then(diamonds => setDiamondCount(diamonds));
+  }, [])
+);
 
   if (!fontsLoaded) {
     return null;
@@ -308,8 +314,8 @@ if (alerts) {
                 Hello, {userName}!
             </ThemedText>
 
-          <Pressable onPress={() => router.push("../../")}>
-            <FontAwesomeIcon icon={faSignOutAlt} size={20}/>
+          <Pressable onPress={() => router.push("../createProfile/select_profile")}>
+            <FontAwesomeIcon icon={faSignOutAlt} size={20} />
           </Pressable>
         </View>
           
@@ -347,9 +353,9 @@ if (alerts) {
               </View>
 
               <View style={[styles.overlayHand]}>
-                {currentHoldable === 1 && <Image source={require('../../assets/images/hotWaterPack.png')} style={[styles.image]} />}
-                {currentHoldable === 2 && <Image source={require('../../assets/images/candy.png')} style={[styles.image]} />}
-                {currentHoldable !== 1 && currentHoldable !== 2 && <ThemedText></ThemedText>}
+                {currentHoldable === 4 && <Image source={require('../../assets/images/hotWaterPack.png')} style={[styles.image]} />}
+                {currentHoldable === 5 && <Image source={require('../../assets/images/candy.png')} style={[styles.image]} />}
+                {currentHoldable !== 4 && currentHoldable !== 5 && <ThemedText></ThemedText>}
               </View>
 
               <View style={[styles.overlayHead]}>

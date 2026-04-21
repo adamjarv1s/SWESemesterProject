@@ -213,29 +213,9 @@ int Database::getActiveUserPetId() {
     }
 }
 
-void Database::setActiveUser(int user){
-    try {
-        std::unique_ptr<sql::PreparedStatement> deactivate(conn->prepareStatement(
-            "UPDATE userinfo SET activeUser = 0"
-        ));
-        deactivate->executeUpdate(); 
-
-        std::unique_ptr<sql::PreparedStatement> activate(conn->prepareStatement(
-            "UPDATE userinfo SET activeUser = 1 WHERE id = ?"
-        ));
-        activate->setInt(1, user);
-        activate->executeUpdate();
-
-        } catch (sql::SQLException &e) {
-        std::cerr << "SQL Error: " << e.what() << std::endl;
-        return;
-    }
-}
-
 string Database::getProfilesAsJson() {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
-            "SELECT id, name, pet, pet_id, accountType FROM userinfo"
             "SELECT id, name, pet, pet_id, accountType FROM userinfo"
         ));
 
@@ -243,21 +223,12 @@ string Database::getProfilesAsJson() {
 
         std::string json = "[";
         bool first = true;
-        std::string json = "[";
-        bool first = true;
 
         while (res->next()) {
             if (!first) json += ",";
             first = false;
-            if (!first) json += ",";
-            first = false;
 
             json += "{";
-            json += "\"id\":" + std::to_string(res->getInt("id")) + ",";
-            json += "\"name\":\"" + string(res->getString("name")) + "\",";
-            json += "\"pet\":\"" + string(res->getString("pet")) + "\",";
-            json += "\"pet_id\":" + std::to_string(res->getInt("pet_id")) + ",";
-            json += "\"accountType\":" + std::to_string(res->getInt("accountType"));
             json += "\"id\":" + std::to_string(res->getInt("id")) + ",";
             json += "\"name\":\"" + string(res->getString("name")) + "\",";
             json += "\"pet\":\"" + string(res->getString("pet")) + "\",";
@@ -985,7 +956,7 @@ void Database::purchaseItem(int user, int item){
                 gems = 100;
                 break;
             case 4:
-                purchase = "hotWaterPackPurchased";
+                purchase = "hotWaterPurchased";
                 gems = 50;
                 break;
             case 5:
@@ -999,7 +970,7 @@ void Database::purchaseItem(int user, int item){
             );
             updateStmnt->setBoolean(1, true);
             updateStmnt->setInt(2, gems);
-            updateStmnt->setBoolean(3, user);
+            updateStmnt->setInt(3, user);
 
             updateStmnt->executeUpdate();
         }

@@ -189,10 +189,22 @@ svr.Post("/log-period", [&db](const httplib::Request& req, httplib::Response& re
     });
 
     svr.Post("/update-purchase", [&db](const httplib::Request &req, httplib::Response &res) {
-        int whichItem = std::stoi(req.get_param_value("item"));
-
-        db.purchaseItem(db.getUserId(), whichItem);
-        res.set_content("{\"status\": \"ok\"}", "application/json");
+        try {
+            std::string body = req.body;
+            std::regex r("\"item\":(\\d+)");
+            std::smatch m;
+            if (std::regex_search(body, m, r)) {
+                int whichItem = std::stoi(m[1].str());
+                db.purchaseItem(db.getUserId(), whichItem);
+                res.set_content("{\"status\": \"ok\"}", "application/json");
+            } else {
+                res.status = 400;
+                res.set_content("{\"error\": \"missing item\"}", "application/json");
+            }
+        } catch (std::exception &e) {
+            res.status = 500;
+            res.set_content("{\"error\": \"server error\"}", "application/json");
+        }
     });
 
 

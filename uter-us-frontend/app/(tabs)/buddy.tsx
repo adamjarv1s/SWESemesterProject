@@ -100,6 +100,18 @@ async function getBowPurchased() {
     }
   }
 
+async function getPetId() {
+  try {
+    const response = await fetch(`${IPAddress}/get-pet-id`);
+    const text = await response.text();
+    return parseInt(text);
+
+  } catch (error) {
+    console.error('ErrorGetPetId:', error);
+    return -1;
+  }
+}
+
 async function getHotWaterPurchased() {
     try {
       const response = await fetch(`${IPAddress}/get-hotwater-purchased`);
@@ -144,17 +156,6 @@ async function getCurrentHoldable() {
   }
 }
 
-  async function getPetId() {
-  try {
-    const response = await fetch(`${IPAddress}/get-pet-id`);
-    const text = await response.text();
-    return parseInt(text);
-
-  } catch (error) {
-    console.error('ErrorGetPetId:', error);
-    return -1;
-  }
-}
 
 
 export default function TabTwoScreen() {
@@ -179,15 +180,6 @@ export default function TabTwoScreen() {
   const [currentHoldable, setCurrentHoldable] = useState(0);
   const [whichItem, setWhichItem] = useState<number | null>(null);
 
-  const [flowerPurchased, setFlowerPurchased] = useState('-');
-  const [crownPurchased, setCrownPurchased] = useState('-');
-  const [bowPurchased, setBowPurchased] = useState('-');
-  const [hotWaterPurchased, setHotWaterPurchased] = useState('-');
-  const [candyPurchased, setCandyPurchased] = useState('-');
-
-  const [currentHeadwear, setCurrentHeadwear] = useState("0"); 
-  const [currentHoldable, setCurrentHoldable] = useState("0");
-
   let [fontsLoaded] = useFonts({
       BreeSerif_400Regular
     });
@@ -195,6 +187,7 @@ export default function TabTwoScreen() {
     useEffect(() => {
       getUserName().then(name => setUserName(name));
       getDiamonds().then(diamonds => setDiamondCount(diamonds));
+      getPetId().then(id => setPetId(id));
       getFlowerPurchased().then(purchased => setFlowerPurchased(purchased));
       getCrownPurchased().then(purchased => setCrownPurchased(purchased));
       getBowPurchased().then(purchased => setBowPurchased(purchased));
@@ -238,7 +231,6 @@ export default function TabTwoScreen() {
                 </Pressable>
               </View>
                 
-                
               
               {/* Buddy System -> Gems, Streak, Buddy Image, Shop/Buddy Settings */}
               <View style={[styles.buddyContainer]}>
@@ -264,13 +256,13 @@ export default function TabTwoScreen() {
                       {petId === 1 && <Image source={require('../../assets/images/chiiwawa.png')} style={[styles.image]} />}
                       {petId === 2 && <Image source={require('../../assets/images/shadow.png')} style={[styles.image]} />}
                       {petId === 3 && <Image source={require('../../assets/images/birb.png')} style={[styles.image]} />}
-                      {petId !== 1 && petId !== 2 && petId !== 3 && <ThemedText>buddy err</ThemedText>}
+                      {petId !== 1 && petId !== 2 && petId !== 3 && <ThemedText></ThemedText>}
                     </View>
       
                     <View style={[styles.overlayHand]}>
                       {currentHoldable === 4 && <Image source={require('../../assets/images/hotWaterPack.png')} style={[styles.image]} />}
                       {currentHoldable === 5 && <Image source={require('../../assets/images/candy.png')} style={[styles.image]} />}
-                      {currentHoldable !== 4 && currentHoldable !== 5 && <ThemedText>err</ThemedText>}
+                      {currentHoldable !== 4 && currentHoldable !== 5 && <ThemedText></ThemedText>}
                     </View>
       
                     <View style={[styles.overlayHead]}>
@@ -458,20 +450,26 @@ export default function TabTwoScreen() {
                       <View style={[styles.inlineContainer, {gap: 20}]}>
                         <Pressable
                         style={[styles.buyButton]}
-                        onPress={async () => {
-                          try {
-                            if (whichItem !== null) {
-                              await fetch(`${IPAddress}/update-purchase`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ item: whichItem }),
-                              });
-                            }
-                            setShowBuyModal(false);
-                          } catch (error) {
-                            console.error(error);
+                      onPress={async () => {
+                        try {
+                          if (whichItem !== null) {
+                            await fetch(`${IPAddress}/update-purchase`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ item: whichItem }),
+                            });
+                            getDiamonds().then(d => setDiamondCount(d));
+                            getFlowerPurchased().then(p => setFlowerPurchased(p));
+                            getCrownPurchased().then(p => setCrownPurchased(p));
+                            getBowPurchased().then(p => setBowPurchased(p));
+                            getHotWaterPurchased().then(p => setHotWaterPurchased(p));
+                            getCandyPurchased().then(p => setCandyPurchased(p));
                           }
-                        }}
+                          setShowBuyModal(false);
+                        } catch (error) {
+                          console.error(error);
+                        }
+                      }}
                       >
                         <ThemedText style={{ color: '#ffffff', textAlign: 'center' }}>
                           Buy
@@ -497,125 +495,6 @@ export default function TabTwoScreen() {
                     </View>
                 </View>
             </Modal>
-
-        {/* REF FROM ABBY
-
-        <Pressable
-              disabled={!selectedDate}
-              style={({ pressed }) => [
-                styles.buttonContainer,
-                pressed && styles.buttonPressedContainer,
-                !selectedDate && { opacity: 0.4 }
-              ]}
-              onPress={() => setShowBuyModal(true)}
-            >
-              <ThemedText style={styles.buttonText}>Buy Item</ThemedText>
-            </Pressable>
-
-            <Modal
-              visible={showBuyModal}
-              transparent={true}
-              animationType="fade"
-              >
-                <View style={styles.modalOverlay}>
-                  <View style={styles.modalContent}>
-                    <ThemedText style={styles.modalTitle}>Buy Item?</ThemedText>
-
-                      <Pressable
-                        style={styles.saveButton}
-                        onPress={async () => {
-
-                          try {
-                            await fetch(`${IPAddress}/log-period`, {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({
-                                currentDate: selectedDate,
-                                heaviness: flow,
-                                lastDay: false,
-                                description: symptoms || '',
-                            }),
-                            });
-
-                            const updatedPeriodData = await getPeriodData();
-                            setPeriodData(updatedPeriodData);
-                            getCycleAlerts();
-
-                            setShowBuyModal(false);
-                            setSymptoms('');
-
-                          } catch (error) {
-                            console.error(error);
-                            Alert.alert('Error', 'Could not connect to server');
-                          }
-                        }}
-                      >
-                        <ThemedText style={{ color: '#fff', textAlign: 'center' }}>
-                          Cancel
-                        </ThemedText>
-                      </Pressable>
-
-                    </View>
-                </View>
-            </Modal> */}
-
-
-
-        {/* Shop View -> Maybe a tab for outfits, tab for buddies? */}
-          <View style={[styles.shopContainer]}>
-            <View style={[styles.stepContainer]}>
-
-              <ThemedText>
-                Headwear
-              </ThemedText>
-
-              <View style={[styles.inlineContainer, styles.spacingContainer]}>
-                <Pressable style={[styles.stepContainer, styles.itemContainer]}>
-                  <Image source={require('../../assets/images/flowercrop.png')} style={[styles.image]} />
-                  <ThemedText style={[styles.priceStyle]}>
-                    100 <FontAwesomeIcon size={10} icon={faGem}/>
-                  </ThemedText>
-                </Pressable>
-              
-
-                <Pressable style={[styles.stepContainer, styles.itemContainer]}>
-                  <Image source={require('../../assets/images/crowncrop.png')} style={[styles.image]} />
-                  <ThemedText style={[styles.priceStyle]}>
-                    100 <FontAwesomeIcon size={10} icon={faGem}/>
-                  </ThemedText>
-                </Pressable>
-
-                <Pressable style={[styles.stepContainer, styles.itemContainer]}>
-                  <Image source={require('../../assets/images/bowcrop.png')} style={[styles.image]} />
-                  <ThemedText style={[styles.priceStyle]}>
-                    100 <FontAwesomeIcon size={10} icon={faGem}/>
-                  </ThemedText>
-                </Pressable>
-              </View>
-
-              <ThemedText>
-                Holdables
-              </ThemedText>
-
-              <View style={[styles.spacingContainer]}>
-                <Pressable style={[styles.stepContainer, styles.itemContainer]}>
-                  <Image source={require('../../assets/images/hotWaterPackcrop.png')} style={[styles.image]} />
-                  <ThemedText style={[styles.priceStyle]}>
-                    50 <FontAwesomeIcon size={10} icon={faGem}/>
-                  </ThemedText>
-                </Pressable>
-
-                <Pressable style={[styles.stepContainer, styles.itemContainer]}>
-                  <Image source={require('../../assets/images/candycrop.png')} style={[styles.image]} />
-                  <ThemedText style={[styles.priceStyle]}>
-                    50 <FontAwesomeIcon size={10} icon={faGem}/>
-                  </ThemedText>
-                </Pressable>
-
-
-              </View>
-            </View>
-          </View>
 
         {/* REF FROM ABBY
 
