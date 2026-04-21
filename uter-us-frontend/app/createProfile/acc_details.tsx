@@ -44,11 +44,11 @@ export default function AccDetailsScreen() {
   return (
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="title">
+        <ThemedText style={[styles.inlineContainer, styles.blackText]} type="title">
           Account Details
         </ThemedText>
       </View>
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Name (Max 12 Characters)</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Name (Max 12 Characters)</ThemedText>
       <TextInput
         value = {username}
         onChangeText={setUserName}
@@ -60,8 +60,8 @@ export default function AccDetailsScreen() {
       />
         {accountType === "1" && (
           <>
-            <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>
-              Child's Name (Max 12 Characters)
+            <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>
+              Child&apos;s (Max 12 Characters)
             </ThemedText>
             <TextInput
               value={childName}
@@ -74,7 +74,7 @@ export default function AccDetailsScreen() {
             />
           </>
         )}
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Last Period Start Date</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Last Period Start Date</ThemedText>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <Pressable 
           style={({ pressed }) => [
@@ -102,7 +102,7 @@ export default function AccDetailsScreen() {
         />
       )}
 
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Average Period Length</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Average Period Length</ThemedText>
       <View style={[styles.dropDownInput, {marginTop: windowHeight * 0.01}]}>
         <Picker
           selectedValue={periodLength}
@@ -113,7 +113,7 @@ export default function AccDetailsScreen() {
           ))}
         </Picker>
       </View>
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Average Cycle Length</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Average Cycle Length</ThemedText>
       <View style={[styles.dropDownInput, {marginTop: windowHeight * 0.01}]}>
         <Picker
           selectedValue={cycleLength}
@@ -125,9 +125,9 @@ export default function AccDetailsScreen() {
         </Picker>
       </View>
 
-      <View style={[styles.flexCenter]}>
+      <View style={[{alignItems: 'center', width:'100%'}]}>
         <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.05}]}>
-        <ThemedText style={styles.inlineContainer}>
+        <ThemedText style={[styles.inlineContainer, {alignItems: 'center'}]}>
           <Pressable 
             style={({ pressed }) => [
             styles.createButtonContainer,
@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
     alignItems: 'flex-start',
+    backgroundColor: '#FAFAFA',
   },
   flexCenter:{
     alignSelf: 'flex-end',
@@ -188,19 +189,21 @@ const styles = StyleSheet.create({
 
   createDateButtonContainer:{
     padding: 10,
+    paddingLeft: 20,
     borderRadius: 5,
-    marginLeft: windowWidth * 0.05,
-    width: "60%",
+    marginLeft: windowWidth * 0.1,
+    width: "100%",
     height: "auto",
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
-    alignItems: 'center',
   },
 
   createButtonContainer:{
     padding: 10,
+    paddingLeft: 90,
+    paddingRight:90,
     borderRadius: 5,
-    width: "90%",
+    width: "100%",
     height: "auto",
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
@@ -233,6 +236,10 @@ const styles = StyleSheet.create({
 
   elemSpace:{
     marginTop: windowHeight * 0.02,
+  },
+
+  blackText:{
+    color: '#000000',
   }
 
 });

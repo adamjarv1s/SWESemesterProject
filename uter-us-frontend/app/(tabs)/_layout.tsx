@@ -10,7 +10,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
 import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faGear, faHouse, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faGear, faHouse, faStore } from '@fortawesome/free-solid-svg-icons';
 
 // React Navigation
 import {NavigationContainer} from '@react-navigation/native';
@@ -37,6 +37,7 @@ export default function TabLayout() {
           borderColor: "#000000",
           borderWidth: 1,
           padding: 10,
+          backgroundColor: '#FFFFFF',
         },
         drawerLabelStyle: {
           color: "#000000",
@@ -50,15 +51,16 @@ export default function TabLayout() {
           drawerIcon: ({ color }) => <FontAwesomeIcon size={20} icon={faHouse}/>,
         }}
       />
-      
+
       <Drawer.Screen
         name="buddy"
         options={{
-          title: 'Buddy Selection TEMP',
-          drawerIcon: ({ color }) => <FontAwesomeIcon size={20} icon={faPaperPlane}/>,
+          title: "Buddy Shop",
+          drawerIcon: ({ color }) => <FontAwesomeIcon size={20} icon={faStore}/>,
         }}
       />
 
+  
       <Drawer.Screen
         name="settings"
         options={{

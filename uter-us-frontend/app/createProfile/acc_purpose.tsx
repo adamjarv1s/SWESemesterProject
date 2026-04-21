@@ -32,7 +32,7 @@ export default function AccPurposeScreen() {
   return (
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="title">
+        <ThemedText style={[styles.inlineContainer, styles.blackText]} type="title">
           Account Purpose
         </ThemedText>
       </View>
@@ -45,7 +45,7 @@ export default function AccPurposeScreen() {
           ]}
           onPress={() => accDetails(0)}>
             <ThemedText style={[styles.createButtonText]}>
-                Individual
+                Individual:
             </ThemedText>
             <ThemedText style={[{color: '#FFFFFF', fontFamily: "Arial"}]}>
                 Track Your Own Cycle
@@ -62,9 +62,9 @@ export default function AccPurposeScreen() {
           ]}
           onPress={() => accDetails(1)}>
             <ThemedText style={[styles.createButtonText]}>
-                Parent
+                Parent:
             </ThemedText>
-            <ThemedText style={[styles.createButtonText]}>
+            <ThemedText style={[styles.createButtonText, {fontFamily: "Arial"}]}>
                 Track a Loved Ones Cycle
             </ThemedText>
           </Pressable>
@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: windowHeight * 0.10,
     alignItems: 'center',
+    backgroundColor: '#FAFAFA',
   },
   stepContainer: {
     gap: 8,
@@ -132,4 +133,8 @@ const styles = StyleSheet.create({
   createButtonText:{
     color: '#ffffff',
   },
+
+  blackText:{
+    color: '#000000',
+  }
 });
