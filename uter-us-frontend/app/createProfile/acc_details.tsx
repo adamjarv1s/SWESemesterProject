@@ -44,11 +44,11 @@ export default function AccDetailsScreen() {
   return (
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="title">
-          Account Details
+        <ThemedText style={[styles.inlineContainer, styles.blackText]} type="title">
+           Account Details
         </ThemedText>
       </View>
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Name (Max 12 Characters)</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Name (Max 12 Characters)</ThemedText>
       <TextInput
         value = {username}
         onChangeText={setUserName}
@@ -60,8 +60,8 @@ export default function AccDetailsScreen() {
       />
         {accountType === "1" && (
           <>
-            <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>
-              Child's Name (Max 12 Characters)
+            <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>
+              Child&apos;s Name (Max 12 Characters)
             </ThemedText>
             <TextInput
               value={childName}
@@ -74,7 +74,7 @@ export default function AccDetailsScreen() {
             />
           </>
         )}
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Last Period Start Date</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Last Period Start Date</ThemedText>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <Pressable 
           style={({ pressed }) => [
@@ -102,7 +102,7 @@ export default function AccDetailsScreen() {
         />
       )}
 
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Average Period Length</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Average Period Length</ThemedText>
       <View style={[styles.dropDownInput, {marginTop: windowHeight * 0.01}]}>
         <Picker
           selectedValue={periodLength}
@@ -113,7 +113,7 @@ export default function AccDetailsScreen() {
           ))}
         </Picker>
       </View>
-      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Average Cycle Length</ThemedText>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Average Cycle Length</ThemedText>
       <View style={[styles.dropDownInput, {marginTop: windowHeight * 0.01}]}>
         <Picker
           selectedValue={cycleLength}
@@ -125,9 +125,9 @@ export default function AccDetailsScreen() {
         </Picker>
       </View>
 
-      <View style={[styles.flexCenter]}>
+      <View style={[{alignItems: 'center', width:'100%'}]}>
         <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.05}]}>
-        <ThemedText style={styles.inlineContainer}>
+        <ThemedText style={[styles.inlineContainer, {alignItems: 'center'}]}>
           <Pressable 
             style={({ pressed }) => [
             styles.createButtonContainer,

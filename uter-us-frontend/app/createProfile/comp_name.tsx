@@ -70,7 +70,7 @@ async function CreateProfile() {
       <ThemedView style={{ flex: 1 }}>
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.topHeader]}>
-        <ThemedText style={[]} type="title">
+        <ThemedText style={[styles.blackText]} type="title">
           Companion Selection
         </ThemedText>
       </View>
@@ -88,7 +88,7 @@ async function CreateProfile() {
       </View>
 
     <View style={styles.card}>
-      <ThemedText style={[styles.bodySpacing]}>Companion Name</ThemedText>
+      <ThemedText style={[styles.bodySpacing, styles.blackText]}>Companion Name</ThemedText>
         <TextInput
           value={petName}
           onChangeText={setPetName}

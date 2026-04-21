@@ -295,7 +295,7 @@ if (alerts) {
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-  <ThemedView style={{ flex: 1 }}>
+  <ThemedView style={{ flex: 1 , backgroundColor: '#FAFAFA'}}>
 
         {/* Top Header Bar -> Hamburger Menu, Hello [User], and Log Out 
             NOTES:
@@ -310,7 +310,7 @@ if (alerts) {
               <FontAwesomeIcon icon={faBars} size={20}/>
             </Pressable>
 
-            <ThemedText style={[styles.welcomeUserMessage]}>
+            <ThemedText style={[styles.welcomeUserMessage, styles.blackText]}>
                 Hello, {userName}!
             </ThemedText>
 
@@ -326,11 +326,11 @@ if (alerts) {
           <View style={[styles.stepContainer, {alignItems: 'center'}]}>
             <View style={[styles.inlineContainer, styles.infoContainers]}>
               <View style={[styles.inlineContainer]}>
-                <ThemedText style={[styles.infoContainer]}>
+                <ThemedText style={[styles.infoContainer, styles.blackText]}>
                   {streak} <FontAwesomeIcon size={10} icon={faFire}/>
                 </ThemedText>
               
-                <ThemedText style={[styles.infoContainer]}>
+                <ThemedText style={[styles.infoContainer, styles.blackText]}>
                   {diamondCount} <FontAwesomeIcon size={10} icon={faGem}/>
                 </ThemedText>
 
@@ -413,17 +413,17 @@ if (alerts) {
         <View>
             <View style={[styles.dayInfoBoxContainer, styles.inlineContainer]}>
                       <View style={[styles.stepContainer]}>
-                        <ThemedText style={[styles.dayInfoBoxDate]}>
+                        <ThemedText style={[styles.dayInfoBoxDate, styles.blackText]}>
                           {dateValue}
                         </ThemedText>
-                        <ThemedText style={styles.dayInfoBoxFlow}>
+                        <ThemedText style={[styles.dayInfoBoxFlow, styles.blackText]}>
                           {selectedDayData?.heaviness
                             ? getFlowLabel(selectedDayData.heaviness)
                             : 'No Flow Recorded'}
                         </ThemedText>
                       </View>
 
-              <ThemedText numberOfLines={4} style={styles.dayInfoBoxGeneral}>
+              <ThemedText numberOfLines={4} style={[styles.dayInfoBoxGeneral, styles.blackText]}>
                 {alertMessage}
               </ThemedText>
             </View>
