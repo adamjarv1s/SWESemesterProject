@@ -726,5 +726,5 @@ const styles = StyleSheet.create({
   overlayHead:{
     position: 'absolute',
     resizeMode: 'contain',
-  }
+  },
 });
