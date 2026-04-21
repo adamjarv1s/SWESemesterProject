@@ -100,6 +100,7 @@ bool checkMissed(int day, int year, int lastStart, double averageCycle) {
     return result >= 42;
 }
 
+// gives a boolean on whether or not the period input was irregularly long compared to previous cycles
 bool checkIrregular(int day, int year, int lastStart, double averageCycle, vector<pair<int, int>> periods) {
     if (periods.size() < 5) return false;
 
@@ -111,11 +112,13 @@ bool checkIrregular(int day, int year, int lastStart, double averageCycle, vecto
         result = (isLeapYear(year) ? 366 : 365) - lastStart + day;
     } else {
         result = day - lastStart;
+        result = day - lastStart;
     }
 
     return result >= roundedCycle + 7;
 }
 
+// gives a boolean on whether or not the previous period was irregularly short
 bool checkLastCycleUnder21(int day, int year, int lastStart, double averageCycle, bool notConcernedFlag) {
     if (notConcernedFlag) return false;
 
@@ -131,6 +134,7 @@ bool checkLastCycleUnder21(int day, int year, int lastStart, double averageCycle
     return result < 21;
 }
 
+// checks if the last three periods were irregularly short
 bool checkLastThreeUnder21(vector<pair<int, int>> periods, bool notConcernedFlag) {
     if (periods.size() < 4 || notConcernedFlag) return false;
 
@@ -146,6 +150,7 @@ bool checkLastThreeUnder21(vector<pair<int, int>> periods, bool notConcernedFlag
     return true;
 }
 
+// checks if a period was irregularly long in general
 bool checkLastCycleOver35(int day, int year, int lastStart, double averageCycle, bool notConcernedFlag) {
     if (notConcernedFlag) return false;
 
@@ -161,6 +166,7 @@ bool checkLastCycleOver35(int day, int year, int lastStart, double averageCycle,
     return result > 35;
 }
 
+// checks if the last three periods were irregularly long in general
 bool checkLastThreeOver35(vector<pair<int, int>> periods, bool notConcernedFlag) {
     if (periods.size() < 4 || notConcernedFlag) return false;
 
@@ -176,6 +182,7 @@ bool checkLastThreeOver35(vector<pair<int, int>> periods, bool notConcernedFlag)
     return true;
 }
 
+// checks if the user hasn't logged a period in the past 90 days
 bool checkNoPeriodIn90Days(int day, int year, int lastStart, bool notConcernedFlag) {
     if (notConcernedFlag) return false;
 
@@ -191,6 +198,7 @@ bool checkNoPeriodIn90Days(int day, int year, int lastStart, bool notConcernedFl
     return result >= 90;
 }
 
+// checks if the user has been bleeding for 7+ days
 bool checkBleedingFor7Days(int day, int year, int startDay, bool notConcernedFlag) {
     if (notConcernedFlag) return false;
 
@@ -206,6 +214,7 @@ bool checkBleedingFor7Days(int day, int year, int startDay, bool notConcernedFla
     return result >= 7;
 }
 
+// checks if the user starts bleeding again after it's already stopped
 bool checkBleedingAfterStopped(int day, int year, int bleedingEndDay, bool notConcernedFlag) {
     if (notConcernedFlag) return false;
 

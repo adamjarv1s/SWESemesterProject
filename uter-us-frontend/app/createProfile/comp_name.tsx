@@ -45,6 +45,8 @@ async function CreateProfile() {
     const response = await fetch(`${IPAddress}/create-user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: username,
         childName: childName,
@@ -53,9 +55,11 @@ async function CreateProfile() {
         accountType: Number(accountType),
         averageCycleLength: Number(averageCycleLength),
         averagePeriodLength: Number(averagePeriodLength),
+        averagePeriodLength: Number(averagePeriodLength),
       }),
     });
     if (response.ok) {
+      router.push('/(tabs)/dashboard' as any);
       router.push('/(tabs)/dashboard' as any);
     } else {
       Alert.alert('Error', 'Failed to create profile');
@@ -64,6 +68,7 @@ async function CreateProfile() {
     Alert.alert('Error', 'Could not connect to server');
   }
 }
+
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -88,6 +93,20 @@ async function CreateProfile() {
       </View>
 
     <View style={styles.card}>
+
+      <View style={styles.grid}>
+        {PETS.map((item) => (
+          <Pressable
+            key={item.id}
+            style={[styles.petCell, petId === item.id && styles.petCellSelected]}
+            onPress={() => { setPetId(item.id); setPetName(item.name); }}
+          >
+            <Image source={item.image} style={styles.petImage} />
+          </Pressable>
+        ))}
+      </View>
+
+    <View style={styles.card}>
       <ThemedText style={[styles.bodySpacing]}>Companion Name</ThemedText>
         <TextInput
           value={petName}
@@ -95,12 +114,14 @@ async function CreateProfile() {
           style={[styles.textInput]}
           autoCapitalize="none"
           placeholder="..."
+          placeholder="..."
           placeholderTextColor="#94a3b8"
           maxLength={12}
         />
 
 
         <Pressable
+          style={({ pressed }) => [styles.createButton, pressed && styles.createButtonPressed]}
           style={({ pressed }) => [styles.createButton, pressed && styles.createButtonPressed]}
           onPress={CreateProfile}
         >
@@ -118,13 +139,18 @@ const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
     alignItems: 'center',
+    alignItems: 'center',
     paddingTop: windowHeight * 0.05,
   },
   topHeader: {
     marginTop: windowHeight * 0.08,
     marginBottom: windowHeight * 0.04,
     alignItems: 'center',
+    marginTop: windowHeight * 0.08,
+    marginBottom: windowHeight * 0.04,
+    alignItems: 'center',
   },
+  grid: {
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -140,6 +166,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'transparent',
     borderWidth: 2,
     borderColor: 'transparent',
   },
@@ -167,11 +195,24 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     color: '#555',
     fontSize: 14,
+    gap: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
   },
+  label: {
+    alignSelf: 'flex-start',
+    color: '#555',
+    fontSize: 14,
+  },
+  textInput: {
+    width: '100%',
   textInput: {
     width: '100%',
     height: 45,
     borderWidth: 1,
+    borderColor: '#ccc',
     borderColor: '#ccc',
     borderRadius: 8,
     paddingHorizontal: 10,
@@ -186,7 +227,27 @@ const styles = StyleSheet.create({
   },
   createButtonPressed: {
     backgroundColor: '#333',
+    backgroundColor: '#fff',
   },
+  createButton: {
+    width: '100%',
+    backgroundColor: '#1c1c1c',
+    borderRadius: 8,
+    padding: 14,
+    alignItems: 'center',
+  },
+  createButtonPressed: {
+    backgroundColor: '#333',
+  },
+  createButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  bodySpacing: {
+    paddingLeft: windowWidth * 0.05,
+    paddingRight: windowWidth * 0.05,
+    marginTop: windowHeight * 0.005,
+    marginBottom: windowHeight * 0.005,
   createButtonText: {
     color: '#fff',
     fontSize: 16,
