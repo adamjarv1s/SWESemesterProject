@@ -186,7 +186,7 @@ int Database::getUserId() {
             return res->getInt("id");
         }
 
-        return 0;
+        return -1; // no active user
 
     } catch (sql::SQLException &e) {
         std::cerr << "SQL Error: " << e.what() << std::endl;
