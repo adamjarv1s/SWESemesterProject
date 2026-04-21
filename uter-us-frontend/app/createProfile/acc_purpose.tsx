@@ -32,7 +32,7 @@ export default function AccPurposeScreen() {
   return (
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer, styles.blackText]} type="title">
+        <ThemedText style={[styles.inlineContainer]} type="title">
           Account Purpose
         </ThemedText>
       </View>
@@ -45,9 +45,9 @@ export default function AccPurposeScreen() {
           ]}
           onPress={() => accDetails(0)}>
             <ThemedText style={[styles.createButtonText]}>
-                Individual:
+                Individual
             </ThemedText>
-            <ThemedText style={[{color: '#FFFFFF', fontFamily: "Arial"}]}>
+            <ThemedText style={[styles.createButtonText]}>
                 Track Your Own Cycle
             </ThemedText>
           </Pressable>
@@ -62,9 +62,9 @@ export default function AccPurposeScreen() {
           ]}
           onPress={() => accDetails(1)}>
             <ThemedText style={[styles.createButtonText]}>
-                Parent:
+                Parent
             </ThemedText>
-            <ThemedText style={[styles.createButtonText, {fontFamily: "Arial"}]}>
+            <ThemedText style={[styles.createButtonText]}>
                 Track a Loved Ones Cycle
             </ThemedText>
           </Pressable>

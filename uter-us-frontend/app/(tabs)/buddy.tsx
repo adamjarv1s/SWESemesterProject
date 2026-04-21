@@ -100,6 +100,18 @@ async function getBowPurchased() {
     }
   }
 
+async function getPetId() {
+  try {
+    const response = await fetch(`${IPAddress}/get-pet-id`);
+    const text = await response.text();
+    return parseInt(text);
+
+  } catch (error) {
+    console.error('ErrorGetPetId:', error);
+    return -1;
+  }
+}
+
 async function getHotWaterPurchased() {
     try {
       const response = await fetch(`${IPAddress}/get-hotwater-purchased`);
@@ -144,17 +156,6 @@ async function getCurrentHoldable() {
   }
 }
 
-async function getPetId() {
-  try {
-    const response = await fetch(`${IPAddress}/get-pet-id`);
-    const text = await response.text();
-    return parseInt(text);
-
-  } catch (error) {
-    console.error('ErrorGetPetId:', error);
-    return -1;
-  }
-}
 
 
 export default function TabTwoScreen() {
@@ -167,7 +168,7 @@ export default function TabTwoScreen() {
 
   const [userName, setUserName] = useState('Loading...');
   const [diamondCount, setDiamondCount] = useState('0');
-  const [petId, setPetId] = useState(0);
+  const [petId, setPetId] = useState(1);
 
   const [flowerPurchased, setFlowerPurchased] = useState(-1);
   const [crownPurchased, setCrownPurchased] = useState(-1);
@@ -221,7 +222,7 @@ export default function TabTwoScreen() {
                     <FontAwesomeIcon icon={faBars} size={20}/>
                   </Pressable>
       
-                  <ThemedText style={[styles.welcomeUserMessage, styles.blackText]}>
+                  <ThemedText style={[styles.welcomeUserMessage]}>
                       Hello, {userName}!
                   </ThemedText>
       
@@ -230,14 +231,13 @@ export default function TabTwoScreen() {
                 </Pressable>
               </View>
                 
-                
               
               {/* Buddy System -> Gems, Streak, Buddy Image, Shop/Buddy Settings */}
               <View style={[styles.buddyContainer]}>
                 <View style={[styles.stepContainer, {alignItems: 'center'}]}>
                   <View style={[styles.inlineContainer, styles.infoContainers]}>
                     <View style={[styles.inlineContainer]}>
-                      <ThemedText style={[styles.infoContainer, styles.blackText]}>
+                      <ThemedText style={[styles.infoContainer]}>
                         {diamondCount} <FontAwesomeIcon size={10} icon={faGem}/>
                       </ThemedText>
       
@@ -256,13 +256,13 @@ export default function TabTwoScreen() {
                       {petId === 1 && <Image source={require('../../assets/images/chiiwawa.png')} style={[styles.image]} />}
                       {petId === 2 && <Image source={require('../../assets/images/shadow.png')} style={[styles.image]} />}
                       {petId === 3 && <Image source={require('../../assets/images/birb.png')} style={[styles.image]} />}
-                      {petId !== 1 && petId !== 2 && petId !== 3 && <ThemedText>buddy err</ThemedText>}
+                      {petId !== 1 && petId !== 2 && petId !== 3 && <ThemedText></ThemedText>}
                     </View>
       
                     <View style={[styles.overlayHand]}>
                       {currentHoldable === 4 && <Image source={require('../../assets/images/hotWaterPack.png')} style={[styles.image]} />}
                       {currentHoldable === 5 && <Image source={require('../../assets/images/candy.png')} style={[styles.image]} />}
-                      {currentHoldable !== 4 && currentHoldable !== 5 && <ThemedText>err</ThemedText>}
+                      {currentHoldable !== 4 && currentHoldable !== 5 && <ThemedText></ThemedText>}
                     </View>
       
                     <View style={[styles.overlayHead]}>
@@ -287,7 +287,7 @@ export default function TabTwoScreen() {
           <View style={[styles.shopContainer]}>
             <View style={[styles.stepContainer]}>
 
-              <ThemedText style={[styles.blackText]}>
+              <ThemedText>
                 Headwear
               </ThemedText>
 
@@ -313,9 +313,9 @@ export default function TabTwoScreen() {
                   >
                   <Image source={require('../../assets/images/flowercrop.png')} style={[styles.itemImage]} />
                   <ThemedText style={[styles.priceStyle]}>
-                    {flowerPurchased === 0 && <ThemedText style={[styles.blackText]}>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
-                    {flowerPurchased === 1 && <ThemedText style={[styles.blackText]}>Owned!</ThemedText>}
-                    {flowerPurchased !== 0 && flowerPurchased !== 1 && <ThemedText style={[styles.blackText]}>err</ThemedText>}
+                    {flowerPurchased === 0 && <ThemedText>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
+                    {flowerPurchased === 1 && <ThemedText>Owned!</ThemedText>}
+                    {flowerPurchased !== 0 && flowerPurchased !== 1 && <ThemedText>err</ThemedText>}
                   </ThemedText>
                 </Pressable>
               
@@ -341,9 +341,9 @@ export default function TabTwoScreen() {
                   >
                   <Image source={require('../../assets/images/crowncrop.png')} style={[styles.itemImage]} />
                   <ThemedText style={[styles.priceStyle]}>
-                    {crownPurchased === 0 && <ThemedText style={[styles.blackText]}>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
-                    {crownPurchased === 1 && <ThemedText style={[styles.blackText]}>Owned!</ThemedText>}
-                    {crownPurchased !== 0 && crownPurchased !== 1 && <ThemedText style={[styles.blackText]}>err</ThemedText>}
+                    {crownPurchased === 0 && <ThemedText>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
+                    {crownPurchased === 1 && <ThemedText>Owned!</ThemedText>}
+                    {crownPurchased !== 0 && crownPurchased !== 1 && <ThemedText>err</ThemedText>}
                   </ThemedText>
                 </Pressable>
 
@@ -368,15 +368,15 @@ export default function TabTwoScreen() {
                   >
                   <Image source={require('../../assets/images/bowcrop.png')} style={[styles.itemImage]} />
                   <ThemedText style={[styles.priceStyle]}>
-                    {bowPurchased === 0 && <ThemedText style={[styles.blackText]}>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
-                    {bowPurchased === 1 && <ThemedText style={[styles.blackText]}>Owned!</ThemedText>}
-                    {bowPurchased !== 0 && bowPurchased !== 1 && <ThemedText style={[styles.blackText]}>err</ThemedText>}
+                    {bowPurchased === 0 && <ThemedText>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
+                    {bowPurchased === 1 && <ThemedText>Owned!</ThemedText>}
+                    {bowPurchased !== 0 && bowPurchased !== 1 && <ThemedText>err</ThemedText>}
                   </ThemedText>
                 </Pressable>
               </View>
 
-              <ThemedText style={[styles.blackText]}>
-                Holdable
+              <ThemedText>
+                Holdables
               </ThemedText>
 
               <View style={[styles.spacingContainer]}>
@@ -401,9 +401,9 @@ export default function TabTwoScreen() {
                   >
                   <Image source={require('../../assets/images/hotWaterPackcrop.png')} style={[styles.itemImage]} />
                   <ThemedText style={[styles.priceStyle]}>
-                    {hotWaterPurchased === 0 && <ThemedText style={[styles.blackText]}>50 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
-                    {hotWaterPurchased === 1 && <ThemedText style={[styles.blackText]}>Owned!</ThemedText>}
-                    {hotWaterPurchased !== 0 && hotWaterPurchased !== 1 && <ThemedText style={[styles.blackText]}>err</ThemedText>}
+                    {hotWaterPurchased === 0 && <ThemedText>50 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
+                    {hotWaterPurchased === 1 && <ThemedText>Owned!</ThemedText>}
+                    {hotWaterPurchased !== 0 && hotWaterPurchased !== 1 && <ThemedText>err</ThemedText>}
                   </ThemedText>
                 </Pressable>
 
@@ -428,9 +428,9 @@ export default function TabTwoScreen() {
                   >
                   <Image source={require('../../assets/images/candycrop.png')} style={[styles.itemImage]} />
                   <ThemedText style={[styles.priceStyle]}>
-                    {candyPurchased === 0 && <ThemedText style={[styles.blackText]}>50 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
-                    {candyPurchased === 1 && <ThemedText style={[styles.blackText]}>Owned!</ThemedText>}
-                    {candyPurchased !== 0 && candyPurchased !== 1 && <ThemedText style={[styles.blackText]}>err</ThemedText>}
+                    {candyPurchased === 0 && <ThemedText>50 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
+                    {candyPurchased === 1 && <ThemedText>Owned!</ThemedText>}
+                    {candyPurchased !== 0 && candyPurchased !== 1 && <ThemedText>err</ThemedText>}
                   </ThemedText>
                 </Pressable>
 
@@ -450,20 +450,26 @@ export default function TabTwoScreen() {
                       <View style={[styles.inlineContainer, {gap: 20}]}>
                         <Pressable
                         style={[styles.buyButton]}
-                        onPress={async () => {
-                          try {
-                            if (whichItem !== null) {
-                              await fetch(`${IPAddress}/update-purchase`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ item: whichItem }),
-                              });
-                            }
-                            setShowBuyModal(false);
-                          } catch (error) {
-                            console.error(error);
+                      onPress={async () => {
+                        try {
+                          if (whichItem !== null) {
+                            await fetch(`${IPAddress}/update-purchase`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ item: whichItem }),
+                            });
+                            getDiamonds().then(d => setDiamondCount(d));
+                            getFlowerPurchased().then(p => setFlowerPurchased(p));
+                            getCrownPurchased().then(p => setCrownPurchased(p));
+                            getBowPurchased().then(p => setBowPurchased(p));
+                            getHotWaterPurchased().then(p => setHotWaterPurchased(p));
+                            getCandyPurchased().then(p => setCandyPurchased(p));
                           }
-                        }}
+                          setShowBuyModal(false);
+                        } catch (error) {
+                          console.error(error);
+                        }
+                      }}
                       >
                         <ThemedText style={{ color: '#ffffff', textAlign: 'center' }}>
                           Buy
@@ -555,7 +561,6 @@ export default function TabTwoScreen() {
     </ThemedView>
   );
 }
-
 const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,

@@ -213,25 +213,6 @@ int Database::getActiveUserPetId() {
     }
 }
 
-void Database::setActiveUser(int user){
-    try {
-        std::unique_ptr<sql::PreparedStatement> deactivate(conn->prepareStatement(
-            "UPDATE userinfo SET activeUser = 0"
-        ));
-        deactivate->executeUpdate(); 
-
-        std::unique_ptr<sql::PreparedStatement> activate(conn->prepareStatement(
-            "UPDATE userinfo SET activeUser = 1 WHERE id = ?"
-        ));
-        activate->setInt(1, user);
-        activate->executeUpdate();
-
-        } catch (sql::SQLException &e) {
-        std::cerr << "SQL Error: " << e.what() << std::endl;
-        return;
-    }
-}
-
 string Database::getProfilesAsJson() {
     try {
         std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement(
@@ -933,8 +914,7 @@ void Database::setCurrentHeadwear(int user, int headwear){
         );
         stmnt->setInt(1, headwear);
         stmnt->setInt(2, user);
-        int affected = stmnt->executeUpdate();
-
+        stmnt->executeUpdate();
     } catch (sql::SQLException &e) {
         std::cerr << "SQL Error: " << e.what() << std::endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
@@ -950,7 +930,7 @@ void Database::setCurrentHoldable(int user, int holdable){
         );
         stmnt->setInt(1, holdable);
         stmnt->setInt(2, user);
-        int affected = stmnt->executeUpdate();
+        stmnt->executeUpdate();
     } catch (sql::SQLException &e) {
         std::cerr << "SQL Error: " << e.what() << std::endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
@@ -965,7 +945,6 @@ void Database::purchaseItem(int user, int item){
         switch (item){
             case 1:
                 purchase = "flowerPurchased";
-                purchase = "flowerPurchased";
                 gems = 100;
                 break;
             case 2:
@@ -975,17 +954,12 @@ void Database::purchaseItem(int user, int item){
             case 3:
                 purchase = "bowPurchased";
                 gems = 100;
-                purchase = "bowPurchased";
-                gems = 100;
                 break;
             case 4:
-                purchase = "hotWaterPackPurchased";
-                purchase = "hotWaterPackPurchased";
+                purchase = "hotWaterPurchased";
                 gems = 50;
                 break;
             case 5:
-                purchase = "candyPurchased";
-                gems = 50;
                 purchase = "candyPurchased";
                 gems = 50;
                 break;
@@ -996,7 +970,7 @@ void Database::purchaseItem(int user, int item){
             );
             updateStmnt->setBoolean(1, true);
             updateStmnt->setInt(2, gems);
-            updateStmnt->setBoolean(3, user);
+            updateStmnt->setInt(3, user);
 
             updateStmnt->executeUpdate();
         }
