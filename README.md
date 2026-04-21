@@ -71,7 +71,8 @@ Next open up Commandline or Powershell and run the following commands:
 
 cd into the project directory
 
-```cd uter-us-frontend 
+```
+cd uter-us-frontend 
 npm install 
 npx expo start
 ```
