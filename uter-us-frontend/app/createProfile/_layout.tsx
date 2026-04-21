@@ -11,6 +11,7 @@ export default function Layout() {
         headerTitleStyle: {
           
         },
+        //headerShown: false,
       }}>
       {/* Optionally configure static options outside the route.*/}
       <Stack.Screen name="select_profile" />

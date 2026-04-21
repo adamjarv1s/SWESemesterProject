@@ -47,7 +47,7 @@ export default function AccPurposeScreen() {
             <ThemedText style={[styles.createButtonText]}>
                 Individual
             </ThemedText>
-            <ThemedText style={[styles.createButtonText]}>
+            <ThemedText style={[{color: '#FFFFFF', fontFamily: "Arial"}]}>
                 Track Your Own Cycle
             </ThemedText>
           </Pressable>
