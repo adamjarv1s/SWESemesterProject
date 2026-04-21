@@ -66,6 +66,104 @@ async function CreateProfile() {
 }
 
   return (
+<<<<<<< HEAD
+    <ThemedView style={styles.wholeScreen}>
+      <View style={[styles.inlineContainer, styles.topHeader]}>
+        <ThemedText style={[styles.inlineContainer, styles.blackText]} type="title">
+           Account Details
+        </ThemedText>
+      </View>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Name (Max 12 Characters)</ThemedText>
+      <TextInput
+        value = {username}
+        onChangeText={setUserName}
+        style={[styles.textInput]}
+        autoCapitalize="none"
+        placeholder="Name" 
+        placeholderTextColor="#94a3b8"
+        maxLength={12}
+      />
+        {accountType === "1" && (
+          <>
+            <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>
+              Child&apos;s Name (Max 12 Characters)
+            </ThemedText>
+            <TextInput
+              value={childName}
+              onChangeText={setChildName}
+              style={[styles.textInput]}
+              autoCapitalize="none"
+              placeholder="Name"
+              placeholderTextColor="#94a3b8"
+              maxLength={12}
+            />
+          </>
+        )}
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Last Period Start Date</ThemedText>
+      <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
+        <Pressable 
+          style={({ pressed }) => [
+          styles.createDateButtonContainer,
+          pressed && styles.createButtonPressContainer
+          ]}
+          onPress={() => setShowPicker(true)}>
+          <ThemedText style={[styles.inlineContainer, styles.createButtonText]}>
+            {date.toDateString()}
+          </ThemedText>
+        </Pressable>
+      </View>
+      {showPicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            if (event.type === "dismissed") return;
+            if (selectedDate) {
+              setDate(selectedDate);
+            }
+            setShowPicker(false);
+          }}
+        />
+      )}
+
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Average Period Length</ThemedText>
+      <View style={[styles.dropDownInput, {marginTop: windowHeight * 0.01}]}>
+        <Picker
+          selectedValue={periodLength}
+          onValueChange={(value) => setPeriodLength(value)}
+        >
+          {Array.from({ length: 14 }, (_, i) => i + 1).map((n) => (
+            <Picker.Item key={n} label={n === 1 ? "1 day" : `${n} days`} value={n} />
+          ))}
+        </Picker>
+      </View>
+      <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace, styles.blackText]}>Average Cycle Length</ThemedText>
+      <View style={[styles.dropDownInput, {marginTop: windowHeight * 0.01}]}>
+        <Picker
+          selectedValue={cycleLength}
+          onValueChange={(value) => setCycleLength(value)}
+        >
+          {Array.from({ length: 22 }, (_, i) => i + 21).map((n) => (
+            <Picker.Item key={n} label={n === 1 ? "1 day" : `${n} days`} value={n} />
+          ))}
+        </Picker>
+      </View>
+
+      <View style={[{alignItems: 'center', width:'100%'}]}>
+        <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.05}]}>
+        <ThemedText style={[styles.inlineContainer, {alignItems: 'center'}]}>
+          <Pressable 
+            style={({ pressed }) => [
+            styles.createButtonContainer,
+            pressed && styles.createButtonPressContainer
+            ]}
+            onPress={() => compName(periodLength, cycleLength, username, childName)}>
+              <ThemedText style={styles.createButtonText}>Continue</ThemedText>
+          </Pressable>
+        </ThemedText>
+      </View>
+=======
     <ScrollView contentContainerStyle={[{ flexGrow: 1 }]}>
       <ThemedView style={[styles.wholeScreen, { flex: 1 }]}>
        <ThemedView style={styles.wholeScreen}>
@@ -85,28 +183,10 @@ async function CreateProfile() {
             <Image source={item.image} style={styles.petImage} />
           </Pressable>
         ))}
+>>>>>>> f9b6ae7a88e05a1635befef6b07e93ac552d749b
       </View>
 
-    <View style={styles.card}>  <ThemedText style={[styles.bodySpacing, styles.blackText]}>Companion Name</ThemedText>
-        <TextInput
-          value={petName}
-          onChangeText={setPetName}
-          style={[styles.textInput]}
-          autoCapitalize="none"
-          placeholder="..."
-          placeholderTextColor="#94a3b8"
-          maxLength={12}
-        />
-
-
-        <Pressable
-          style={({ pressed }) => [styles.createButton, pressed && styles.createButtonPressed]}
-          onPress={CreateProfile}
-        >
-          <ThemedText style={styles.createButtonText}>Create Profile</ThemedText>
-        </Pressable>
-     </View>
-    </ThemedView>
+    
     </ThemedView>
     </ScrollView>
   );
