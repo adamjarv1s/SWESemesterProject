@@ -17,7 +17,7 @@ class Database{
     Database& operator=(const Database&) = delete;
 
     //USER FUNCTIONS (primarily use USERINFO table)
-    void createAccount(string name, string pet, int pet_id, int accountType, int type, int averagePeriodLength, int averageCycleLength);
+    void createAccount(string name, string childName, string pet, int pet_id, int type, int averagePeriodLength, int averageCycleLength);
     void deleteAccount(int user);
     int getUserId();
     void setActiveUser(int user);
@@ -27,9 +27,14 @@ class Database{
     vector<pair<int, int>> getPeriodsAsVector(int user);
 
     //PERIOD FUNCTIONS (primarily use periodData table)
-    void logPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay, string description);
+    void logPeriod(int user, string currentDate, int heaviness, bool lastDay, string description);
+    void clearPredictedPeriods(int user);
+    std::pair<int,int> getUserCycleLengths(int user);
+    void generatePredictedPeriod(int user);
     void removeOldestPeriod(int user);
     string getPeriodsAsString(int user);
+    void deletePeriodDay(int user, string date);
+    std::pair<int, std::string> getAccountTypeAndChildName(int user);
 
     //BUDDY/SHOP FUNCTIONS (primarily use PURCHASEDATA table)
     int streakSystem(int user);

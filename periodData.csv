@@ -1,0 +1,27 @@
+id: 10, PeriodID: 378, CurrentDate: 2026-04-01, Heaviness: 3, FirstDay: 1, LastDay: 0, predicted: 0, description: I saw my mom today!, fertileWindow: 0
+id: 10, PeriodID: 379, CurrentDate: 2026-04-02, Heaviness: 1, FirstDay: 0, LastDay: 0, predicted: 0, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 394, CurrentDate: 2026-04-10, Heaviness: 0, FirstDay: 0, LastDay: 0, predicted: 0, description: , fertileWindow: 1
+id: 10, PeriodID: 395, CurrentDate: 2026-04-11, Heaviness: 0, FirstDay: 0, LastDay: 0, predicted: 0, description: , fertileWindow: 1
+id: 10, PeriodID: 396, CurrentDate: 2026-04-12, Heaviness: 0, FirstDay: 0, LastDay: 0, predicted: 0, description: , fertileWindow: 1
+id: 10, PeriodID: 397, CurrentDate: 2026-04-13, Heaviness: 0, FirstDay: 0, LastDay: 0, predicted: 0, description: , fertileWindow: 1
+id: 10, PeriodID: 398, CurrentDate: 2026-04-14, Heaviness: 0, FirstDay: 0, LastDay: 0, predicted: 0, description: , fertileWindow: 1
+id: 10, PeriodID: 399, CurrentDate: 2026-04-15, Heaviness: 0, FirstDay: 0, LastDay: 0, predicted: 0, description: , fertileWindow: 1
+id: 10, PeriodID: 401, CurrentDate: 2026-04-03, Heaviness: 2, FirstDay: 0, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 402, CurrentDate: 2026-04-04, Heaviness: 2, FirstDay: 0, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 403, CurrentDate: 2026-04-05, Heaviness: 2, FirstDay: 0, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 404, CurrentDate: 2026-04-06, Heaviness: 2, FirstDay: 0, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 405, CurrentDate: 2026-04-07, Heaviness: 2, FirstDay: 0, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 406, CurrentDate: 2026-04-08, Heaviness: 2, FirstDay: 0, LastDay: 1, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 407, CurrentDate: 2026-05-08, Heaviness: 2, FirstDay: 1, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 408, CurrentDate: 2026-05-09, Heaviness: 2, FirstDay: 0, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 409, CurrentDate: 2026-05-10, Heaviness: 2, FirstDay: 0, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 410, CurrentDate: 2026-05-11, Heaviness: 2, FirstDay: 0, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 411, CurrentDate: 2026-05-12, Heaviness: 2, FirstDay: 0, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 412, CurrentDate: 2026-05-13, Heaviness: 2, FirstDay: 0, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 413, CurrentDate: 2026-05-14, Heaviness: 2, FirstDay: 0, LastDay: 0, predicted: 1, description: Predicted, fertileWindow: 0
+id: 10, PeriodID: 414, CurrentDate: 2026-05-15, Heaviness: 2, FirstDay: 0, LastDay: 1, predicted: 1, description: Predicted, fertileWindow: 0
+
+id: 10, currentDiamonds: 10, currentOutfit: 0, bowPurchased: 0, crownPurchased: 0, hotWaterPurchased: 0, candyPurchased: 0, flowerPurchased: 0
+
+id: 10, Name: AbbyBuchholz, Pet: Chiikawa, Pet_id: 1, accountType: 0, Streak: 1, lastActiveDay: 2026-04-20, activeUser: 1, averagePeriodLength: 8, averageCycleLength: 37
+
