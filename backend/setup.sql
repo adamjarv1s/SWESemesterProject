@@ -28,12 +28,13 @@ create table IF NOT EXISTS periodData(
 create table if not exists purchaseData(
                                         id INT AUTO_INCREMENT PRIMARY KEY,
                                         currentDiamonds int not null,
-                                        currentOutfit int null null,
+                                        currentHeadwear int null null,
                                         bowPurchased bool not null default false,
                                         crownPurchased bool not null default false,
                                         hotWaterPurchased bool not null default false,
                                         candyPurchased bool not null default false,
                                         flowerPurchased bool not null default false,
+                                        currentHoldable int null null,
                                         FOREIGN KEY (id) REFERENCES UserInfo(id)
 );
 delimiter //
@@ -42,10 +43,10 @@ after insert on UserInfo
 for each row
 begin
         insert into purchaseData (
-            id, currentDiamonds, currentOutfit
+            id, currentDiamonds, currentHeadwear, currentHoldable
         )
         values (
-            NEW.id, 0, 0
+            NEW.id, 0, 0, 0
         );
 end //
 delimiter ;

@@ -26,6 +26,29 @@
     return 0;
 }*/
 int main() {
+        // Set current headwear
+        svr.Post("/set-current-headwear", [&db](const httplib::Request& req, httplib::Response& res) {
+            if (req.has_param("headwear")) {
+                int headwear = std::stoi(req.get_param_value("headwear"));
+                db.setCurrentHeadwear(db.getUserId(), headwear);
+                res.set_content("{\"status\": \"ok\"}", "application/json");
+            } else {
+                res.status = 400;
+                res.set_content("{\"error\": \"missing headwear param\"}", "application/json");
+            }
+        });
+
+        // Set current holdable
+        svr.Post("/set-current-holdable", [&db](const httplib::Request& req, httplib::Response& res) {
+            if (req.has_param("holdable")) {
+                int holdable = std::stoi(req.get_param_value("holdable"));
+                db.setCurrentHoldable(db.getUserId(), holdable);
+                res.set_content("{\"status\": \"ok\"}", "application/json");
+            } else {
+                res.status = 400;
+                res.set_content("{\"error\": \"missing holdable param\"}", "application/json");
+            }
+        });
     Database& db = Database::getInstance();
     
     httplib::Server svr;
@@ -144,10 +167,67 @@ svr.Post("/log-period", [&db](const httplib::Request& req, httplib::Response& re
         std::cout << "profiles: " << profiles << std::endl;
     });
 
+    svr.Get("/update-streak", [&db](const httplib::Request &, httplib::Response &res) {
+        int streak = db.streakSystem(db.getUserId());
+        res.set_content(to_string(streak), "text/plain");
+        std::cout << "streak: " << streak << std::endl;
+    });
+
+    svr.Post("/update-purchase", [&db](const httplib::Request &req, httplib::Response &res) {
+        int whichItem = std::stoi(req.get_param_value("item"));
+
+        db.purchaseItem(db.getUserId(), whichItem);
+        res.set_content("{\"status\": \"ok\"}", "application/json");
+    });
+
+
     svr.Get("/get-diamonds", [&db](const httplib::Request &, httplib::Response &res) {
         int diamonds = db.getDiamonds(db.getUserId());
         res.set_content(to_string(diamonds), "text/plain");
         std::cout << "diamonds: " << diamonds << std::endl;
+    });
+
+    // new stuff for if the items are purchased (bools)
+    svr.Get("/get-bow-purchased", [&db](const httplib::Request &, httplib::Response &res) {
+        bool purchased = db.getBowPurchased(db.getUserId());
+        res.set_content(to_string(purchased), "text/plain");
+        std::cout << "bowPurchased: " << purchased << std::endl;
+    });
+
+    svr.Get("/get-crown-purchased", [&db](const httplib::Request &, httplib::Response &res) {
+        bool purchased = db.getCrownPurchased(db.getUserId());
+        res.set_content(to_string(purchased), "text/plain");
+        std::cout << "crownPurchased: " << purchased << std::endl;
+    });
+
+    svr.Get("/get-hotwater-purchased", [&db](const httplib::Request &, httplib::Response &res) {
+        bool purchased = db.getHotWaterPurchased(db.getUserId());
+        res.set_content(to_string(purchased), "text/plain");
+        std::cout << "hotWaterPurchased: " << purchased << std::endl;
+    });
+
+    svr.Get("/get-candy-purchased", [&db](const httplib::Request &, httplib::Response &res) {
+        bool purchased = db.getCandyPurchased(db.getUserId());
+        res.set_content(to_string(purchased), "text/plain");
+        std::cout << "candyPurchased: " << purchased << std::endl;
+    });
+
+    svr.Get("/get-flower-purchased", [&db](const httplib::Request &, httplib::Response &res) {
+        bool purchased = db.getFlowerPurchased(db.getUserId());
+        res.set_content(to_string(purchased), "text/plain");
+        std::cout << "flowerPurchased: " << purchased << std::endl;
+    });
+
+    svr.Get("/get-current-headwear", [&db](const httplib::Request &, httplib::Response &res) {
+        int headwear = db.getCurrentHeadwear(db.getUserId());
+        res.set_content(to_string(headwear), "text/plain");
+        std::cout << "currentHeadwear: " << headwear << std::endl;
+    });
+
+    svr.Get("/get-current-holdable", [&db](const httplib::Request &, httplib::Response &res) {
+        int holdable = db.getCurrentHoldable(db.getUserId());
+        res.set_content(to_string(holdable), "text/plain");
+        std::cout << "currentHoldable: " << holdable << std::endl;
     });
 
     svr.Get("/print-all-data", [&db](const httplib::Request &req, httplib::Response &res) {
