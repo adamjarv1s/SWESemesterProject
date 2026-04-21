@@ -39,15 +39,42 @@ npx expo start
 ```
 
 ## Setting up backend
-Open a different terminal and do the following
+First open Visual Studio Code and install the following extensions: 
 
-CTRL-SHIFT-P 
-Cmake Clean rebuild if lots of changes, otherwise just do build
+C/C++ Dev Tools, C/C++ Extension Pack, C/C++ Themes, CMake, CMake Tools, Database Client, Database JDBC, SQLTools, SQLTools MySQL/MariaDB/TiDB, C/C++ 
 
-F5
-Cmake Run
+Navigate to the Database Tab and create a Connection with the following parameters: 
 
-From there insert your MariaDB password
+Name: uterusdata 
+Connect Using: Server and Port 
+Address: localhost 
+Port: 3306 
+Database: uterusdata 
+Username: root 
+Password Mode: Ask on Connect 
+Authentication Protocol: default 
+SSL: Disabled 
+Over SSH: Disabled 
+Show records default limit: 50 
 
-The following files are in the CMAKELISTS are built on rebuild:
-main.cpp, database.cpp utilities.cpp, cyclemath.cpp
+Next connect to the server with the following parameters: 
+
+Host: 127.0.0.1 
+Username: root 
+Database: uterusdata 
+Port: 3306 
+Password: Anything (remember it though) 
+
+Then click connect to server. 
+
+Next open up Commandline or Powershell and run the following commands: 
+
+cd into the project directory
+
+```cd uter-us-frontend 
+npm install 
+npx expo start
+```
+Next, hit the w key to open the app in your browser, then if desired, hit ctrl + shift + j to open developer tools and set it to mobile to look better on a computer screen. 
+
+Video Instructions: https://youtu.be/cgrKe4JIC3Y 
