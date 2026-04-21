@@ -16,26 +16,54 @@ class Database{
     Database(const Database&) = delete;
     Database& operator=(const Database&) = delete;
 
-    // todo:
-    void logPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay);
+    //USER FUNCTIONS (primarily use USERINFO table)
+    void createAccount(string name, string pet, int pet_id, int accountType, int type, int averagePeriodLength, int averageCycleLength);
+    void deleteAccount(int user);
+    int getUserId();
+    void setActiveUser(int user);
+    string getActiveUserName();
+    int getActiveUserPetId();
+    string getProfilesAsJson();
+    vector<pair<int, int>> getPeriodsAsVector(int user);
+
+    //PERIOD FUNCTIONS (primarily use periodData table)
+    void logPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay, string description);
+    void removeOldestPeriod(int user);
+    string getPeriodsAsString(int user);
+
+    //BUDDY/SHOP FUNCTIONS (primarily use PURCHASEDATA table)
+    int streakSystem(int user);
+    int getDiamonds(int user);
+    bool getBowPurchased(int user);
+    bool getCrownPurchased(int user);
+    bool getHotWaterPurchased(int user);
+    bool getCandyPurchased(int user);
+    bool getFlowerPurchased(int user);
+    int getCurrentHeadwear(int user);
+    int getCurrentHoldable(int user);
+    int spendDiamonds(int user, int price);
+    void purchaseItem(int user, int item);
+    void setCurrentHeadwear(int user, int headwear);
+    void setCurrentHoldable(int user, int holdable);
+
+    //UTILITY FUNCTIONS (Don't neatly fit into any category)
+    void runSQLFile(const std::string& filename);
+    void deleteAllData(int user);
+    void printAllData(int user);
+
+    //TBD/MIGHT NOT BE USED
+
     void logMissedPeriod(int user, string currentDate, string expectedStartDate, bool expectedLastDay);
     void logIrregularPeriod(int user, string currentDate, string startDate, int heaviness, bool lastDay);
-    void removeOldestPeriod(int user);
-    
     int getAverageCycleLength(int user);
     string getAccountType(int user);
     //string getCurrentDate();
     //let Adam do this once logic for pulling dates is written
     int stringDateToInt(string date);
     int getHeaviness(int user, string startDate);
-    void createAccount(string name, string pet, int type);
-    void deleteAccount(int user);
     //See CycleMath.cpp to see why this is vector<pair<int, int>>
     vector<pair<int, int>> getPeriods(int user);
-    string getName(int user);
     void changeName(int user);
-    int getDiamonds(int user);
-    void spendDiamonds(int user, int price);
     string getPetType(int user);
     int getPetHappiness(int user);
     string getNextPeriodStart(int user, string currentDate);
@@ -44,16 +72,11 @@ class Database{
     vector<int> getChildNumbers(int user, bool isParent);
     //commented because I don't know what data type that'd be
     //vector<???> getPetPurchases(int user);
-    int getCurrentStreak(int user);
-    void incrementCurrentStreak(int user);
-    vector<pair<int, int>> getPeriodsAsVector(int user);
-    string getActiveUserName();
 
 private:
     Database();
     ~Database();
     std::unique_ptr<sql::Connection> conn;
-    int activeUser;
 };
 
 #endif

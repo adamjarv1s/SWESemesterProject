@@ -9,32 +9,38 @@ import { ThemedView } from '@/components/themed-view';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons/faSignOutAlt';
-import { faGem, faFire, faStore } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons/faShoppingCart';
 import { useFonts } from '@expo-google-fonts/bree-serif/useFonts';
 import { BreeSerif_400Regular } from '@expo-google-fonts/bree-serif/400Regular';
 
+<<<<<<< HEAD:uter-us-frontend/screens/dashboard.tsx
+=======
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { Modal, TextInput } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import { TouchableWithoutFeedback } from 'react-native';
 
+>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/(tabs)/dashboard.tsx
 import { useEffect, useState } from 'react';
 import { View, Alert } from 'react-native';
 import { buildUnavailableHoursBlocks } from 'react-native-calendars/src/timeline/Packer';
 
 // React Navigation
 import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../../types';
-import { useRouter } from 'expo-router';
-
 import type { DrawerNavigationProp } from '@react-navigation/drawer';
+import type { RootStackParamList } from '../../types';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { ScrollView } from 'react-native-gesture-handler';
 
-type NavPropDrawer = DrawerNavigationProp<RootStackParamList, 'Dashboard'>;
-type NavProp = NativeStackNavigationProp<RootStackParamList, 'AccPurpose'>;
+type NavProp = DrawerNavigationProp<RootStackParamList, 'Dashboard'>;
 
+
+// React Navigation
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types';
+
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'Dashboard'>;
 
 // constants
 const windowWidth = Dimensions.get('window').width;
@@ -68,6 +74,9 @@ async function getUserName() {
   }
 }
 
+<<<<<<< HEAD:uter-us-frontend/screens/dashboard.tsx
+export default function DashboardScreen() {
+=======
 async function getPeriodData() {
   try {
     const response = await fetch(`${IPAddress}/get-period-data`);
@@ -80,92 +89,19 @@ async function getPeriodData() {
   }
 }
 
-async function getStreak() {
-  try {
-    const response = await fetch(`${IPAddress}/update-streak`);
-    const text = await response.text();
-    return text;
-
-  } catch (error) {
-    console.error('ErrorUpdateStreak:', error);
-    return 'STREAKNUM';
-  }
-}
-async function getCycleAlerts() {
-  try {
-    const response = await fetch(`${IPAddress}/cycle-alerts`);
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    console.error("CycleAlertError:", error);
-    return null;
-  }
-}
-
-async function getDiamonds() {
-  try {
-    const response = await fetch(`${IPAddress}/get-diamonds`);
-    const text = await response.text();
-    return text;
-  } catch (error) {
-    console.error('ErrorGetDiamonds:', error);
-    return '0';
-  }
-}
-
-async function getPetId() {
-  try {
-    const response = await fetch(`${IPAddress}/get-pet-id`);
-    const text = await response.text();
-    return parseInt(text);
-
-  } catch (error) {
-    console.error('ErrorGetPetId:', error);
-    return -1;
-  }
-}
-
-async function getCurrentHeadwear() {
-  try { 
-    const response = await fetch(`${IPAddress}/get-current-headwear`);
-    const text = await response.text();
-    return parseInt(text);
-  } catch (error) {
-    console.error('ErrorGetCurrentHeadwear:', error);
-    return 0;
-  }
-}
-
-async function getCurrentHoldable() {
-  try { 
-    const response = await fetch(`${IPAddress}/get-current-holdable`);
-    const text = await response.text();
-    return parseInt(text);
-  } catch (error) {
-    console.error('ErrorGetCurrentHoldable:', error);
-    return 0;
-  }
-}
-
 export default function DashboardScreen() {
   const navigation = useNavigation<NavProp>();
-  const DrawerNavigation = useNavigation<NavPropDrawer>();
-  const router = useRouter();
+
+>>>>>>> 5b3b9af82316ed0cecfd62c79054725f10808041:uter-us-frontend/app/(tabs)/dashboard.tsx
 
   const [userName, setUserName] = useState('Loading...');
   const [periodData, setPeriodData] = useState<Record<string, any>>({});
-  const [streak, setStreak] = useState('str');
-  const [diamondCount, setDiamondCount] = useState('0');
-  const [petId, setPetId] = useState(1);
-  const [currentHeadwear, setCurrentHeadwear] = useState(0);
-  const [currentHoldable, setCurrentHoldable] = useState(0);
 
   const [showLogModal, setShowLogModal] = useState(false);
   const [flow, setFlow] = useState(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [symptoms, setSymptoms] = useState('');
   const selectedDayData = selectedDate ? periodData[selectedDate] : null;
-  const [alerts, setAlerts] = useState<any>(null);
 
   const flowOptions = [
     { label: 'None', value: 0 },
@@ -181,38 +117,18 @@ export default function DashboardScreen() {
   return 'No Flow Recorded';
 };
 
-const markedDates = Object.fromEntries(
-  Object.entries(periodData).map(([date, data]: [string, any]) => {
-    const isSelected = date === selectedDate;
-    return [
-      date,
-      {
-        ...data,
-        customStyles: {
-          ...data.customStyles,
-          container: {
-            ...data.customStyles?.container,
-            borderWidth: isSelected ? 2 : 0,
-            borderColor: isSelected ? '#ff69b4' : 'transparent',
-          },
-        },
-      },
-    ];
-  })
-);
+  const markedDates = {
+  ...periodData,
 
-if (selectedDate && !periodData[selectedDate]) {
-  markedDates[selectedDate] = {
-    customStyles: {
-      container: {
-        borderWidth: 2,
-        borderColor: '#ff69b4',
-        borderRadius: 6,
-      },
-      text: { color: '#000' },
+  ...(selectedDate && {
+    [selectedDate]: {
+      ...(periodData[selectedDate] || {}),
+
+      selected: true,
+      selectedColor: '#ff69b4',
     },
-  };
-}
+  }),
+};
 
   let [fontsLoaded] = useFonts({
     BreeSerif_400Regular
@@ -221,15 +137,6 @@ if (selectedDate && !periodData[selectedDate]) {
   useEffect(() => {
     getUserName().then(name => setUserName(name));
     getPeriodData().then(data => setPeriodData(data));
-    getStreak().then(name => setStreak(name));
-    getCycleAlerts().then(data => {
-      console.log("RAW ALERTS:", data);
-      setAlerts(data);
-    });
-    getDiamonds().then(diamonds => setDiamondCount(diamonds));
-    getPetId().then(id => setPetId(id));
-    getCurrentHeadwear().then(headwear => setCurrentHeadwear(headwear));
-    getCurrentHoldable().then(holdable => setCurrentHoldable(holdable));
   }, []);
   
 
@@ -237,30 +144,9 @@ if (selectedDate && !periodData[selectedDate]) {
     return null;
   }
 
-   let alertMessage = "Loading alerts...";
-
-if (alerts) {
-  switch (true) {
-    case alerts.missed:
-      alertMessage = "You may have missed your period.";
-      break;
-    case alerts.fertility:
-      alertMessage = "You are in your fertility window.";
-      break;
-    case alerts.irregular:
-      alertMessage = "Your cycle may be irregular.";
-      break;
-    default:
-      alertMessage = "Everything looks normal.";
-  }
-}
-  const toBuddy = () => {
-    router.push("./buddy");
-  };
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-  <ThemedView style={{ flex: 1 }}>
+    <ThemedView>
 
         {/* Top Header Bar -> Hamburger Menu, Hello [User], and Log Out 
             NOTES:
@@ -271,73 +157,24 @@ if (alerts) {
                 - Once database is set up, need to replace "name" with the active user's name */}
 
         <View style={[styles.inlineContainer, styles.topHeader]}>
-            <Pressable onPress={() => DrawerNavigation.openDrawer()}>
+            <Pressable onPress={() => navigation.openDrawer()}>
               <FontAwesomeIcon icon={faBars} size={20}/>
             </Pressable>
 
             <ThemedText style={[styles.welcomeUserMessage]}>
-                Hellos, {userName}!
+                Hello, {userName}!
             </ThemedText>
 
-          <Pressable onPress={() => router.push("../createProfile/select_profile")}>
             <FontAwesomeIcon icon={faSignOutAlt} size={20}/>
-          </Pressable>
         </View>
           
           
         
         {/* Buddy System -> Gems, Streak, Buddy Image, Shop/Buddy Settings */}
         <View style={[styles.buddyContainer]}>
-          <View style={[styles.stepContainer, {alignItems: 'center'}]}>
-            <View style={[styles.inlineContainer, styles.infoContainers]}>
-              <View style={[styles.inlineContainer]}>
-                <ThemedText style={[styles.infoContainer]}>
-                  {streak} <FontAwesomeIcon size={10} icon={faFire}/>
-                </ThemedText>
-              
-                <ThemedText style={[styles.infoContainer]}>
-                  {diamondCount} <FontAwesomeIcon size={10} icon={faGem}/>
-                </ThemedText>
-
-              </View>
-
-            <Pressable 
-              style={[styles.buttonShopContainer]}
-              onPress={toBuddy}>
-                <FontAwesomeIcon size={20} color='#ffffff' icon={faStore}/>
-            </Pressable>
-            </View>
-
-
-            <View style={[styles.container]}>
-              <View style={[styles.buddy]}>
-                {petId === 1 && <Image source={require('../../assets/images/chiiwawa.png')} style={[styles.image]} />}
-                {petId === 2 && <Image source={require('../../assets/images/shadow.png')} style={[styles.image]} />}
-                {petId === 3 && <Image source={require('../../assets/images/birb.png')} style={[styles.image]} />}
-                {petId !== 1 && petId !== 2 && petId !== 3 && <ThemedText>buddy err</ThemedText>}
-              </View>
-
-              <View style={[styles.overlayHand]}>
-                {currentHoldable === 1 && <Image source={require('../../assets/images/hotWaterPack.png')} style={[styles.image]} />}
-                {currentHoldable === 2 && <Image source={require('../../assets/images/candy.png')} style={[styles.image]} />}
-                {currentHoldable !== 1 && currentHoldable !== 2 && <ThemedText></ThemedText>}
-              </View>
-
-              <View style={[styles.overlayHead]}>
-                {currentHeadwear === 1 && <Image source={require('../../assets/images/flower.png')} style={[styles.image]} />}
-                {currentHeadwear === 2 && <Image source={require('../../assets/images/crown.png')} style={[styles.image]} />}
-                {currentHeadwear === 3 && <Image source={require('../../assets/images/bow.png')} style={[styles.image]} />}
-                {currentHeadwear !== 1 && currentHeadwear !== 2 && currentHeadwear !== 3 && <ThemedText></ThemedText>}
-              </View>
-            </View>
-
-            {/* <View style={[styles.buddyPNG]}>
-                {petId === 1 && <Image source={require('../../assets/images/chiiwawa.png')} style={[styles.image]} />}
-                {petId === 2 && <Image source={require('../../assets/images/shadow.png')} style={[styles.image]} />}
-                {petId === 3 && <Image source={require('../../assets/images/birb.png')} style={[styles.image]} />}
-                {petId !== 1 && petId !== 2 && petId !== 3 && <ThemedText>buddy</ThemedText>}
-            </View> */}
-          </View>
+            <ThemedText style={[]}>
+                buddy system
+            </ThemedText>
         </View>
 
         {/* Calendar System -> Day Information Box, Calendar, and + Log Period Button 
@@ -388,8 +225,13 @@ if (alerts) {
                         </ThemedText>
                       </View>
 
-              <ThemedText numberOfLines={4} style={styles.dayInfoBoxGeneral}>
-                {alertMessage}
+              <ThemedText
+                numberOfLines={4}
+                style={styles.dayInfoBoxGeneral}
+              >
+                {selectedDayData?.description
+                  ? selectedDayData.description
+                  : "This would be an alert. Select a day to see period details."}
               </ThemedText>
             </View>
 
@@ -401,7 +243,6 @@ if (alerts) {
                 setSelectedDate(day.dateString);
               }}
             />
-            
 
             <Pressable
               disabled={!selectedDate}
@@ -459,7 +300,7 @@ if (alerts) {
                             return;
                           }
 
-                          if (flow == null) {
+                          if (!flow) {
                             Alert.alert('Error', 'Please select flow level');
                             return;
                           }
@@ -470,6 +311,7 @@ if (alerts) {
                               headers: { 'Content-Type': 'application/json' },
                               body: JSON.stringify({
                                 currentDate: selectedDate,
+                                startDate: selectedDate,
                                 heaviness: flow,
                                 lastDay: false,
                                 description: symptoms || '',
@@ -478,7 +320,6 @@ if (alerts) {
 
                             const updatedPeriodData = await getPeriodData();
                             setPeriodData(updatedPeriodData);
-                            getCycleAlerts();
 
                             setShowLogModal(false);
                             setSymptoms('');
@@ -497,10 +338,19 @@ if (alerts) {
                     </View>
                 </View>
             </Modal>
+
+            <Pressable
+                style={({ pressed }) => [
+                styles.buttonContainer,
+                pressed && styles.buttonPressedContainer
+                ]}
+                onPress={() => alert('settings page will be opened in the future!')}
+            >
+                <ThemedText style={[styles.buttonText]}>Settings</ThemedText>
+            </Pressable>
         </View>
 
     </ThemedView>
-    </ScrollView>
   );
 }
 
@@ -546,14 +396,13 @@ const styles = StyleSheet.create({
 
   buddyContainer: {
     backgroundColor: '#e5ffbf',
-    height: windowHeight * 0.25,
+    height: windowHeight * 0.23,
     paddingLeft: windowWidth * 0.03,
     paddingRight: windowWidth * 0.03,
     paddingTop: windowHeight * 0.007,
     marginLeft: windowWidth * 0.05,
     marginRight: windowWidth * 0.05,
     marginBottom: windowHeight * 0.02,
-    overflow: 'hidden',
   },
 
   dayInfoBoxContainer: {
@@ -660,71 +509,4 @@ const styles = StyleSheet.create({
   marginTop: 15,
   textAlign: 'center',
 },
-
-  infoContainers:{
-    justifyContent: "space-between",
-  },
-
-  infoContainer:{
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 5,
-    paddingBottom: 5,
-    marginRight: 5,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderRadius: 5,
-    fontSize: 13,
-    alignItems: 'center',
-    color: '#000000',
-  },
-
-  buddyPNG: {
-    alignContent: 'center',
-    verticalAlign: 'top',
-    marginTop: -windowHeight * 0.03,
-  },
-
-  buttonShopContainer: {
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 10,
-    paddingBottom: 10,
-    borderRadius: 5,
-    color: '#ffffff',
-    backgroundColor: '#2C2C2C',
-    alignItems: 'center',
-  },
-
-  buttonShopPressedContainer: {
-    color: '#ffffff',
-    backgroundColor: '#1E1E1E',
-  },
-
-  image: {
-    width: windowWidth * 0.3,
-    height: windowHeight * 0.2,
-    resizeMode: 'contain',
-  },
-
-  container: {
-    position: 'relative',
-    marginTop: -windowHeight * 0.03,
-  },
-
-  buddy:{
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-
-  overlayHand:{
-    position: 'absolute',
-    resizeMode: 'contain',
-  },
-
-  overlayHead:{
-    position: 'absolute',
-    resizeMode: 'contain',
-  }
 });

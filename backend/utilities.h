@@ -5,5 +5,6 @@
 #include <string>
 
 std::string getCurrentDate();
+std::string getIPAddress();
 
 #endif

@@ -72,7 +72,6 @@ bool shouldBleedingStartingtoday(int day, int year, int lastStart, double averag
 
     if (day < lastStart) {
         year--;
-        int result;
 
         if (isLeapYear(year)) {
             result = 366 - lastStart + day;

@@ -19,6 +19,10 @@ so that it encourages users to report their symptoms.
 - C++
 - MariaDB
 
+## Viewing Figma -> Reference this for designs!
+(Figma)[https://www.figma.com/design/Dgkb2VfXTq9qRCwfa5NQ9X/UterUs-Main-Designs?node-id=7-6&t=mNrpzuBlpNFpYPjj-1] 
+Password: uterus
+
 ## Setting up Frontend
 To set up frontend, do the following commands in your terminal:
 ### Navigate to uter-us Folder
@@ -33,3 +37,17 @@ npm install
 ```bash
 npx expo start
 ```
+
+## Setting up backend
+Open a different terminal and do the following
+
+CTRL-SHIFT-P 
+Cmake Clean rebuild if lots of changes, otherwise just do build
+
+F5
+Cmake Run
+
+From there insert your MariaDB password
+
+The following files are in the CMAKELISTS are built on rebuild:
+main.cpp, database.cpp utilities.cpp, cyclemath.cpp
