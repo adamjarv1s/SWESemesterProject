@@ -32,7 +32,7 @@ export default function AccPurposeScreen() {
   return (
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
-        <ThemedText style={[styles.inlineContainer]} type="title">
+        <ThemedText style={[styles.inlineContainer, styles.blackText]} type="title">
           Account Purpose
         </ThemedText>
       </View>
