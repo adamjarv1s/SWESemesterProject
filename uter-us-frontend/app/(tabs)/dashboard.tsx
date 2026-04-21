@@ -143,6 +143,20 @@ export default function DashboardScreen() {
   const selectedDayData = selectedDate ? periodData[selectedDate] : null;
   const [alerts, setAlerts] = useState<any>(null);
 
+const getDaysUntilNextPeriod = () => {
+  const today = new Date();
+  const entries = Object.entries(periodData);
+  const nextPredicted = entries
+    .filter(([date, data]: [string, any]) => data.predicted && data.customStyles?.container?.startingDay)
+    .map(([date]) => new Date(date))
+    .filter(d => d > today)
+    .sort((a, b) => a.getTime() - b.getTime())[0];
+
+  if (!nextPredicted) return null;
+  const diff = Math.ceil((nextPredicted.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  return diff;
+};
+  
   const flowOptions = [
     { label: 'None', value: 0 },
     { label: 'Light', value: 1 },
@@ -211,23 +225,38 @@ if (selectedDate && !periodData[selectedDate]) {
     return null;
   }
 
-   let alertMessage = "Loading alerts...";
+let alertMessage = "Loading alerts...";
 
 if (alerts) {
-  switch (true) {
-    case alerts.missed:
-      alertMessage = "You may have missed your period.";
-      break;
-    case alerts.fertility:
-      alertMessage = "You are in your fertility window.";
-      break;
-    case alerts.irregular:
-      alertMessage = "Your cycle may be irregular.";
-      break;
-    default:
-      alertMessage = "Everything looks normal.";
+  const daysUntil = getDaysUntilNextPeriod();
+  const namePrefix = alerts.accountType === 1 && alerts.childName
+    ? `${alerts.childName}'s `
+    : '';
+
+  if (selectedDayData?.description && selectedDayData.description.trim() !== '') {
+    alertMessage = selectedDayData.description;
+  } else {
+    switch (true) {
+      case alerts.missed:
+        alertMessage = `${namePrefix}period may have been missed.`;
+        break;
+      case alerts.fertility:
+        alertMessage = `${namePrefix}fertile window is now.`;
+        break;
+      case alerts.irregular:
+        alertMessage = `${namePrefix}cycle may be irregular.`;
+        break;
+      case daysUntil !== null && daysUntil <= 5:
+        alertMessage = `${namePrefix}period expected in ${daysUntil} day${daysUntil === 1 ? '' : 's'}.`;
+        break;
+      default:
+        alertMessage = daysUntil !== null
+          ? `Next ${namePrefix}period expected in ${daysUntil} days.`
+          : "Everything looks normal.";
+    }
   }
 }
+
   const toBuddy = () => {
     router.push("./buddy");
   };
@@ -250,10 +279,10 @@ if (alerts) {
             </Pressable>
 
             <ThemedText style={[styles.welcomeUserMessage]}>
-                Hellos, {userName}!
+                Hello, {userName}!
             </ThemedText>
 
-          <Pressable onPress={() => router.push("../createProfile/select_profile")}>
+          <Pressable onPress={() => router.push("../../")}>
             <FontAwesomeIcon icon={faSignOutAlt} size={20}/>
           </Pressable>
         </View>
@@ -368,6 +397,14 @@ if (alerts) {
               markingType={'custom'}
               onDayPress={day => {
                 setSelectedDate(day.dateString);
+                const dayData = periodData[day.dateString];
+                if (dayData) {
+                  setFlow(dayData.heaviness ?? null);
+                  setSymptoms(dayData.description ?? '');
+                } else {
+                  setFlow(null);
+                  setSymptoms('');
+                }
               }}
             />
             
@@ -427,30 +464,38 @@ if (alerts) {
                             Alert.alert('Error', 'Please select a date');
                             return;
                           }
-
                           if (flow == null) {
                             Alert.alert('Error', 'Please select flow level');
                             return;
                           }
 
                           try {
-                            await fetch(`${IPAddress}/log-period`, {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({
-                                currentDate: selectedDate,
-                                heaviness: flow,
-                                lastDay: false,
-                                description: symptoms || '',
-                            }),
-                            });
+                            if (flow === 0) {
+                              await fetch(`${IPAddress}/delete-period-day`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ currentDate: selectedDate }),
+                              });
+                            } else {
+                              await fetch(`${IPAddress}/log-period`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  currentDate: selectedDate,
+                                  heaviness: flow,
+                                  lastDay: false,
+                                  description: symptoms || '',
+                                }),
+                              });
+                            }
 
                             const updatedPeriodData = await getPeriodData();
                             setPeriodData(updatedPeriodData);
-                            getCycleAlerts();
-
+                            getCycleAlerts().then(data => setAlerts(data));
                             setShowLogModal(false);
                             setSymptoms('');
+                            setFlow(null);
+                            getDiamonds().then(diamonds => setDiamondCount(diamonds));
 
                           } catch (error) {
                             console.error(error);

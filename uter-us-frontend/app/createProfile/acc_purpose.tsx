@@ -44,7 +44,6 @@ export default function AccPurposeScreen() {
           pressed && styles.createButtonPressContainer
           ]}
           onPress={() => accDetails(0)}>
-            Individual
             <ThemedText style={[styles.createButtonText]}>
                 Individual
             </ThemedText>
@@ -71,6 +70,7 @@ export default function AccPurposeScreen() {
           </Pressable>
         </ThemedText>
       </View>
+      
     </ThemedView>
   );
 }

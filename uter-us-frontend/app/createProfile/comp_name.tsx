@@ -8,6 +8,7 @@ import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { ScrollView } from 'react-native-gesture-handler';
 
 // React Navigation
 import { useLocalSearchParams, useRouter, Link } from 'expo-router';
@@ -24,12 +25,13 @@ const PETS = [
 
 export default function CompNameScreen() {
   const router = useRouter();
-  const { accountType, averageCycleLength, averagePeriodLength } = useLocalSearchParams<{
+  const { accountType, averageCycleLength, averagePeriodLength, username, childName } = useLocalSearchParams<{
   accountType: string;
   averagePeriodLength: string;
   averageCycleLength: string;
+  username: string;
+  childName: string;
   }>();
-  const [username, setuserName] = useState('');
   const [petName, setPetName] = useState('');
   const [petId, setPetId] = useState<number | null>(null);
 
@@ -45,6 +47,7 @@ async function CreateProfile() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: username,
+        childName: childName,
         pet: petName,
         pet_id: petId,
         accountType: Number(accountType),
@@ -63,6 +66,8 @@ async function CreateProfile() {
 }
 
   return (
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ThemedView style={{ flex: 1 }}>
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.topHeader]}>
         <ThemedText style={[]} type="title">
@@ -85,8 +90,8 @@ async function CreateProfile() {
     <View style={styles.card}>
       <ThemedText style={[styles.bodySpacing]}>Companion Name</ThemedText>
         <TextInput
-          value={username}
-          onChangeText={setuserName}
+          value={petName}
+          onChangeText={setPetName}
           style={[styles.textInput]}
           autoCapitalize="none"
           placeholder="..."
@@ -103,9 +108,11 @@ async function CreateProfile() {
         </Pressable>
         </View>
     </ThemedView>
+    </ThemedView>
+    </ScrollView>
   );
 }
-const cellSize = (windowWidth * 0.85) / 3 - 12;
+const cellSize = (windowWidth * 0.80) / 3 - 12;
 
 const styles = StyleSheet.create({
   wholeScreen: {
@@ -121,7 +128,7 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: '85%',
+    width: '80%',
     gap: 12,
     justifyContent: 'center',
     marginBottom: windowHeight * 0.04,
@@ -145,7 +152,7 @@ const styles = StyleSheet.create({
     height: '80%',
   },
   card: {
-    width: '85%',
+    width: '80%',
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 20,

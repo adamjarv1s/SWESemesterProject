@@ -1,80 +1,60 @@
-CREATE TABLE IF NOT EXISTS UserInfo(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(100) NOT NULL,
-    Pet VARCHAR(100) NOT NULL,
-    Pet_id INT NOT NULL,
-    accountType INT NOT NULL,
-    Streak INT NOT NULL,
-    lastActiveDay DATE NOT NULL,
-    activeUser BOOL NOT NULL,
-    averagePeriodLength INT NOT NULL,
-    averageCycleLength INT NOT NULL
+Create table IF NOT EXISTS UserInfo(
+                                       id INT AUTO_INCREMENT PRIMARY KEY,
+                                       Name VARCHAR(100) NOT NULL,
+                                       childName VARCHAR(100),
+                                       Pet VARCHAR(100) NOT NULL,
+                                       Pet_id int not null,
+                                       accountType INT NOT NULL,
+                                       Streak INT NOT NULL,
+                                       lastActiveDay date NOT NULL,
+                                       activeUser bool not null,
+                                       averagePeriodLength int not null,
+                                       averageCycleLength int not null
 );
-
-CREATE TABLE IF NOT EXISTS periodData(
-    id INT NOT NULL,
-    PeriodID INT AUTO_INCREMENT,
-    PRIMARY KEY (PeriodID),
-    CurrentDate DATE NOT NULL,
-    Heaviness INT NOT NULL,
-    FirstDay BOOL NOT NULL DEFAULT FALSE,
-    LastDay BOOL NOT NULL DEFAULT FALSE,
-    predicted BOOL NOT NULL DEFAULT FALSE,
-    description VARCHAR(100),
-    FOREIGN KEY (id) REFERENCES UserInfo(id),
-    UNIQUE KEY unique_user_date (id, CurrentDate)
+create table IF NOT EXISTS periodData(
+                                         id INT NOT NULL,
+                                         PeriodID INT AUTO_INCREMENT,
+                                         PRIMARY KEY (PeriodID),
+                                         CurrentDate DATE NOT NULL,
+                                         Heaviness int not null,
+                                         FirstDay bool not null default false,
+                                         LastDay bool not null default false,
+                                         predicted bool not null default false,
+                                         fertileWindow bool not null default false,
+                                         description VARCHAR(100),
+                                         FOREIGN KEY (id) REFERENCES UserInfo(id),
+                                         UNIQUE KEY unique_user_date (id, CurrentDate)
 );
-
-CREATE TABLE IF NOT EXISTS purchaseData(
-    id INT NOT NULL,
-    currentDiamonds INT NOT NULL,
-    currentOutfit INT NULL,
-    bowPurchased BOOL NOT NULL DEFAULT FALSE,
-    crownPurchased BOOL NOT NULL DEFAULT FALSE,
-    hotWaterPurchased BOOL NOT NULL DEFAULT FALSE,
-    candyPurchased BOOL NOT NULL DEFAULT FALSE,
-    flowerPurchased BOOL NOT NULL DEFAULT FALSE,
-    PRIMARY KEY (id),
-    FOREIGN KEY (id) REFERENCES UserInfo(id)
+create table if not exists purchaseData(
+                                        id INT AUTO_INCREMENT PRIMARY KEY,
+                                        currentDiamonds int not null,
+                                        currentOutfit int null null,
+                                        bowPurchased bool not null default false,
+                                        crownPurchased bool not null default false,
+                                        hotWaterPurchased bool not null default false,
+                                        candyPurchased bool not null default false,
+                                        flowerPurchased bool not null default false,
+                                        FOREIGN KEY (id) REFERENCES UserInfo(id)
 );
+delimiter //
+create trigger if not exists createUserMoney
+after insert on UserInfo
+for each row
+begin
+        insert into purchaseData (
+            id, currentDiamonds, currentOutfit
+        )
+        values (
+            NEW.id, 0, 0
+        );
+end //
+delimiter ;
 
-DELIMITER //
-CREATE TRIGGER IF NOT EXISTS createUserMoney
-AFTER INSERT ON UserInfo
-FOR EACH ROW
-BEGIN
-    INSERT INTO purchaseData (id, currentDiamonds, currentOutfit)
-    VALUES (NEW.id, 0, 0);
-END //
-DELIMITER ;
-
-DELIMITER //
-CREATE TRIGGER IF NOT EXISTS deleteUserMoney
-AFTER DELETE ON UserInfo
-FOR EACH ROW
-BEGIN
-    DELETE FROM purchaseData WHERE id = OLD.id;
-END //
-DELIMITER ;
-
-DELIMITER //
-CREATE TRIGGER IF NOT EXISTS setPeriodFlags
-BEFORE INSERT ON periodData
-FOR EACH ROW
-BEGIN
-    DECLARE last DATE;
-    IF NEW.predicted = FALSE THEN
-        SELECT MAX(CurrentDate) INTO last
-        FROM periodData
-        WHERE id = NEW.id
-          AND predicted = FALSE
-          AND CurrentDate < NEW.CurrentDate
-          AND DATEDIFF(NEW.CurrentDate, CurrentDate) <= 35;
-        IF last IS NULL THEN
-            SET NEW.FirstDay = TRUE;
-        ELSE
-            SET NEW.FirstDay = FALSE;
-        END IF;
-    END IF;
-END //
-DELIMITER ;
+delimiter //
+create trigger if not exists deleteUserMoney
+after delete on UserInfo
+for each row
+begin
+        delete from purchaseData where id = OLD.id;
+end //
+delimiter ;

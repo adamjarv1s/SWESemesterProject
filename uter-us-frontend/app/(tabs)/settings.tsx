@@ -104,7 +104,10 @@ export default function TabTwoScreen() {
           const confirmed = window.confirm(
             "Are you sure you want to delete ALL your data? This cannot be undone."
           );
-          if (confirmed) deleteAllData();
+          if (confirmed) {
+            deleteAllData();
+            router.push("../../");
+          }
         } else {
           Alert.alert(
             "Delete All Data",
@@ -114,6 +117,7 @@ export default function TabTwoScreen() {
               { text: "Delete", style: "destructive", onPress: deleteAllData },
             ]
           );
+          router.push("../../");
         }
       }}
     >
