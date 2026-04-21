@@ -933,7 +933,8 @@ void Database::setCurrentHeadwear(int user, int headwear){
         );
         stmnt->setInt(1, headwear);
         stmnt->setInt(2, user);
-        stmnt->executeUpdate();
+        int affected = stmnt->executeUpdate();
+
     } catch (sql::SQLException &e) {
         std::cerr << "SQL Error: " << e.what() << std::endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
@@ -949,7 +950,7 @@ void Database::setCurrentHoldable(int user, int holdable){
         );
         stmnt->setInt(1, holdable);
         stmnt->setInt(2, user);
-        stmnt->executeUpdate();
+        int affected = stmnt->executeUpdate();
     } catch (sql::SQLException &e) {
         std::cerr << "SQL Error: " << e.what() << std::endl;
         cerr << "SQL State: " << e.getSQLState() << endl;
@@ -964,6 +965,7 @@ void Database::purchaseItem(int user, int item){
         switch (item){
             case 1:
                 purchase = "flowerPurchased";
+                purchase = "flowerPurchased";
                 gems = 100;
                 break;
             case 2:
@@ -973,12 +975,17 @@ void Database::purchaseItem(int user, int item){
             case 3:
                 purchase = "bowPurchased";
                 gems = 100;
+                purchase = "bowPurchased";
+                gems = 100;
                 break;
             case 4:
+                purchase = "hotWaterPackPurchased";
                 purchase = "hotWaterPackPurchased";
                 gems = 50;
                 break;
             case 5:
+                purchase = "candyPurchased";
+                gems = 50;
                 purchase = "candyPurchased";
                 gems = 50;
                 break;
