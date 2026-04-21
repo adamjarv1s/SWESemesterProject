@@ -66,6 +66,7 @@ async function CreateProfile() {
 }
 
   return (
+<<<<<<< HEAD
     <ThemedView style={styles.wholeScreen}>
       <View style={[styles.inlineContainer, styles.topHeader]}>
         <ThemedText style={[styles.inlineContainer, styles.blackText]} type="title">
@@ -162,6 +163,27 @@ async function CreateProfile() {
           </Pressable>
         </ThemedText>
       </View>
+=======
+    <ScrollView contentContainerStyle={[{ flexGrow: 1 }]}>
+      <ThemedView style={[styles.wholeScreen, { flex: 1 }]}>
+       <ThemedView style={styles.wholeScreen}>
+      <View style={[styles.topHeader]}>
+      <ThemedText style={[styles.blackText, {fontFamily:"BreeSerif_400Regular"}]} type="title">
+      Companion Selection
+        </ThemedText>
+      </View>
+
+      <View style={styles.grid}>
+        {PETS.map((item) => (
+          <Pressable
+            key={item.id}
+            style={[styles.petCell, petId === item.id && styles.petCellSelected]}
+            onPress={() => { setPetId(item.id); setPetName(item.name); }}
+          >
+            <Image source={item.image} style={styles.petImage} />
+          </Pressable>
+        ))}
+>>>>>>> f9b6ae7a88e05a1635befef6b07e93ac552d749b
       </View>
 
     
