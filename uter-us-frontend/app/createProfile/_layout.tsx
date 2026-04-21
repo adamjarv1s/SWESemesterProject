@@ -14,10 +14,10 @@ export default function Layout() {
         //headerShown: false,
       }}>
       {/* Optionally configure static options outside the route.*/}
-      <Stack.Screen name="select_profile" />
-      <Stack.Screen name="acc_purpose" />
-      <Stack.Screen name="acc_details" />
-      <Stack.Screen name="comp_name" />
+      <Stack.Screen name="select_profile" options={{title: "Select Account", headerShown: false}}/>
+      <Stack.Screen name="acc_purpose" options={{title: "Account Purpose"}}/>
+      <Stack.Screen name="acc_details" options={{title: "Account Details"}}/>
+      <Stack.Screen name="comp_name" options={{title: "Select Companion"}}/>
     </Stack>
   );
 }

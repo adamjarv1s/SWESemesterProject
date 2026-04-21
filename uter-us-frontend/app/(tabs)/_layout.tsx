@@ -31,12 +31,14 @@ export default function TabLayout() {
   return (
     <Drawer
       screenOptions={{
+
         drawerActiveBackgroundColor: '#E3E3E3',
         headerShown: false,
         drawerStyle:{
           borderColor: "#000000",
           borderWidth: 1,
           padding: 10,
+          backgroundColor: '#FFFFFF',
         },
         drawerLabelStyle: {
           color: "#000000",
@@ -50,15 +52,7 @@ export default function TabLayout() {
           drawerIcon: ({ color }) => <FontAwesomeIcon size={20} icon={faHouse}/>,
         }}
       />
-      
-      <Drawer.Screen
-        name="buddy"
-        options={{
-          title: 'Buddy Selection TEMP',
-          drawerIcon: ({ color }) => <FontAwesomeIcon size={20} icon={faPaperPlane}/>,
-        }}
-      />
-
+  
       <Drawer.Screen
         name="settings"
         options={{

@@ -221,7 +221,7 @@ export default function TabTwoScreen() {
                     <FontAwesomeIcon icon={faBars} size={20}/>
                   </Pressable>
       
-                  <ThemedText style={[styles.welcomeUserMessage]}>
+                  <ThemedText style={[styles.welcomeUserMessage, styles.blackText]}>
                       Hello, {userName}!
                   </ThemedText>
       
@@ -237,7 +237,7 @@ export default function TabTwoScreen() {
                 <View style={[styles.stepContainer, {alignItems: 'center'}]}>
                   <View style={[styles.inlineContainer, styles.infoContainers]}>
                     <View style={[styles.inlineContainer]}>
-                      <ThemedText style={[styles.infoContainer]}>
+                      <ThemedText style={[styles.infoContainer, styles.blackText]}>
                         {diamondCount} <FontAwesomeIcon size={10} icon={faGem}/>
                       </ThemedText>
       
@@ -287,7 +287,7 @@ export default function TabTwoScreen() {
           <View style={[styles.shopContainer]}>
             <View style={[styles.stepContainer]}>
 
-              <ThemedText>
+              <ThemedText style={[styles.blackText]}>
                 Headwear
               </ThemedText>
 
@@ -313,9 +313,9 @@ export default function TabTwoScreen() {
                   >
                   <Image source={require('../../assets/images/flowercrop.png')} style={[styles.itemImage]} />
                   <ThemedText style={[styles.priceStyle]}>
-                    {flowerPurchased === 0 && <ThemedText>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
-                    {flowerPurchased === 1 && <ThemedText>Owned!</ThemedText>}
-                    {flowerPurchased !== 0 && flowerPurchased !== 1 && <ThemedText>err</ThemedText>}
+                    {flowerPurchased === 0 && <ThemedText style={[styles.blackText]}>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
+                    {flowerPurchased === 1 && <ThemedText style={[styles.blackText]}>Owned!</ThemedText>}
+                    {flowerPurchased !== 0 && flowerPurchased !== 1 && <ThemedText style={[styles.blackText]}>err</ThemedText>}
                   </ThemedText>
                 </Pressable>
               
@@ -341,9 +341,9 @@ export default function TabTwoScreen() {
                   >
                   <Image source={require('../../assets/images/crowncrop.png')} style={[styles.itemImage]} />
                   <ThemedText style={[styles.priceStyle]}>
-                    {crownPurchased === 0 && <ThemedText>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
-                    {crownPurchased === 1 && <ThemedText>Owned!</ThemedText>}
-                    {crownPurchased !== 0 && crownPurchased !== 1 && <ThemedText>err</ThemedText>}
+                    {crownPurchased === 0 && <ThemedText style={[styles.blackText]}>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
+                    {crownPurchased === 1 && <ThemedText style={[styles.blackText]}>Owned!</ThemedText>}
+                    {crownPurchased !== 0 && crownPurchased !== 1 && <ThemedText style={[styles.blackText]}>err</ThemedText>}
                   </ThemedText>
                 </Pressable>
 
@@ -368,14 +368,14 @@ export default function TabTwoScreen() {
                   >
                   <Image source={require('../../assets/images/bowcrop.png')} style={[styles.itemImage]} />
                   <ThemedText style={[styles.priceStyle]}>
-                    {bowPurchased === 0 && <ThemedText>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
-                    {bowPurchased === 1 && <ThemedText>Owned!</ThemedText>}
-                    {bowPurchased !== 0 && bowPurchased !== 1 && <ThemedText>err</ThemedText>}
+                    {bowPurchased === 0 && <ThemedText style={[styles.blackText]}>100 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
+                    {bowPurchased === 1 && <ThemedText style={[styles.blackText]}>Owned!</ThemedText>}
+                    {bowPurchased !== 0 && bowPurchased !== 1 && <ThemedText style={[styles.blackText]}>err</ThemedText>}
                   </ThemedText>
                 </Pressable>
               </View>
 
-              <ThemedText>
+              <ThemedText style={[styles.blackText]}>
                 Holdable
               </ThemedText>
 
@@ -401,9 +401,9 @@ export default function TabTwoScreen() {
                   >
                   <Image source={require('../../assets/images/hotWaterPackcrop.png')} style={[styles.itemImage]} />
                   <ThemedText style={[styles.priceStyle]}>
-                    {hotWaterPurchased === 0 && <ThemedText>50 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
-                    {hotWaterPurchased === 1 && <ThemedText>Owned!</ThemedText>}
-                    {hotWaterPurchased !== 0 && hotWaterPurchased !== 1 && <ThemedText>err</ThemedText>}
+                    {hotWaterPurchased === 0 && <ThemedText style={[styles.blackText]}>50 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
+                    {hotWaterPurchased === 1 && <ThemedText style={[styles.blackText]}>Owned!</ThemedText>}
+                    {hotWaterPurchased !== 0 && hotWaterPurchased !== 1 && <ThemedText style={[styles.blackText]}>err</ThemedText>}
                   </ThemedText>
                 </Pressable>
 
@@ -428,9 +428,9 @@ export default function TabTwoScreen() {
                   >
                   <Image source={require('../../assets/images/candycrop.png')} style={[styles.itemImage]} />
                   <ThemedText style={[styles.priceStyle]}>
-                    {candyPurchased === 0 && <ThemedText>50 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
-                    {candyPurchased === 1 && <ThemedText>Owned!</ThemedText>}
-                    {candyPurchased !== 0 && candyPurchased !== 1 && <ThemedText>err</ThemedText>}
+                    {candyPurchased === 0 && <ThemedText style={[styles.blackText]}>50 <FontAwesomeIcon size={10} icon={faGem}/></ThemedText>}
+                    {candyPurchased === 1 && <ThemedText style={[styles.blackText]}>Owned!</ThemedText>}
+                    {candyPurchased !== 0 && candyPurchased !== 1 && <ThemedText style={[styles.blackText]}>err</ThemedText>}
                   </ThemedText>
                 </Pressable>
 
@@ -768,5 +768,8 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.3,
     borderRadius: 5,
     borderWidth: 1,
+  },
+  blackText:{
+    color: '#000000',
   },
 });
