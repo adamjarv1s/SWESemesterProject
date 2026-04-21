@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
     alignItems: 'flex-start',
+    backgroundColor: '#FAFAFA',
   },
   flexCenter:{
     alignSelf: 'flex-end',
@@ -188,19 +189,21 @@ const styles = StyleSheet.create({
 
   createDateButtonContainer:{
     padding: 10,
+    paddingLeft: 20,
     borderRadius: 5,
-    marginLeft: windowWidth * 0.05,
-    width: "60%",
+    marginLeft: windowWidth * 0.1,
+    width: "100%",
     height: "auto",
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
-    alignItems: 'center',
   },
 
   createButtonContainer:{
     padding: 10,
+    paddingLeft: 90,
+    paddingRight:90,
     borderRadius: 5,
-    width: "90%",
+    width: "100%",
     height: "auto",
     color: '#ffffff',
     backgroundColor: '#2C2C2C',
@@ -233,6 +236,10 @@ const styles = StyleSheet.create({
 
   elemSpace:{
     marginTop: windowHeight * 0.02,
+  },
+
+  blackText:{
+    color: '#000000',
   }
 
 });

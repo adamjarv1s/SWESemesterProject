@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: windowHeight * 0.10,
     alignItems: 'center',
+    backgroundColor: '#FAFAFA',
   },
   stepContainer: {
     gap: 8,
@@ -132,4 +133,8 @@ const styles = StyleSheet.create({
   createButtonText:{
     color: '#ffffff',
   },
+
+  blackText:{
+    color: '#000000',
+  }
 });

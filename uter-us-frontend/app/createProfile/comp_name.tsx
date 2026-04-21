@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: windowHeight * 0.05,
+    backgroundColor: '#FAFAFA',
   },
   topHeader: {
     marginTop: windowHeight * 0.08,
@@ -197,4 +198,8 @@ const styles = StyleSheet.create({
     marginTop: windowHeight * 0.005,
     marginBottom: windowHeight * 0.005,
   },
+
+  blackText:{
+    color: '#000000',
+  }
 });

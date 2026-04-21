@@ -561,7 +561,6 @@ export default function TabTwoScreen() {
     </ThemedView>
   );
 }
-
 const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
@@ -774,5 +773,8 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.3,
     borderRadius: 5,
     borderWidth: 1,
+  },
+  blackText:{
+    color: '#000000',
   },
 });

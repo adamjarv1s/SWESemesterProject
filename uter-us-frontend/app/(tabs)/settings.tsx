@@ -128,18 +128,12 @@ export default function TabTwoScreen() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   wholeScreen: {
     flex: 1,
-    alignItems: 'center',
+    backgroundColor:  '#FAFAFA',
   },
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
+
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
@@ -203,5 +197,8 @@ const styles = StyleSheet.create({
   welcomeUserMessage: {
     fontSize: 20,
     fontFamily: "BreeSerif_400Regular",
+  },
+  blackText:{
+    color: '#000000',
   },
 });

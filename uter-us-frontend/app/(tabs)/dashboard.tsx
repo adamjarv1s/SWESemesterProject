@@ -778,4 +778,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     resizeMode: 'contain',
   },
+
+  blackText:{
+    color: '#000000',
+  },
 });
