@@ -1,10 +1,7 @@
-drop database uterusdata;
-CREATE DATABASE IF NOT EXISTS uterusdata;
-USE uterusdata;
-
-create table IF NOT EXISTS UserInfo(
+Create table IF NOT EXISTS UserInfo(
                                        id INT AUTO_INCREMENT PRIMARY KEY,
                                        Name VARCHAR(100) NOT NULL,
+                                       childName VARCHAR(100),
                                        Pet VARCHAR(100) NOT NULL,
                                        Pet_id int not null,
                                        accountType INT NOT NULL,
@@ -23,12 +20,11 @@ create table IF NOT EXISTS periodData(
                                          FirstDay bool not null default false,
                                          LastDay bool not null default false,
                                          predicted bool not null default false,
+                                         fertileWindow bool not null default false,
                                          description VARCHAR(100),
                                          FOREIGN KEY (id) REFERENCES UserInfo(id),
                                          UNIQUE KEY unique_user_date (id, CurrentDate)
 );
-
-
 create table if not exists purchaseData(
                                         id INT AUTO_INCREMENT PRIMARY KEY,
                                         currentDiamonds int not null,
@@ -41,7 +37,6 @@ create table if not exists purchaseData(
                                         currentHoldable int null null,
                                         FOREIGN KEY (id) REFERENCES UserInfo(id)
 );
-
 delimiter //
 create trigger if not exists createUserMoney
 after insert on UserInfo
@@ -61,29 +56,6 @@ create trigger if not exists deleteUserMoney
 after delete on UserInfo
 for each row
 begin
-        delete from purchaseData where id = NEW.id;
-delimiter ;
-
-delimiter //
-create trigger setPeriodFlags
-BEFORE INSERT ON periodData
-FOR EACH ROW
-BEGIN
-    DECLARE last DATE;
-
-    IF NEW.predicted = FALSE THEN
-        SELECT MAX(CurrentDate) INTO last
-        FROM periodData
-        WHERE id = NEW.id 
-          AND predicted = FALSE
-          AND CurrentDate < NEW.CurrentDate
-          AND DATEDIFF(NEW.CurrentDate, CurrentDate) <= 35;
-
-        IF last IS NULL THEN
-            SET NEW.FirstDay = TRUE;
-        ELSE
-            SET NEW.FirstDay = FALSE;
-        END IF;
-    END IF;
-END //
+        delete from purchaseData where id = OLD.id;
+end //
 delimiter ;

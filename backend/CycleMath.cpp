@@ -8,7 +8,7 @@
 #include "CycleMath.h"
 using namespace std;
 
-// converts SQL "YYYY-MM-DD to 1-366 int
+//converts YYYY-MM-DD to int
 int convertSQLDateToInt(string date){
     int year = stoi(date.substr(0,4));
     int month = stoi(date.substr(5,2));
@@ -27,28 +27,22 @@ int convertSQLDateToInt(string date){
 
 // returns whether a year is a leap year given the current year
 bool isLeapYear(int year) {
-    if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
-        return true;
-    } else {
-        return false;
-    }
+    return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
 }
 
-// returns the average cycle length given a pair of ints where the first is the day (1-366), and the second is the year
 double averageCycleLength(vector<pair<int, int>> periods) {
     vector<int> cycleLengths;
 
-    for (int i = 0; i < periods.size() - 1; i++) {
+    for (int i = 0; i < (int)periods.size() - 1; i++) {
         int cycleLength = 0;
 
         if (periods[i + 1].first < periods[i].first) {
             if (isLeapYear(periods[i].second)) {
                 cycleLength += (366 - periods[i].first);
-                cycleLength += periods[i + 1].first;
             } else {
                 cycleLength += (365 - periods[i].first);
-                cycleLength += periods[i + 1].first;
             }
+            cycleLength += periods[i + 1].first;
         } else {
             cycleLength = periods[i + 1].first - periods[i].first;
         }
@@ -57,10 +51,7 @@ double averageCycleLength(vector<pair<int, int>> periods) {
     }
 
     double sum = 0.0;
-
-    for (auto cycleLength : cycleLengths) {
-        sum += cycleLength;
-    }
+    for (auto cycleLength : cycleLengths) sum += cycleLength;
 
     return sum / cycleLengths.size();
 }
@@ -72,12 +63,7 @@ bool shouldBleedingStartingtoday(int day, int year, int lastStart, double averag
 
     if (day < lastStart) {
         year--;
-
-        if (isLeapYear(year)) {
-            result = 366 - lastStart + day;
-        } else {
-            result = 365 - lastStart + day;
-        }
+        result = (isLeapYear(year) ? 366 : 365) - lastStart + day;
     } else {
         result = day - lastStart;
     }
@@ -85,7 +71,6 @@ bool shouldBleedingStartingtoday(int day, int year, int lastStart, double averag
     return result == roundedCycle;
 }
 
-//gives a boolean of whether or not the user is in the fertility window given the day (1-366), the current year, the last start day (1-366), and the average cycle length
 bool inFertilityWindow(int day, int year, int lastStart, double averageCycle) {
     int roundedCycle = round(averageCycle);
     int upperBound = roundedCycle - 12;
@@ -94,12 +79,7 @@ bool inFertilityWindow(int day, int year, int lastStart, double averageCycle) {
 
     if (day < lastStart) {
         year--;
-        int result;
-        if (isLeapYear(year)) {
-            result = 366 - lastStart + day;
-        } else {
-            result = 365 - lastStart + day;
-        }
+        result = (isLeapYear(year) ? 366 : 365) - lastStart + day;
     } else {
         result = day - lastStart;
     }
@@ -107,19 +87,12 @@ bool inFertilityWindow(int day, int year, int lastStart, double averageCycle) {
     return result >= lowerBound && result <= upperBound;
 }
 
-//gives a boolean of whether or not it's been very long since the last period, indicating either the user forgot or the user missed their period
 bool checkMissed(int day, int year, int lastStart, double averageCycle) {
-    int roundedCycle = round(averageCycle);
     int result;
 
     if (day < lastStart) {
         year--;
-        int result;
-        if (isLeapYear(year)) {
-            result = 366 - lastStart + day;
-        } else {
-            result = 365 - lastStart + day;
-        }
+        result = (isLeapYear(year) ? 366 : 365) - lastStart + day;
     } else {
         result = day - lastStart;
     }
@@ -129,46 +102,30 @@ bool checkMissed(int day, int year, int lastStart, double averageCycle) {
 
 // gives a boolean on whether or not the period input was irregularly long compared to previous cycles
 bool checkIrregular(int day, int year, int lastStart, double averageCycle, vector<pair<int, int>> periods) {
-    if (periods.size() < 5) {
-        return false;
-    }
-
-    int roundedCycle = round(averageCycle);
-    int result = 0;
-
-    if (day < lastStart) {
-        year--;
-        int result;
-
-        if (isLeapYear(year)) {
-            result = 366 - lastStart + day;
-        } else {
-            result = 365 - lastStart + day;
-        }
-    } else {
-        result = day - lastStart;
-    }
-    
-    return result >= roundedCycle + 7;
-}
-
-// gives a boolean on whether or not the previous period was irregularly short
-bool checkLastCycleUnder21(int day, int year, int lastStart, double averageCycle, bool notConcernedFlag) {
-    if (notConcernedFlag) {
-        return false;
-    }
+    if (periods.size() < 5) return false;
 
     int roundedCycle = round(averageCycle);
     int result;
 
     if (day < lastStart) {
         year--;
-        int result;
-        if (isLeapYear(year)) {
-            result = 366 - lastStart + day;
-        } else {
-            result = 365 - lastStart + day;
-        }
+        result = (isLeapYear(year) ? 366 : 365) - lastStart + day;
+    } else {
+        result = day - lastStart;
+    }
+
+    return result >= roundedCycle + 7;
+}
+
+// gives a boolean on whether or not the previous period was irregularly short
+bool checkLastCycleUnder21(int day, int year, int lastStart, double averageCycle, bool notConcernedFlag) {
+    if (notConcernedFlag) return false;
+
+    int result;
+
+    if (day < lastStart) {
+        year--;
+        result = (isLeapYear(year) ? 366 : 365) - lastStart + day;
     } else {
         result = day - lastStart;
     }
@@ -178,19 +135,15 @@ bool checkLastCycleUnder21(int day, int year, int lastStart, double averageCycle
 
 // checks if the last three periods were irregularly short
 bool checkLastThreeUnder21(vector<pair<int, int>> periods, bool notConcernedFlag) {
-    if (periods.size() < 4 || notConcernedFlag) {
-        return false;
-    }
+    if (periods.size() < 4 || notConcernedFlag) return false;
 
-    for (int i = periods.size() - 1; i > periods.size() - 4; i--) {
+    for (int i = periods.size() - 1; i > (int)periods.size() - 4; i--) {
         int day = periods[i].first;
         int year = periods[i].second;
         int lastStart = periods[i - 1].first;
-        double averageCycle = averageCycleLength(periods);
+        double avg = averageCycleLength(periods);
 
-        if (!checkLastCycleUnder21(day, year, lastStart, averageCycle, false)) {
-            return false;
-        }
+        if (!checkLastCycleUnder21(day, year, lastStart, avg, false)) return false;
     }
 
     return true;
@@ -198,21 +151,13 @@ bool checkLastThreeUnder21(vector<pair<int, int>> periods, bool notConcernedFlag
 
 // checks if a period was irregularly long in general
 bool checkLastCycleOver35(int day, int year, int lastStart, double averageCycle, bool notConcernedFlag) {
-    if (notConcernedFlag) {
-        return false;
-    }
+    if (notConcernedFlag) return false;
 
-    int roundedCycle = round(averageCycle);
     int result;
 
     if (day < lastStart) {
         year--;
-        int result;
-        if (isLeapYear(year)) {
-            result = 366 - lastStart + day;
-        } else {
-            result = 365 - lastStart + day;
-        }
+        result = (isLeapYear(year) ? 366 : 365) - lastStart + day;
     } else {
         result = day - lastStart;
     }
@@ -222,19 +167,15 @@ bool checkLastCycleOver35(int day, int year, int lastStart, double averageCycle,
 
 // checks if the last three periods were irregularly long in general
 bool checkLastThreeOver35(vector<pair<int, int>> periods, bool notConcernedFlag) {
-    if (periods.size() < 4 || notConcernedFlag) {
-        return false;
-    }
+    if (periods.size() < 4 || notConcernedFlag) return false;
 
-    for (int i = periods.size() - 1; i > periods.size() - 4; i--) {
+    for (int i = periods.size() - 1; i > (int)periods.size() - 4; i--) {
         int day = periods[i].first;
         int year = periods[i].second;
         int lastStart = periods[i - 1].first;
-        double averageCycle = averageCycleLength(periods);
+        double avg = averageCycleLength(periods);
 
-        if (!checkLastCycleOver35(day, year, lastStart, averageCycle, false)) {
-            return false;
-        }
+        if (!checkLastCycleOver35(day, year, lastStart, avg, false)) return false;
     }
 
     return true;
@@ -242,20 +183,13 @@ bool checkLastThreeOver35(vector<pair<int, int>> periods, bool notConcernedFlag)
 
 // checks if the user hasn't logged a period in the past 90 days
 bool checkNoPeriodIn90Days(int day, int year, int lastStart, bool notConcernedFlag) {
-    if (notConcernedFlag) {
-        return false;
-    }
+    if (notConcernedFlag) return false;
 
     int result;
 
     if (day < lastStart) {
         year--;
-        int result;
-        if (isLeapYear(year)) {
-            result = 366 - lastStart + day;
-        } else {
-            result = 365 - lastStart + day;
-        }
+        result = (isLeapYear(year) ? 366 : 365) - lastStart + day;
     } else {
         result = day - lastStart;
     }
@@ -265,20 +199,13 @@ bool checkNoPeriodIn90Days(int day, int year, int lastStart, bool notConcernedFl
 
 // checks if the user has been bleeding for 7+ days
 bool checkBleedingFor7Days(int day, int year, int startDay, bool notConcernedFlag) {
-    if (notConcernedFlag) {
-        return false;
-    }
+    if (notConcernedFlag) return false;
 
     int result;
 
     if (day < startDay) {
         year--;
-        int result;
-        if (isLeapYear(year)) {
-            result = 366 - startDay + day;
-        } else {
-            result = 365 - startDay + day;
-        }
+        result = (isLeapYear(year) ? 366 : 365) - startDay + day;
     } else {
         result = day - startDay;
     }
@@ -288,20 +215,13 @@ bool checkBleedingFor7Days(int day, int year, int startDay, bool notConcernedFla
 
 // checks if the user starts bleeding again after it's already stopped
 bool checkBleedingAfterStopped(int day, int year, int bleedingEndDay, bool notConcernedFlag) {
-    if (notConcernedFlag) {
-        return false;
-    }
+    if (notConcernedFlag) return false;
 
     int result;
 
     if (day < bleedingEndDay) {
         year--;
-        int result;
-        if (isLeapYear(year)) {
-            result = 366 - bleedingEndDay + day;
-        } else {
-            result = 365 - bleedingEndDay + day;
-        }
+        result = (isLeapYear(year) ? 366 : 365) - bleedingEndDay + day;
     } else {
         result = day - bleedingEndDay;
     }

@@ -26,6 +26,7 @@ export default function AccDetailsScreen() {
 
   // Name States
   const [username, setUserName] = React.useState('');
+  const [childName, setChildName] = React.useState('');
 
   // Date Picker States (for last period start date)
   const [date, setDate] = React.useState(new Date());
@@ -37,8 +38,8 @@ export default function AccDetailsScreen() {
   // Average Cycle Length States
   const [cycleLength, setCycleLength] = React.useState(28);
 
-  const compName = (averagePeriodLength: number, averageCycleLength: number) => {
-    router.push(`/createProfile/comp_name?accountType=${accountType}&averagePeriodLength=${averagePeriodLength}&averageCycleLength=${averageCycleLength}`);
+  const compName = (averagePeriodLength: number, averageCycleLength: number, username: string, childName: string) => {
+    router.push(`/createProfile/comp_name?accountType=${accountType}&averagePeriodLength=${averagePeriodLength}&averageCycleLength=${averageCycleLength}&username=${username}&childName=${childName}`);
   }
   return (
     <ThemedView style={styles.wholeScreen}>
@@ -57,6 +58,22 @@ export default function AccDetailsScreen() {
         placeholderTextColor="#94a3b8"
         maxLength={12}
       />
+        {accountType === "1" && (
+          <>
+            <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>
+              Child's Name (Max 12 Characters)
+            </ThemedText>
+            <TextInput
+              value={childName}
+              onChangeText={setChildName}
+              style={[styles.textInput]}
+              autoCapitalize="none"
+              placeholder="Name"
+              placeholderTextColor="#94a3b8"
+              maxLength={12}
+            />
+          </>
+        )}
       <ThemedText style={[styles.inlineContainer, styles.bodySpacing, styles.elemSpace]}>Last Period Start Date</ThemedText>
       <View style={[styles.inlineContainer, {marginTop: windowHeight * 0.01}]}>
         <Pressable 
@@ -116,7 +133,7 @@ export default function AccDetailsScreen() {
             styles.createButtonContainer,
             pressed && styles.createButtonPressContainer
             ]}
-            onPress={() => compName(periodLength, cycleLength)}>
+            onPress={() => compName(periodLength, cycleLength, username, childName)}>
               <ThemedText style={styles.createButtonText}>Continue</ThemedText>
           </Pressable>
         </ThemedText>
