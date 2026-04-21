@@ -26,29 +26,6 @@
     return 0;
 }*/
 int main() {
-        // Set current headwear
-        svr.Post("/set-current-headwear", [&db](const httplib::Request& req, httplib::Response& res) {
-            if (req.has_param("headwear")) {
-                int headwear = std::stoi(req.get_param_value("headwear"));
-                db.setCurrentHeadwear(db.getUserId(), headwear);
-                res.set_content("{\"status\": \"ok\"}", "application/json");
-            } else {
-                res.status = 400;
-                res.set_content("{\"error\": \"missing headwear param\"}", "application/json");
-            }
-        });
-
-        // Set current holdable
-        svr.Post("/set-current-holdable", [&db](const httplib::Request& req, httplib::Response& res) {
-            if (req.has_param("holdable")) {
-                int holdable = std::stoi(req.get_param_value("holdable"));
-                db.setCurrentHoldable(db.getUserId(), holdable);
-                res.set_content("{\"status\": \"ok\"}", "application/json");
-            } else {
-                res.status = 400;
-                res.set_content("{\"error\": \"missing holdable param\"}", "application/json");
-            }
-        });
     Database& db = Database::getInstance();
     db.runSQLFile("setup.sql");
     db.purchaseItem(db.getUserId(), 5);
@@ -140,6 +117,30 @@ int main() {
         db.purchaseItem(db.getUserId(), whichItem);
         res.set_content("{\"status\": \"ok\"}", "application/json");
     });
+
+    // Set current hat
+    svr.Post("/set-current-headwear", [&db](const httplib::Request& req, httplib::Response& res) {
+            if (req.has_param("headwear")) {
+                int headwear = std::stoi(req.get_param_value("headwear"));
+                db.setCurrentHeadwear(db.getUserId(), headwear);
+                res.set_content("{\"status\": \"ok\"}", "application/json");
+            } else {
+                res.status = 400;
+                res.set_content("{\"error\": \"missing headwear param\"}", "application/json");
+            }
+        });
+
+        // Set current handheld
+        svr.Post("/set-current-holdable", [&db](const httplib::Request& req, httplib::Response& res) {
+            if (req.has_param("holdable")) {
+                int holdable = std::stoi(req.get_param_value("holdable"));
+                db.setCurrentHoldable(db.getUserId(), holdable);
+                res.set_content("{\"status\": \"ok\"}", "application/json");
+            } else {
+                res.status = 400;
+                res.set_content("{\"error\": \"missing holdable param\"}", "application/json");
+            }
+        });
 
 
     svr.Get("/get-diamonds", [&db](const httplib::Request &, httplib::Response &res) {

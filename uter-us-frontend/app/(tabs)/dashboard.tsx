@@ -230,7 +230,14 @@ if (selectedDate && !periodData[selectedDate]) {
     getPetId().then(id => setPetId(id));
     getCurrentHeadwear().then(headwear => setCurrentHeadwear(headwear));
     getCurrentHoldable().then(holdable => setCurrentHoldable(holdable));
-  }, []);
+
+    // Add navigation focus listener to refresh headwear/holdable
+    const unsubscribe = navigation.addListener('focus', () => {
+      getCurrentHeadwear().then(headwear => setCurrentHeadwear(headwear));
+      getCurrentHoldable().then(holdable => setCurrentHoldable(holdable));
+    });
+    return unsubscribe;
+  }, [navigation]);
   
 
   if (!fontsLoaded) {
@@ -318,9 +325,9 @@ if (alerts) {
               </View>
 
               <View style={[styles.overlayHand]}>
-                {currentHoldable === 1 && <Image source={require('../../assets/images/hotWaterPack.png')} style={[styles.image]} />}
-                {currentHoldable === 2 && <Image source={require('../../assets/images/candy.png')} style={[styles.image]} />}
-                {currentHoldable !== 1 && currentHoldable !== 2 && <ThemedText></ThemedText>}
+                {currentHoldable === 4 && <Image source={require('../../assets/images/hotWaterPack.png')} style={[styles.image]} />}
+                {currentHoldable === 5 && <Image source={require('../../assets/images/candy.png')} style={[styles.image]} />}
+                {currentHoldable !== 4 && currentHoldable !== 5 && <ThemedText></ThemedText>}
               </View>
 
               <View style={[styles.overlayHead]}>
