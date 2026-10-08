@@ -19,9 +19,9 @@ so that it encourages users to report their symptoms.
 - C++
 - MariaDB
 
-## Viewing Figma -> Reference this for designs!
-(Figma)[https://www.figma.com/design/Dgkb2VfXTq9qRCwfa5NQ9X/UterUs-Main-Designs?node-id=7-6&t=mNrpzuBlpNFpYPjj-1] 
-Password: uterus
+## Viewing Designs via Figma
+- [Figma](https://www.figma.com/design/Dgkb2VfXTq9qRCwfa5NQ9X/UterUs-Main-Designs?node-id=7-6&t=mNrpzuBlpNFpYPjj-1) was used to create the designs for the project.
+- Figma Password: uterus
 
 ## Setting up Frontend
 To set up frontend, do the following commands in your terminal:
@@ -45,25 +45,25 @@ C/C++ Dev Tools, C/C++ Extension Pack, C/C++ Themes, CMake, CMake Tools, Databas
 
 Navigate to the Database Tab and create a Connection with the following parameters: 
 
-Name: uterusdata 
-Connect Using: Server and Port 
-Address: localhost 
-Port: 3306 
-Database: uterusdata 
-Username: root 
-Password Mode: Ask on Connect 
-Authentication Protocol: default 
-SSL: Disabled 
-Over SSH: Disabled 
-Show records default limit: 50 
+- Name: uterusdata 
+- Connect Using: Server and Port 
+- Address: localhost 
+- Port: 3306 
+- Database: uterusdata 
+- Username: root 
+- Password Mode: Ask on Connect 
+- Authentication Protocol: default 
+- SSL: Disabled 
+- Over SSH: Disabled 
+- Show records default limit: 50 
 
-Next connect to the server with the following parameters: 
+Next, connect to the server with the following parameters: 
 
-Host: 127.0.0.1 
-Username: root 
-Database: uterusdata 
-Port: 3306 
-Password: Anything (remember it though) 
+- Host: 127.0.0.1 
+- Username: root 
+- Database: uterusdata 
+- Port: 3306 
+- Password: Anything (remember it though) 
 
 Then click connect to server. 
 
@@ -76,6 +76,6 @@ cd uter-us-frontend
 npm install 
 npx expo start
 ```
-Next, hit the w key to open the app in your browser, then if desired, hit ctrl + shift + j to open developer tools and set it to mobile to look better on a computer screen. 
+Next, hit the W key to open the app in your browser, then if desired, hit ctrl + shift + J to open developer tools and set it to mobile to look better on a computer screen. 
 
-Video Instructions: https://youtu.be/cgrKe4JIC3Y 
+If preferred, there are [Video Instructions For Backend Setup](https://youtu.be/cgrKe4JIC3Y)
